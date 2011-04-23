@@ -1,0 +1,17 @@
+package org.awknet.commons.security;
+
+public class UserLogic implements ILogin {
+
+	@Override
+	public void login(IUser user) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void logout() {
+		// TODO Auto-generated method stub
+
+	}
+
+}

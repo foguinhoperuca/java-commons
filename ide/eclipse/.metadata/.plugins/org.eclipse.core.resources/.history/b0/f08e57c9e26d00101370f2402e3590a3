@@ -1,0 +1,7 @@
+package org.awknet.commons.security;
+
+public class User implements IUser {
+
+	public String login;
+	public String password;
+}

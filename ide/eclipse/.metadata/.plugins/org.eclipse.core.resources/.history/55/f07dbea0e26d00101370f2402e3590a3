@@ -1,0 +1,7 @@
+package org.awknet.commons.security;
+
+public class User implements ILogin {
+
+	public String login;
+	public String password;
+}

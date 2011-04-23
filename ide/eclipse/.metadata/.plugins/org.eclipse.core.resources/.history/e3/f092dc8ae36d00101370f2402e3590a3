@@ -1,0 +1,9 @@
+package org.awknet.commons.model;
+
+import org.awknet.commons.security.Authorization;
+
+public class User implements Authorization {
+
+	public String login;
+	public String password;
+}

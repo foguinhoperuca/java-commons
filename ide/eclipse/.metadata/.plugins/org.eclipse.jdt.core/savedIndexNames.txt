@@ -1,0 +1,18 @@
+INDEX VERSION 1.126+/home/jefferson/universal/projects/awknet/commons/code/awknet-commons/trunk/ide/eclipse/.metadata/.plugins/org.eclipse.jdt.core
+1517764967.index
+4098052389.index
+3299323074.index
+1887099579.index
+3428743211.index
+2734390785.index
+2237435885.index
+1208177537.index
+3487354416.index
+26122835.index
+3305761148.index
+1681303513.index
+477996539.index
+1458572480.index
+1530595630.index
+1791049975.index
+3836749906.index

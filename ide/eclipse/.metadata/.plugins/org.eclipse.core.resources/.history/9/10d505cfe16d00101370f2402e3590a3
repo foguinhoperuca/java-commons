@@ -1,0 +1,7 @@
+package org.awknet.commons.security;
+
+public interface ILogin {
+
+	public void login();
+	publioc void logout
+}

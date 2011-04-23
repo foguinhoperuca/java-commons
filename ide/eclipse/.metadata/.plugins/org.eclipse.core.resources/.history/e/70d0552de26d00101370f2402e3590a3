@@ -1,0 +1,5 @@
+package org.awknet.commons.security;
+
+public class User implements IUser {
+
+}

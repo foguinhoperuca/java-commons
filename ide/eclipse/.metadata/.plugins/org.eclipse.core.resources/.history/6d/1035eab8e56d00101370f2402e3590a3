@@ -1,0 +1,9 @@
+package org.awknet.commons.security;
+
+import org.awknet.commons.model.User;
+
+public interface LoginLogic {
+
+	public void login(User user);
+	public void logout();
+}
