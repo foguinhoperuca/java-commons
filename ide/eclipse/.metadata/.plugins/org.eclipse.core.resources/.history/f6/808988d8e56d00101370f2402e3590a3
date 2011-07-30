@@ -1,6 +1,0 @@
-package org.awknet.commons.security;
-
-public interface IEncryptation {
-
-	public String encrypt();
-}

@@ -1,9 +1,0 @@
-package org.awknet.commons.security;
-
-import org.awknet.commons.security.IUser;
-
-public class User implements IUser {
-
-	public String login;
-	public String password;
-}
