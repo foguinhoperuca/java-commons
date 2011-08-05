@@ -1,5 +1,45 @@
-= Awknet Commons.
+h1. Awknet Commons.
+
 The goal of this projects is create a common repository of code that I can reuse. Maybe it could be usefull for someone, maybe not. Anyway, feel free to explore the code.
 
-== Tools.
+h1. Tools.
+
 At first time, I am using java. There some scripts (sh) and other things usefull. Enjoy it!
+
+h1. Requirements.
+
+Using PT_BR to describe all requirements.
+
+h2. Folder Structure.
+
+(Jefferson Campos): I, *developer*, wish to have +a nice folodere tree, customized and standart to all my projects+ because _it help my work be more fast and simple_.
+
+Basic tree:
+universal/
+> projects/
+>> lib/
+>> GROUP_OF_PROJECTS [abacomm | pms | awknet | UFSCAR]
+>>> <PROJECT_NAME>/
+>>>> build/
+>>>> ide/
+>>>> scm/
+>>>>> trunk/
+>>>>>> doc/
+>>>>>> src/
+>>>>>>> java/
+>>>>>>> db/
+>>>>>>> web/
+>>>>>> test/
+>>>>>> README
+>>>>>> COPYING
+>>>>> tags/
+>>>>> branches/
+
+
+h2. Lib Folder
+lib/
+> version/
+>> doc/
+>> src/
+>> bin/
+>> download/

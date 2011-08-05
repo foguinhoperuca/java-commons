@@ -91,6 +91,9 @@ fnCreateLibraryPath()
 fnInstallJava()
 {
 	echo "Installing Java"
+	echo "export JAVA_HOME=/usr/local/java" >> /etc/bash.bashrc
+	echo "export PATH=$JAVA_HOME/bin:$PATH" >> /etc/bash.bashrc
+	echo "export PATH=$JAVA_HOME/bin:$PATH" >> /etc/bash.bashrc
 }
 
 fnInstallIDE()
@@ -100,12 +103,13 @@ fnInstallIDE()
 
 # main program
 
+echo "Configuration of your environment in progress..."
 case $1 in
     java)
-	
+	fnInstallJava
 	;;
     ide)
-	
+	fnInstalIDE
 	;;
     library)
 	fnCreateLibraryPath;
@@ -114,9 +118,11 @@ case $1 in
 	
 	;;
     help)
-	fnHelp
-	;;
     *)
-	
+	fnHelp;
+	;;
 esac
 
+echo "Done! Please, check if it is all right!"
+echo "Thanks for all fishes..."
+echo "Bye!!"
