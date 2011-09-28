@@ -5,6 +5,7 @@ commons-lang,2.6,http://linorg.usp.br/apache//commons/lang/binaries/commons-lang
 commons-fileupload,1.2.2,http://apache.mirror.pop-sc.rnp.br/apache//commons/fileupload/binaries/commons-fileupload-1.2.2-bin.tar.gz,http://apache.mirror.pop-sc.rnp.br/apache//commons/fileupload/source/commons-fileupload-1.2.2-src.tar.gz
 commons-logging,1.1.1,http://linorg.usp.br/apache//commons/logging/binaries/commons-logging-1.1.1-bin.tar.gz,http://linorg.usp.br/apache//commons/logging/source/commons-logging-1.1.1-src.tar.gz
 commons-io,2.0.1,http://linorg.usp.br/apache//commons/io/binaries/commons-io-2.0.1-bin.tar.gz,http://linorg.usp.br/apache//commons/io/source/commons-io-2.0.1-src.tar.gz
-varaptor,3.3.1,http://vraptor3.googlecode.com/files/vraptor-3.3.1.zip
-hibernate,3.6.5,http://sourceforge.net/projects/hibernate/files/hibernate3/3.6.5.Final/hibernate-distribution-3.6.5.Final-dist.tar.gz/downloadjoda-time,1.6.2,http://sourceforge.net/projects/joda-time/files/joda-time/1.6.2/joda-time-1.6.2-bin.tar.gz/download,http://sourceforge.net/projects/joda-time/files/joda-time/1.6.2/joda-time-1.6.2-src.tar.gz/download
-imysql,5.1.17,http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.17.zip/from/http://linorg.usp.br/mysql
+vraptor,3.3.1,http://vraptor3.googlecode.com/files/vraptor-3.3.1.zip
+hibernate,3.6.5,http://sourceforge.net/projects/hibernate/files/hibernate3/3.6.5.Final/hibernate-distribution-3.6.5.Final-dist.tar.gz/download
+joda-time,1.6.2,http://sourceforge.net/projects/joda-time/files/joda-time/1.6.2/joda-time-1.6.2-bin.tar.gz/download,http://sourceforge.net/projects/joda-time/files/joda-time/1.6.2/joda-time-1.6.2-src.tar.gz/download
+mysql,5.1.17,http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.17.zip/from/http://linorg.usp.br/mysql

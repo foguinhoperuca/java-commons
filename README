@@ -6,13 +6,26 @@ h1. Tools.
 
 At first time, I am using java. There some scripts (sh) and other things usefull. Enjoy it!
 
+h1. TODO.
+
+* Library:
+** Fix doc and src download - not working in the same way that bin's file download.
+** Maybe, the best approach is separat by type, eg.:
+*** Apache Commons;
+*** Zip files;
+*** Among others;
+
+* Java install
+
+* IDE install
+
 h1. Requirements.
 
-Using PT_BR to describe all requirements.
+*Hint*: Using PT_BR as main to describe all requirements - maybe, some times the requirements described in english.
 
 h2. Folder Structure.
 
-(Jefferson Campos): I, *developer*, wish to have +a nice folodere tree, customized and standart to all my projects+ because _it help my work be more fast and simple_.
+(Jefferson Campos): I, *developer*, wish to have +a nice folder tree, customized and standart to all my projects+ because _it help my work be more fast and simple_.
 
 Basic tree:
 universal/

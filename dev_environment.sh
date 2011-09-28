@@ -3,12 +3,13 @@
 # Copyright(C) 2011 - Jefferson Campos - foguinho.peruca@gmail.com
 # This program is free software licencied under terms of GPLv2 or higher.
 # This program configure my personal development environment. It's very useful and maybe it can help you... ;)
+# For more information, see README file.
 
-LIBRARY_SOURCE="/home/jefferson/universal/projects/awknet/commons/code/awknet-commons/trunk/LIBRARY.DAT"
 PROJECTS_MODEL_URL="http://awknet.googlecode.com/svn/trunk/default_project"
 PROJECTS_PATH="$HOME/universal/projects"
 LIB_FOLDER="$PROJECTS_PATH/lib"
 IDE_PATH="$PROJECTS_PATH/ide"
+LIBRARY_SOURCE="$PROJECTS_PATH/awknet/commons/scm/trunk/LIBRARY.DAT"
 
 fnHelp()
 {
@@ -21,12 +22,48 @@ fnHelp()
     echo ""
 }
 
+fnDebug()
+{
+    echo ""
+    echo "Debugging... =]"
+    echo "PROJECTS_MODEL_URL - " $PROJECTS_MODEL_URL
+    echo "PROJECTS_PATH      - " $PROJECTS_PATH
+    echo "LIB_FOLDER         - " $LIB_FOLDER
+    echo "IDE_PATH           - " $IDE_PATH
+    echo "LIBRARY_SOURCE     - " $LIBRARY_SOURCE
+    echo ""
+
+    fnCreateLibFolderForce
+
+    tree $LIB_FOLDER | more
+}
+
+# Create all folders of lib - brutal force
+fnCreateLibFolderForce()
+{
+    if [ -e $LIB_FOLDER ]
+    then
+	echo "exist!! Is here! $LIB_FOLDER"
+	rm -rf $LIB_FOLDER
+    fi
+    mkdir $LIB_FOLDER
+
+    export IFS=","
+    cat $LIBRARY_SOURCE | while read LOCAL_PATH VERSION URL_BIN URL_SRC URL_DOC;
+    do
+	fnCreateDefaultLibraryFolders $LOCAL_PATH $VERSION
+#	echo "tmp path of $LOCAL_PATH is: " $(ls -l $LIB_FOLDER/$LOCAL_PATH/$VERSION/)
+	cd $LIB_FOLDER/$LOCAL_PATH/$VERSION/
+	pwd
+    done
+}
+
 # Create a new project in default projects location.
 # Usage: fnCreateProject <PROJECT_NAME>
 fnCreateNewProject()
 {
     svn co $PROJECTS_MODEL_URL $PROJECTS_PATH/
-    mv $PROJECTS_PATH $1    
+    mv $PROJECTS_PATH $1 
 }
 
 fnCreateDefaultLibraryFolders()
@@ -38,6 +75,7 @@ fnCreateDefaultLibraryFolders()
 	mkdir $LIB_FOLDER/$1/$2/bin
 	mkdir $LIB_FOLDER/$1/$2/download
 	mkdir $LIB_FOLDER/$1/$2/tmp
+	mkdir $LIB_FOLDER/$1/$2/extracted
 }
 
 # create a library and configure it!
@@ -46,6 +84,12 @@ fnCreateLibraryPath()
 {
     # echo "Configuring library path"
 
+    if [ -e $LIB_FOLDER ]
+    then
+	rm -rf $LIB_FOLDER
+    fi
+    mkdir $LIB_FOLDER
+
     export IFS=","
 
     cat $LIBRARY_SOURCE | while read LOCAL_PATH VERSION URL_BIN URL_SRC URL_DOC;
@@ -53,39 +97,70 @@ fnCreateLibraryPath()
 
 # create default layout
 	fnCreateDefaultLibraryFolders $LOCAL_PATH $VERSION
-	cd $LOCAL_PATH/$VERSION/tmp
+	cd $LIB_FOLDER/$LOCAL_PATH/$VERSION/tmp
 
 # get all files and extract it!
 	wget $URL_BIN
 	for FILE_DOWNLOADED in $(ls | awk '{print $1}')
 	do
-	    tar xvf $FILE_DOWNLOADED -C ../bin/
-	    mv $FILE_DOWNLOADED ../download
+	    fnInstallLib $FILE_DOWNLOADED bin
+	    # tar xvf $FILE_DOWNLOADED -C ../extracted/    
+	    # EXTRACTED=$(ls ../extracted)
+	    # mv ../extracted/$EXTRACTED/* ../bin/
+	    # mv $FILE_DOWNLOADED ../download
 	done
+	# fnCleanFolder recreate
 
-	if [ -n "$URL_DOC" ]
-	then
-	    wget $URL_DOC
-	    for FILE_DOWNLOADED in $(ls | awk '{print $1}')
-	    do
-	    	tar xvf $FILE_DOWNLOADED -C ../doc/
-	    	mv $FILE_DOWNLOADED ../download
-	    done
-	fi
+	# if [ -n "$URL_SRC" ]
+	# then
+	#     echo "Download SRC: $URL_SRC"
+	#     wget $URL_SRC
+	#     for FILE_DOWNLOADED in $(ls | awk '{print $1}')
+        #     do
+	#     	# tar xvf $FILE_DOWNLOADED -C ../src/
+	#     	# mv $FILE_DOWNLOADED ../download
+	# 	fnInstallLib $FILE_DOWNLOADED src
+        #     done
+	# fi
+# 	fnCleanFolder recreate
 
-	if [ -n "$URL_SRC" ]
-	then
-	    wget $URL_SRC
-	    for FILE_DOWNLOADED in $(ls | awk '{print $1}')
-            do
-	    	tar xvf $FILE_DOWNLOADED -C ../src/
-	    	mv $FILE_DOWNLOADED ../download
-            done
-	fi
+# 	if [ -n "$URL_DOC" ]
+# 	then
+# 	    wget $URL_DOC
+# 	    for FILE_DOWNLOADED in $(ls | awk '{print $1}')
+# 	    do
+# 	    	# tar xvf $FILE_DOWNLOADED -C ../doc/
+# 	    	# mv $FILE_DOWNLOADED ../download
+# 		fnInstallLib $FILE_DOWNLOADED doc
+# 	    done
+# 	fi
 
-	cd ../
-	rm -rf tmp/
+# #	cd ../
+ 	fnCleanFolder
     done
+}
+
+# $2 is the type: [bin|doc|src]
+fnInstallLib()
+{
+    FILE_DOWNLOADED=$1
+    TYPE=$2
+
+    tar xvf $FILE_DOWNLOADED -C ../extracted/    
+    EXTRACTED=$(ls ../extracted)
+    mv ../extracted/$EXTRACTED/* ../$TYPE
+    mv $FILE_DOWNLOADED ../download
+}
+
+fnCleanFolder()
+{
+    rm -rf ../tmp/
+    rm -rf ../extracted/
+    if [ "$1" == "recreate" ]
+    then
+	mkdir ../tmp
+	mkdir ../extracted
+    fi
 }
 
 fnInstallJava()
@@ -115,9 +190,13 @@ case $1 in
 	fnCreateLibraryPath;
 	;;
     all)
-	
+	fnInstallJava
+	fnInstalIDE
+	fnCreateLibraryPath;
 	;;
-    help)
+    debug)
+	fnDebug;
+	;;
     *)
 	fnHelp;
 	;;
