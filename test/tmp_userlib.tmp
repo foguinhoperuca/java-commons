@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<eclipse-userlibraries version="2">
+<archive javadoc="jar:file:documentation" path="binary" source="source_code"/>
+<archive javadoc="jar:file:DOC" path="BIN" source="SOURCE"/>
+<archive javadoc="jar:file:BOZO" path="MAFALDA" source="CARECA"/>
+</eclipse-userlibraries>

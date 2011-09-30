@@ -21,6 +21,7 @@ TMP_FOLDER=tmp
 EXTRACTED_FOLDER=extracted
 
 NAME_FILE_DOWNLOADED=""
+USER_LIBRARY_ECLIPSE=$(pwd)/test/test.userlibraries
 
 # All data files will be separated by comma.
 export IFS=","
@@ -32,7 +33,7 @@ fnHelp()
     echo "This program is free software licencied under terms of GPLv2 or higher."
     echo "This program configure my personal development environment."
     echo "Contact me: Jefferson Campos - foguinho.peruca@gmail.com"
-    echo "Usage: ./dev_environment.sh [java | ide | library | all | help]"
+    echo "Usage: ./dev_environment.sh [java | ide | library | java_lib | user_library | all | help]"
     echo ""
 }
 
@@ -172,18 +173,8 @@ fnCreateLibraryPath()
             do
 		fnInstallLib $(pwd)/$FILE_DOWNLOADED src
             done
-
- 	#     wget $URL_DOC
- 	#     for FILE_DOWNLOADED in $(ls | awk '{print $1}')
- 	#     do
- 	#     	# tar xvf $FILE_DOWNLOADED -C ../doc/
- 	#     	# mv $FILE_DOWNLOADED ../download
- 	# 	fnInstallLib $FILE_DOWNLOADED doc
- 	#     done
  	fi
-
-	# cd ../
-# 	fnCleanFolder
+	fnCleanFolder
     done
 }
 
@@ -201,6 +192,7 @@ fnInstallLib()
     mv $FILE_DOWNLOADED ../$DOWNLOAD_FOLDER
 }
 
+# Remove temp folders.
 fnCleanFolder()
 {
     rm -rf ../$TMP_FOLDER/
@@ -210,6 +202,44 @@ fnCleanFolder()
 	mkdir ../$TMP_FOLDER
 	mkdir ../$EXTRACTED_FOLDER
     fi
+}
+
+# Create user library to eclipse.
+fnCreateUserLibraryEclipse()
+{
+    fnCreateFileUserLib
+#    cat $USER_LIBRARY_ECLIPSE
+    fnAddFile documentation binary source_code
+    fnAddFile DOC BIN SOURCE
+    fnAddFile BOZO MAFALDA CARECA
+}
+
+# TODO add library name
+fnAddFile()
+{
+
+    DOC=$1
+    BIN=$2
+    SRC=$3
+#<archive javadoc="jar:file:/home/jefferson/universal/projects/lib/apache/commons/beanutils/commons-beanutils-1.8.3/commons-beanutils-1.8.3-javadoc.jar!/" path="/home/jefferson/universal/projects/lib/apache/commons/beanutils/commons-beanutils-1.8.3/commons-beanutils-1.8.3.jar" source="/home/jefferson/universal/projects/lib/apache/commons/beanutils/commons-beanutils-1.8.3/commons-beanutils-1.8.3-sources.jar"/>
+
+    TMP_USERLIB=test/tmp_userlib.tmp
+    TEST_USERLIB=test/test.userlibraries
+
+    LINES=$(wc -l test/test.userlibraries | awk '{print $1}')
+    SHOW=$(expr $LINES - 1)
+    head -n$SHOW test/test.userlibraries > $TMP_USERLIB
+    echo "<archive javadoc=\"jar:file:$DOC\" path=\"$BIN\" source=\"$SRC\"/>" >> $TMP_USERLIB
+    echo "</eclipse-userlibraries>" >> $TMP_USERLIB
+    cat $TMP_USERLIB > $TEST_USERLIB
+
+}
+
+fnCreateFileUserLib()
+{
+    echo "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>" > $USER_LIBRARY_ECLIPSE
+    echo "<eclipse-userlibraries version=\"2\">" >> $USER_LIBRARY_ECLIPSE
+    echo "</eclipse-userlibraries>" >> $USER_LIBRARY_ECLIPSE
 }
 
 fnInstallJava()
@@ -236,6 +266,7 @@ fnCreateNewProject()
 # main program
 
 echo "Configuration of your environment in progress..."
+echo ""
 case $1 in
     java)
 	fnInstallJava
@@ -248,6 +279,9 @@ case $1 in
 	;;
     java_lib)
 	fnCreateLibraryPath; # must use arg java
+	;;
+    user_library)
+	fnCreateUserLibraryEclipse;
 	;;
     all)
 	fnInstallJava
@@ -262,6 +296,7 @@ case $1 in
 	;;
 esac
 
+echo ""
 echo "Done! Please, check if it is all right!"
 echo "Thanks for all fishes..."
 echo "Bye!!"
