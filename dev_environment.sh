@@ -5,11 +5,25 @@
 # This program configure my personal development environment. It's very useful and maybe it can help you... ;)
 # For more information, see README file.
 
+# URL for all resources
 PROJECTS_MODEL_URL="http://awknet.googlecode.com/svn/trunk/default_project"
 PROJECTS_PATH="$HOME/universal/projects"
 LIB_FOLDER="$PROJECTS_PATH/lib"
 IDE_PATH="$PROJECTS_PATH/ide"
 LIBRARY_SOURCE="$PROJECTS_PATH/awknet/commons/scm/trunk/LIBRARY.DAT"
+
+# Folder's layout
+BIN_FOLDER=bin
+SRC_FOLDER=src
+DOC_FOLDER=doc
+DOWNLOAD_FOLDER=download
+TMP_FOLDER=tmp
+EXTRACTED_FOLDER=extracted
+
+NAME_FILE_DOWNLOADED=""
+
+# All data files will be separated by comma.
+export IFS=","
 
 fnHelp()
 {
@@ -26,15 +40,21 @@ fnDebug()
 {
     echo ""
     echo "Debugging... =]"
-    echo "PROJECTS_MODEL_URL - " $PROJECTS_MODEL_URL
-    echo "PROJECTS_PATH      - " $PROJECTS_PATH
-    echo "LIB_FOLDER         - " $LIB_FOLDER
-    echo "IDE_PATH           - " $IDE_PATH
-    echo "LIBRARY_SOURCE     - " $LIBRARY_SOURCE
+    echo "PROJECTS_MODEL_URL   - " $PROJECTS_MODEL_URL
+    echo "PROJECTS_PATH        - " $PROJECTS_PATH
+    echo "LIB_FOLDER           - " $LIB_FOLDER
+    echo "IDE_PATH             - " $IDE_PATH
+    echo "LIBRARY_SOURCE       - " $LIBRARY_SOURCE
+    echo "BIN_FOLDER           - " $BIN_FOLDER
+    echo "SRC_FOLDER           - " $SRC_FOLDER
+    echo "DOC_FOLDER           - " $DOC_FOLDER
+    echo "DOWNLOAD_FOLDER      - " $DOWNLOAD_FOLDER
+    echo "TMP_FOLDER           - " $TMP_FOLDER
+    echo "EXTRACTED_FOLDER     - " $EXTRACTED_FOLDER
+    echo "NAME_FILE_DOWNLOADED - " $NAME_FILE_DOWNLOADED
     echo ""
 
     fnCreateLibFolderForce
-
     tree $LIB_FOLDER | more
 }
 
@@ -43,43 +63,62 @@ fnCreateLibFolderForce()
 {
     if [ -e $LIB_FOLDER ]
     then
-	echo "exist!! Is here! $LIB_FOLDER"
 	rm -rf $LIB_FOLDER
     fi
     mkdir $LIB_FOLDER
 
     export IFS=","
-    cat $LIBRARY_SOURCE | while read LOCAL_PATH VERSION URL_BIN URL_SRC URL_DOC;
+    cat $LIBRARY_SOURCE | while read LANG LOCAL_PATH VERSION URL_BIN URL_SRC URL_DOC;
     do
-	fnCreateDefaultLibraryFolders $LOCAL_PATH $VERSION
-#	echo "tmp path of $LOCAL_PATH is: " $(ls -l $LIB_FOLDER/$LOCAL_PATH/$VERSION/)
-	cd $LIB_FOLDER/$LOCAL_PATH/$VERSION/
-	pwd
+	fnCreateDefaultLibraryFolders $LANG $LOCAL_PATH $VERSION
+	fnGetFileNameToDownload $URL_SRC
+	# echo $NAME_FILE_DOWNLOADED
     done
 }
 
-# Create a new project in default projects location.
-# Usage: fnCreateProject <PROJECT_NAME>
-fnCreateNewProject()
+# Retrieve the original name of download. Need this to fix a bug of wget.
+fnGetFileNameToDownload()
 {
-    svn co $PROJECTS_MODEL_URL $PROJECTS_PATH/
-    mv $PROJECTS_PATH $1 
+    export IFS="/"
+    URL=$1
+
+    IFS='/' read -ra FILE <<< "$URL"
+    tLen=${#FILE[@]}
+    NAME_FILE_DOWNLOADED=${FILE[$tLen - 1]}
+    export IFS=","
 }
 
+# Create the default layout to store lib.
+# Usage: fnCreateDefaultLibraryFolders <lang> <lib> <version>
 fnCreateDefaultLibraryFolders()
 {
-	mkdir $LIB_FOLDER/$1/
-	mkdir $LIB_FOLDER/$1/$2
-	mkdir $LIB_FOLDER/$1/$2/doc
-	mkdir $LIB_FOLDER/$1/$2/src
-	mkdir $LIB_FOLDER/$1/$2/bin
-	mkdir $LIB_FOLDER/$1/$2/download
-	mkdir $LIB_FOLDER/$1/$2/tmp
-	mkdir $LIB_FOLDER/$1/$2/extracted
+    LANG=$1
+    LIB=$2
+    VERSION=$3
+
+    if [ ! -e $LIB_FOLDER/$LANG/ ]
+    then
+	mkdir $LIB_FOLDER/$LANG/
+    fi
+
+    if [ ! -e $LIB_FOLDER/$LANG/$LIB/ ]
+    then
+	mkdir $LIB_FOLDER/$LANG/$LIB/
+    fi
+
+    mkdir $LIB_FOLDER/$LANG/$LIB/$VERSION
+    mkdir $LIB_FOLDER/$LANG/$LIB/$VERSION/$DOC_FOLDER
+    mkdir $LIB_FOLDER/$LANG/$LIB/$VERSION/$SRC_FOLDER
+    mkdir $LIB_FOLDER/$LANG/$LIB/$VERSION/$BIN_FOLDER
+    mkdir $LIB_FOLDER/$LANG/$LIB/$VERSION/$DOWNLOAD_FOLDER
+    mkdir $LIB_FOLDER/$LANG/$LIB/$VERSION/$TMP_FOLDER
+    mkdir $LIB_FOLDER/$LANG/$LIB/$VERSION/$EXTRACTED_FOLDER
 }
 
-# create a library and configure it!
+# Create and configure a library!
 # Usage: <LOCAL_PATH>,<VERSION>,<URL_BIN>[,<URL_SRC>,<URL_DOC>]
+# TODO review the extract files.
+# TODO review the relative path (src and doc logic)
 fnCreateLibraryPath()
 {
     # echo "Configuring library path"
@@ -90,76 +129,86 @@ fnCreateLibraryPath()
     fi
     mkdir $LIB_FOLDER
 
-    export IFS=","
-
-    cat $LIBRARY_SOURCE | while read LOCAL_PATH VERSION URL_BIN URL_SRC URL_DOC;
+    cat $LIBRARY_SOURCE | while read LANG LOCAL_PATH VERSION URL_BIN URL_SRC URL_DOC;
     do
 
-# create default layout
-	fnCreateDefaultLibraryFolders $LOCAL_PATH $VERSION
-	cd $LIB_FOLDER/$LOCAL_PATH/$VERSION/tmp
+# Create default layout
+	fnCreateDefaultLibraryFolders $LANG $LOCAL_PATH $VERSION
+	cd $LIB_FOLDER/$LANG/$LOCAL_PATH/$VERSION/$TMP_FOLDER
 
-# get all files and extract it!
+# Get and extract all files.
 	wget $URL_BIN
 	for FILE_DOWNLOADED in $(ls | awk '{print $1}')
 	do
 	    fnInstallLib $FILE_DOWNLOADED bin
-	    # tar xvf $FILE_DOWNLOADED -C ../extracted/    
-	    # EXTRACTED=$(ls ../extracted)
-	    # mv ../extracted/$EXTRACTED/* ../bin/
-	    # mv $FILE_DOWNLOADED ../download
 	done
-	# fnCleanFolder recreate
+	fnCleanFolder recreate
 
-	# if [ -n "$URL_SRC" ]
-	# then
-	#     echo "Download SRC: $URL_SRC"
-	#     wget $URL_SRC
-	#     for FILE_DOWNLOADED in $(ls | awk '{print $1}')
-        #     do
-	#     	# tar xvf $FILE_DOWNLOADED -C ../src/
-	#     	# mv $FILE_DOWNLOADED ../download
-	# 	fnInstallLib $FILE_DOWNLOADED src
-        #     done
-	# fi
-# 	fnCleanFolder recreate
+	if [ -n "$URL_SRC" ]
+	then
+	    fnGetFileNameToDownload $URL_SRC
+	    touch $LIB_FOLDER/$LANG/$LOCAL_PATH/$VERSION/$TMP_FOLDER/$NAME_FILE_DOWNLOADED
+	    wget -O $LIB_FOLDER/$LANG/$LOCAL_PATH/$VERSION/$TMP_FOLDER/$NAME_FILE_DOWNLOADED $URL_SRC
 
-# 	if [ -n "$URL_DOC" ]
-# 	then
-# 	    wget $URL_DOC
-# 	    for FILE_DOWNLOADED in $(ls | awk '{print $1}')
-# 	    do
-# 	    	# tar xvf $FILE_DOWNLOADED -C ../doc/
-# 	    	# mv $FILE_DOWNLOADED ../download
-# 		fnInstallLib $FILE_DOWNLOADED doc
-# 	    done
-# 	fi
+#	    echo "FILE SRC IS: " $(ls $(pwd) | awk '{print $1}')
 
-# #	cd ../
- 	fnCleanFolder
+	    for FILE_DOWNLOADED in $(ls $(pwd) | awk '{print $1}')
+            do
+		fnInstallLib $(pwd)/$FILE_DOWNLOADED src
+            done
+	fi
+ 	fnCleanFolder recreate
+
+ 	if [ -n "$URL_DOC" ]
+ 	then
+
+	    fnGetFileNameToDownload $URL_DOC
+	    touch $LIB_FOLDER/$LANG/$LOCAL_PATH/$VERSION/$TMP_FOLDER/$NAME_FILE_DOWNLOADED
+	    wget -O $LIB_FOLDER/$LANG/$LOCAL_PATH/$VERSION/$TMP_FOLDER/$NAME_FILE_DOWNLOADED $URL_DOC
+
+	    echo "FILE DOC IS: " $(ls $(pwd) | awk '{print $1}')
+
+	    for FILE_DOWNLOADED in $(ls $(pwd) | awk '{print $1}')
+            do
+		fnInstallLib $(pwd)/$FILE_DOWNLOADED src
+            done
+
+ 	#     wget $URL_DOC
+ 	#     for FILE_DOWNLOADED in $(ls | awk '{print $1}')
+ 	#     do
+ 	#     	# tar xvf $FILE_DOWNLOADED -C ../doc/
+ 	#     	# mv $FILE_DOWNLOADED ../download
+ 	# 	fnInstallLib $FILE_DOWNLOADED doc
+ 	#     done
+ 	fi
+
+	# cd ../
+# 	fnCleanFolder
     done
 }
 
-# $2 is the type: [bin|doc|src]
+# Extract and save files.
+# Usage: fnInstallLib <PATH_FILE_DOWNLOADED> <TYPE: [bin|doc|src]>
+# TODO: Verify all type of download: [.tar.bz2 | tar.gz | .zip]
 fnInstallLib()
 {
     FILE_DOWNLOADED=$1
     TYPE=$2
 
-    tar xvf $FILE_DOWNLOADED -C ../extracted/    
-    EXTRACTED=$(ls ../extracted)
-    mv ../extracted/$EXTRACTED/* ../$TYPE
-    mv $FILE_DOWNLOADED ../download
+    tar xvf $FILE_DOWNLOADED -C ../$EXTRACTED_FOLDER/    
+    FILE_EXTRACTED=$(ls ../$EXTRACTED_FOLDER)
+    mv ../$EXTRACTED_FOLDER/$FILE_EXTRACTED/* ../$TYPE
+    mv $FILE_DOWNLOADED ../$DOWNLOAD_FOLDER
 }
 
 fnCleanFolder()
 {
-    rm -rf ../tmp/
-    rm -rf ../extracted/
+    rm -rf ../$TMP_FOLDER/
+    rm -rf ../$EXTRACTED_FOLDER/
     if [ "$1" == "recreate" ]
     then
-	mkdir ../tmp
-	mkdir ../extracted
+	mkdir ../$TMP_FOLDER
+	mkdir ../$EXTRACTED_FOLDER
     fi
 }
 
@@ -176,6 +225,14 @@ fnInstallIDE()
 	echo "installing IDE"
 }
 
+# Create a new project in default projects location.
+# Usage: fnCreateProject <PROJECT_NAME>
+fnCreateNewProject()
+{
+    svn co $PROJECTS_MODEL_URL $PROJECTS_PATH/
+    mv $PROJECTS_PATH $1 
+}
+
 # main program
 
 echo "Configuration of your environment in progress..."
@@ -188,6 +245,9 @@ case $1 in
 	;;
     library)
 	fnCreateLibraryPath;
+	;;
+    java_lib)
+	fnCreateLibraryPath; # must use arg java
 	;;
     all)
 	fnInstallJava

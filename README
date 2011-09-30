@@ -8,12 +8,13 @@ At first time, I am using java. There some scripts (sh) and other things usefull
 
 h1. TODO.
 
+* Create a .deb for this program.
+
 * Library:
 ** Fix doc and src download - not working in the same way that bin's file download.
-** Maybe, the best approach is separat by type, eg.:
-*** Apache Commons;
-*** Zip files;
-*** Among others;
+** Fix if data file don't have some info (eg. src or doc)
+** Maybe, the best approach is separat by type, eg.: java, zip files, etc;
+*** Create some functions to fix some errors (file extract errors)
 
 * Java install
 
@@ -28,31 +29,40 @@ h2. Folder Structure.
 (Jefferson Campos): I, *developer*, wish to have +a nice folder tree, customized and standart to all my projects+ because _it help my work be more fast and simple_.
 
 Basic tree:
-universal/
-> projects/
->> lib/
->> GROUP_OF_PROJECTS [abacomm | pms | awknet | UFSCAR]
->>> <PROJECT_NAME>/
->>>> build/
->>>> ide/
->>>> scm/
->>>>> trunk/
->>>>>> doc/
->>>>>> src/
->>>>>>> java/
->>>>>>> db/
->>>>>>> web/
->>>>>> test/
->>>>>> README
->>>>>> COPYING
->>>>> tags/
->>>>> branches/
+$HOME/
+>universal/
+>> projects/
+>>> lib/
+>>> GROUP_OF_PROJECTS [abacomm | pms | awknet | ufscar]
+>>>> <PROJECT_NAME>/
+>>>>> build/
+>>>>> ide/
+>>>>> scm/
+>>>>>> trunk/
+>>>>>>> doc/
+>>>>>>> src/
+>>>>>>>> java/
+>>>>>>>> db/
+>>>>>>>> web/
+>>>>>>> test/
+>>>>>>> README
+>>>>>>> COPYING
+>>>>>> tags/
+>>>>>> branches/
 
 
 h2. Lib Folder
-lib/
-> version/
->> doc/
->> src/
->> bin/
->> download/
+$HOME
+>universal/
+>> projects/
+>>> lib/
+>>>> *lang* - [java|C|C++|ruby|python|etc]
+>>>> version/
+>>>>> doc/
+>>>>> src/
+>>>>> bin/
+>>>>> download/
+
+h2. Layout - LIBRARY.DAT
+
+<LANG>,<LOCAL_PATH>,<VERSION>,<URL_BIN>,<URL_SRC>,<URL_DOC>
