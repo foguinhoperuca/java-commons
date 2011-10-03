@@ -22,6 +22,7 @@ EXTRACTED_FOLDER=extracted
 
 NAME_FILE_DOWNLOADED=""
 USER_LIBRARY_ECLIPSE=$(pwd)/test/test.userlibraries
+TMP_USERLIB=$(pwd)/test/tmp_userlib.tmp
 
 # All data files will be separated by comma.
 export IFS=","
@@ -130,12 +131,26 @@ fnCreateLibraryPath()
     fi
     mkdir $LIB_FOLDER
 
-    cat $LIBRARY_SOURCE | while read LANG LOCAL_PATH VERSION URL_BIN URL_SRC URL_DOC;
+    USER_LIBRARY_ECLIPSE=$(pwd)/test/test.userlibraries
+    fnCreateUserLibraryEclipse
+
+    LIBRARY_SOURCE="$PROJECTS_PATH/awknet/commons/scm/trunk/test/LIBRARY.DAT"
+
+    cat $LIBRARY_SOURCE | while read LANG LOCAL_PATH VERSION URL_BIN URL_SRC URL_DOC MAIN_JAR;
     do
 
 # Create default layout
 	fnCreateDefaultLibraryFolders $LANG $LOCAL_PATH $VERSION
 	cd $LIB_FOLDER/$LANG/$LOCAL_PATH/$VERSION/$TMP_FOLDER
+
+	if [ "$LANG" = "java" ]
+	then
+	    LINES=$(wc -l $USER_LIBRARY_ECLIPSE | awk '{print $1}')
+	    SHOW=$(expr $LINES - 1)
+	    head -n$SHOW $USER_LIBRARY_ECLIPSE > $TMP_USERLIB
+	    echo "<library name=\"$LOCAL_PATH-$VERSION\" systemlibrary=\"false\">" >> $TMP_USERLIB
+	    cat $TMP_USERLIB > $USER_LIBRARY_ECLIPSE	    
+	fi
 
 # Get and extract all files.
 	wget $URL_BIN
@@ -144,14 +159,19 @@ fnCreateLibraryPath()
 	    fnInstallLib $FILE_DOWNLOADED bin
 	done
 	fnCleanFolder recreate
+	for FILE_DOWNLOADED in $(ls ../$BIN_FOLDER | grep .jar | awk '{print $1}')
+	do
+	    if [ -n FILE_DOWNLOADED ]
+	    then
+		fnAddLibraryEclipse $FILE_DOWNLOADED $URL_DOC $URL_SRC
+	    fi
+	done
 
 	if [ -n "$URL_SRC" ]
 	then
 	    fnGetFileNameToDownload $URL_SRC
 	    touch $LIB_FOLDER/$LANG/$LOCAL_PATH/$VERSION/$TMP_FOLDER/$NAME_FILE_DOWNLOADED
 	    wget -O $LIB_FOLDER/$LANG/$LOCAL_PATH/$VERSION/$TMP_FOLDER/$NAME_FILE_DOWNLOADED $URL_SRC
-
-#	    echo "FILE SRC IS: " $(ls $(pwd) | awk '{print $1}')
 
 	    for FILE_DOWNLOADED in $(ls $(pwd) | awk '{print $1}')
             do
@@ -174,6 +194,12 @@ fnCreateLibraryPath()
 		fnInstallLib $(pwd)/$FILE_DOWNLOADED src
             done
  	fi
+
+	echo "COMPLET_MAIN_JAR IS: $COMPLET_MAIN_JAR"
+	COMPLET_MAIN_JAR=$LIB_FOLDER/$LANG/$LOCAL_PATH/$VERSION/$TMP_BIN/$MAIN_JAR
+	fnAddLibraryEclipse $COMPLET_MAIN_JAR $$LIB_FOLDER/$LANG/$LOCAL_PATH/$VERSION/$TMP_DOC $LIB_FOLDER/$LANG/$LOCAL_PATH/$VERSION/$TMP_SRC
+	cat $TMP_USERLIB > $USER_LIBRARY_ECLIPSE
+
 	fnCleanFolder
     done
 }
@@ -183,7 +209,7 @@ fnCreateLibraryPath()
 # TODO: Verify all type of download: [.tar.bz2 | tar.gz | .zip]
 fnInstallLib()
 {
-    FILE_DOWNLOADED=$1
+    FILE_DOWNLODED=$1
     TYPE=$2
 
     tar xvf $FILE_DOWNLOADED -C ../$EXTRACTED_FOLDER/    
@@ -204,38 +230,52 @@ fnCleanFolder()
     fi
 }
 
+fnCreateUserLibrary()
+{
+    fnCreateUserLibraryEclipse
+#    cat $USER_LIBRARY_ECLIPSE
+#    fnAddLibraryEclipse documentation binary source_code
+#    fnAddLibraryEclipse DOC BIN SOURCE
+#    fnAddLibraryEclipse BOZO MAFALDA CARECA
+    fnAddLibraryEclipse "/home/jecampos/BIN" "/home/jecampos/DOC" "/home/jecampos/SOURCE"
+    fnAddLibraryEclipse "/home/jecampos/BIN" "/home/jecampos/DOC" ""
+    fnAddLibraryEclipse "/home/jecampos/BIN" "" "/home/jecampos/SOURCE"
+    fnAddLibraryEclipse "/home/jecampos/BIN" "" ""
+}
+
+# Create a lib on file.
+# Usage: fnAddLibraryEclipse <BIN_FILE> [<DOC_FILE>|""] [SRC_FILE>|""]
+# TODO: review doc and src param (starting smelling...)
+fnAddLibraryEclipse()
+{
+    BIN=$1
+    DOC=$2
+    SRC=$3
+    DOC_STR=""
+    SRC_STR=""
+
+    USER_LIBRARY_ECLIPSE=$(pwd)/test/test.userlibraries
+
+    LINES=$(wc -l $USER_LIBRARY_ECLIPSE | awk '{print $1}')
+    SHOW=$(expr $LINES - 2)
+    head -n$SHOW $USER_LIBRARY_ECLIPSE > $TMP_USERLIB
+    if [ "$DOC" != "" ]
+    then
+	DOC_STR="javadoc=\"jar:file:$DOC!\""
+    fi
+    if [ "$SRC" != "" ]
+    then
+	SRC_STR="source=\"$SRC\""
+    fi
+
+    echo "<archive $DOC_STR path=\"$BIN\" $SRC_STR/>" >> $TMP_USERLIB
+    echo "</library>" >> $TMP_USERLIB
+    echo "</eclipse-userlibraries>" >> $TMP_USERLIB
+    cat $TMP_USERLIB > $USER_LIBRARY_ECLIPSE
+}
+
 # Create user library to eclipse.
 fnCreateUserLibraryEclipse()
-{
-    fnCreateFileUserLib
-#    cat $USER_LIBRARY_ECLIPSE
-    fnAddFile documentation binary source_code
-    fnAddFile DOC BIN SOURCE
-    fnAddFile BOZO MAFALDA CARECA
-}
-
-# TODO add library name
-fnAddFile()
-{
-
-    DOC=$1
-    BIN=$2
-    SRC=$3
-#<archive javadoc="jar:file:/home/jefferson/universal/projects/lib/apache/commons/beanutils/commons-beanutils-1.8.3/commons-beanutils-1.8.3-javadoc.jar!/" path="/home/jefferson/universal/projects/lib/apache/commons/beanutils/commons-beanutils-1.8.3/commons-beanutils-1.8.3.jar" source="/home/jefferson/universal/projects/lib/apache/commons/beanutils/commons-beanutils-1.8.3/commons-beanutils-1.8.3-sources.jar"/>
-
-    TMP_USERLIB=test/tmp_userlib.tmp
-    TEST_USERLIB=test/test.userlibraries
-
-    LINES=$(wc -l test/test.userlibraries | awk '{print $1}')
-    SHOW=$(expr $LINES - 1)
-    head -n$SHOW test/test.userlibraries > $TMP_USERLIB
-    echo "<archive javadoc=\"jar:file:$DOC\" path=\"$BIN\" source=\"$SRC\"/>" >> $TMP_USERLIB
-    echo "</eclipse-userlibraries>" >> $TMP_USERLIB
-    cat $TMP_USERLIB > $TEST_USERLIB
-
-}
-
-fnCreateFileUserLib()
 {
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>" > $USER_LIBRARY_ECLIPSE
     echo "<eclipse-userlibraries version=\"2\">" >> $USER_LIBRARY_ECLIPSE
@@ -281,7 +321,7 @@ case $1 in
 	fnCreateLibraryPath; # must use arg java
 	;;
     user_library)
-	fnCreateUserLibraryEclipse;
+	fnCreateUserLibrary;
 	;;
     all)
 	fnInstallJava
