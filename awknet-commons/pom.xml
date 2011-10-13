@@ -67,5 +67,37 @@
   </dependencies>
   <build>
     <finalName>awknet-commons</finalName>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.0</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.maven.wagon</groupId>
+              <artifactId>wagon-ssh</artifactId>
+              <version>1.0</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
+  <distributionManagement>
+    <repository>
+      <id>pms-private-repository-internal</id>
+      <name>Internal Release Repository</name>
+      <url>http://172.16.1.110:8082/archiva/repository/internal/</url>
+    </repository>
+    <snapshotRepository>
+      <id>pms-private-repository-snapshot</id>
+      <name>Internal Snapshot Repository</name>
+      <url>http://172.16.1.110:8082/archiva/repository/snapshots/</url>
+    </snapshotRepository>
+    <site>
+      <id>serverdev-sites</id>
+      <url>scp://172.16.1.110/var/www/${project.name}</url>
+    </site>
+  </distributionManagement>
 </project>
