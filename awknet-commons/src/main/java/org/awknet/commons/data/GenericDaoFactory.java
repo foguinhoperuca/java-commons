@@ -16,11 +16,44 @@
  * along with Foobar. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.awknet.commons.security;
+package org.awknet.commons.dao;
 
-import java.security.NoSuchAlgorithmException;
+import org.awknet.commons.util.HibernateUtil;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
-public interface IEncrypt {
+public class GenericDaoFactory {
 
-    public String encrypt() throws NoSuchAlgorithmException;
+    private final Session session;
+    private Transaction transaction;
+
+    public GenericDaoFactory() {
+	session = HibernateUtil.getSession();
+    }
+
+    public void beginTransaction() {
+	this.transaction = this.session.beginTransaction();
+    }
+
+    public void commit() {
+	this.transaction.commit();
+	this.transaction = null;
+    }
+
+    public boolean hasTransaction() {
+	return this.transaction != null;
+    }
+
+    public void rollback() {
+	this.transaction.rollback();
+	this.transaction = null;
+    }
+
+    public void close() {
+	this.session.close();
+    }
+
+    public Session getSession() {
+	return this.session;
+    }
 }

@@ -16,11 +16,17 @@
  * along with Foobar. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.awknet.commons.security;
+package org.awknet.commons.dao;
 
-import java.security.NoSuchAlgorithmException;
+import org.awknet.commons.model.User;
 
-public interface IEncrypt {
+public class DaoFactory extends GenericDaoFactory{
 
-    public String encrypt() throws NoSuchAlgorithmException;
+    // public VersionChangeDao getVersionChangeDao() {
+    // 	return new VersionChangeDao(this.session);
+    // }
+
+    public Dao<User> getUserDao() {
+	return new Dao<User>(super.getSession(), User.class);
+    }
 }
