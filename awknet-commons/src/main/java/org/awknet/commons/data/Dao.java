@@ -13,10 +13,10 @@
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with Foobar. If not, see <http://www.gnu.org/licenses/>.
+ * along with awknet-commons. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.awknet.commons.dao;
+package org.awknet.commons.data;
 
 import java.util.List;
 import org.hibernate.Criteria;
