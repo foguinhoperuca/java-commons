@@ -1,7 +1,7 @@
-package org.sigerar.interceptor;
+package org.awknet.commons.interceptor;
 
 import java.io.IOException;
-import org.sigerar.model.pojo.security.User;
+import org.awknet.commons.model.entity.User;
 import org.vraptor.Interceptor;
 import org.vraptor.LogicException;
 import org.vraptor.LogicFlow;

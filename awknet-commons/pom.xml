@@ -9,6 +9,7 @@
   <url>http://awknet-commons.awknet.org</url>
   <description>Like "Apache commons", this projects is focused on all aspects of reusable Java components.</description>
   <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <vraptor-version>2.6.2</vraptor-version>
     <junit-version>4.5</junit-version>
     <hibernate-core-version>3.6.7.Final</hibernate-core-version>
@@ -17,14 +18,34 @@
     <hibernate-validator-version>4.2.0.Final</hibernate-validator-version>
     <hibernate-c3p0-version>4.0.0.CR4</hibernate-c3p0-version>
     <c3p0-version>0.9.1.2</c3p0-version>
+    <joda-time-version>2.0</joda-time-version>
+    <mysql-connector-java-version>5.1.18</mysql-connector-java-version>
+
+    <!-- <slf4j-version>1.6.3</slf4j-version> -->
+    <slf4j-version>1.5.6</slf4j-version>
+
+
+    <joda-time-hibernate-version>1.3</joda-time-hibernate-version>
+    <displaytag-version>1.2</displaytag-version>
+    <itext-version>1.3.1</itext-version>
   </properties>
   <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit-version}</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.vraptor</groupId>
       <artifactId>vraptor</artifactId>
       <version>${vraptor-version}</version>
     </dependency>
-<!-- hibernate -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>${mysql-connector-java-version}</version>
+    </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
@@ -45,7 +66,6 @@
       <artifactId>hibernate-validator</artifactId>
       <version>${hibernate-validator-version}</version>
     </dependency>
-
     <dependency>
       <groupId>c3p0</groupId>
       <artifactId>c3p0</artifactId>
@@ -57,13 +77,55 @@
       <version>${hibernate-c3p0-version}</version>
     </dependency>
 
-<!-- junit -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${junit-version}</version>
-      <scope>test</scope>
+    	<groupId>joda-time</groupId>
+    	<artifactId>joda-time</artifactId>
+    	<version>${joda-time-version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j-version}</version>
+    </dependency>
+
+<!-- extra -->
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time-hibernate</artifactId>
+      <version>${joda-time-hibernate-version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>displaytag</groupId>
+      <artifactId>displaytag</artifactId>
+      <version>${displaytag-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>itext</groupId>
+      <artifactId>itext</artifactId>
+      <version>${itext-version}</version>
+    </dependency>
+
+<!-- Put these dependencies here solve the problem to run tests!! -->
+    <!-- <dependency> -->
+    <!--   <groupId>javax</groupId> -->
+    <!--   <artifactId>javaee-web-api</artifactId> -->
+    <!--   <version>6.0</version> -->
+    <!--   <scope>provided</scope> -->
+    <!-- </dependency> -->
+    <!-- <dependency> -->
+    <!--   <groupId>javaee</groupId> -->
+    <!--   <artifactId>javaee-api</artifactId> -->
+    <!--   <version>5</version> -->
+    <!--   <scope>provided</scope> -->
+    <!-- </dependency> -->
+    <!-- <dependency> -->
+    <!--   <groupId>javax</groupId> -->
+    <!--   <artifactId>javaee-api</artifactId> -->
+    <!--   <version>6.0</version> -->
+    <!-- </dependency> -->
+
   </dependencies>
   <build>
     <finalName>awknet-commons</finalName>

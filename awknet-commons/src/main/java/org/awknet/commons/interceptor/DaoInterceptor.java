@@ -1,6 +1,6 @@
-package org.sigerar.interceptor;
+package org.awknet.commons.interceptor;
 
-import org.sigerar.dao.DaoFactory;
+import org.awknet.commons.data.DaoFactory;
 import org.vraptor.Interceptor;
 import org.vraptor.LogicException;
 import org.vraptor.LogicFlow;
