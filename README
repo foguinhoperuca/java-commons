@@ -94,3 +94,12 @@ $HOME
 h2. Layout - LIBRARY.DAT
 
 <LANG>,<LOCAL_PATH>,<VERSION>,<URL_BIN>,<URL_SRC>,<URL_DOC>
+
+h2. Project Example.
+
+To see a *REAL* project using this lib, see SIGERAR - SIstema de GERenciAmento de Requisitos (means Requirement Management System - in brazilian-portuguese).
+http://sigerar.org - http://sourceforge.net/projects/sigerar/
+
+h2. Developer.
+Talk with me :)!
+foguinho [DOT] peruca [AT] gmail [DOT] com
