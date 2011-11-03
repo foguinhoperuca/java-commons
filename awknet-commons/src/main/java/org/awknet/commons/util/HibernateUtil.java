@@ -23,7 +23,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 
-@SuppressWarnings("deprecation")
+// FIXME @SuppressWarnings("deprecation") - need it?
 public class HibernateUtil {
 
     private static final SessionFactory factory;
