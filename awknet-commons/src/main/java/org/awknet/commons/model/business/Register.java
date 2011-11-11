@@ -16,22 +16,20 @@
  * along with awknet-commons. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.awknet.commons.data;
+package org.awknet.commons.model.business;
 
-import org.awknet.commons.model.entity.BaseEntity;
+import java.util.List;
 
-public class DaoFactory extends GenericDaoFactory {
+public interface Register<T> {
+    public T save(T entity);
 
-    // public VersionChangeDao getVersionChangeDao() {
-    // return new VersionChangeDao(this.session);
-    // }
+    public T update(T entity);
 
-    // public Dao<User> getUserDao() {
-    // return new Dao<User>(super.getSession(), User.class);
-    // }
-    
-    @SuppressWarnings("rawtypes")
-    public <T extends BaseEntity> Dao<T> getRegisterDao(Class _clazz) {
-	return new Dao<T>(super.getSession(), _clazz);
-    }
+    public void delete(T entity);
+
+    public List<T> listAll();
+
+    public T load(long id);
+
+    public T loadByExemple(long id);
 }

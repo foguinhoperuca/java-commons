@@ -22,6 +22,10 @@ import org.awknet.commons.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+/**
+ * This class provide basic features to access DB.
+ * 
+ */
 public class GenericDaoFactory {
 
     private final Session session;

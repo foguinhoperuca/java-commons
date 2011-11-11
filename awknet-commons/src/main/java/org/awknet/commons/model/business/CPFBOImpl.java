@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * This software is dealing with CPF (brazilian's income tax document). That
  * CPF's routine is very common in softwares that are developed aimed to
- * brazilians market.
+ * brazilian's market.
  */
 public class CPFBOImpl implements CPF {
 
