@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.awknet</groupId>
   <artifactId>awknet-commons</artifactId>
@@ -12,23 +12,23 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <vraptor-version>2.6.2</vraptor-version>
     <junit-version>4.5</junit-version>
-    <hibernate-core-version>3.6.7.Final</hibernate-core-version>
-    <hibernate-annotations-version>3.5.6-Final</hibernate-annotations-version>
-    <hibernate-commons-annotations-version>3.2.0.Final</hibernate-commons-annotations-version>
-    <hibernate-validator-version>4.2.0.Final</hibernate-validator-version>
+    <hibernate-core-version>3.6.8.Final</hibernate-core-version>
+    <!-- <hibernate-annotations-version>3.5.6-Final</hibernate-annotations-version> -->
+    <!-- <hibernate-commons-annotations-version>3.2.0.Final</hibernate-commons-annotations-version> -->
+    <!-- <hibernate-validator-version>4.2.0.Final</hibernate-validator-version> -->
     <hibernate-c3p0-version>4.0.0.CR4</hibernate-c3p0-version>
     <c3p0-version>0.9.1.2</c3p0-version>
     <joda-time-version>2.0</joda-time-version>
     <mysql-connector-java-version>5.1.18</mysql-connector-java-version>
-
     <!-- <slf4j-version>1.6.3</slf4j-version> -->
     <slf4j-version>1.5.6</slf4j-version>
-
-
     <joda-time-hibernate-version>1.3</joda-time-hibernate-version>
     <displaytag-version>1.2</displaytag-version>
     <itext-version>1.3.1</itext-version>
+    <!-- <velocity-version>1.7</velocity-version> -->
   </properties>
+
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -41,6 +41,10 @@
       <artifactId>vraptor</artifactId>
       <version>${vraptor-version}</version>
     </dependency>
+    <!--   <groupId>org.apache.velocity</groupId> -->
+    <!--   <artifactId>velocity-engine-core</artifactId> -->
+    <!--   <version>${velocity-version}</version> -->
+    <!-- </dependency> -->
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
@@ -51,21 +55,21 @@
       <artifactId>hibernate-core</artifactId>
       <version>${hibernate-core-version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-annotations</artifactId>
-      <version>${hibernate-annotations-version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-commons-annotations</artifactId>
-      <version>${hibernate-commons-annotations-version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-validator</artifactId>
-      <version>${hibernate-validator-version}</version>
-    </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>org.hibernate</groupId> -->
+    <!--   <artifactId>hibernate-annotations</artifactId> -->
+    <!--   <version>${hibernate-annotations-version}</version> -->
+    <!-- </dependency> -->
+    <!-- <dependency> -->
+    <!--   <groupId>org.hibernate</groupId> -->
+    <!--   <artifactId>hibernate-commons-annotations</artifactId> -->
+    <!--   <version>${hibernate-commons-annotations-version}</version> -->
+    <!-- </dependency> -->
+    <!-- <dependency> -->
+    <!--   <groupId>org.hibernate</groupId> -->
+    <!--   <artifactId>hibernate-validator</artifactId> -->
+    <!--   <version>${hibernate-validator-version}</version> -->
+    <!-- </dependency> -->
     <dependency>
       <groupId>c3p0</groupId>
       <artifactId>c3p0</artifactId>
@@ -76,26 +80,21 @@
       <artifactId>hibernate-c3p0</artifactId>
       <version>${hibernate-c3p0-version}</version>
     </dependency>
-
-    <dependency>
-    	<groupId>joda-time</groupId>
-    	<artifactId>joda-time</artifactId>
-    	<version>${joda-time-version}</version>
-    </dependency>
-
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>${slf4j-version}</version>
     </dependency>
-
-<!-- extra -->
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>${joda-time-version}</version>
+    </dependency>
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time-hibernate</artifactId>
       <version>${joda-time-hibernate-version}</version>
     </dependency>
-
     <dependency>
       <groupId>displaytag</groupId>
       <artifactId>displaytag</artifactId>
@@ -107,7 +106,15 @@
       <version>${itext-version}</version>
     </dependency>
 
-<!-- Put these dependencies here solve the problem to run tests!! -->
+    <dependency>
+      <groupId>javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <version>3.12.0.GA</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency> 
+
+    <!-- Put these dependencies here solve the problem to run tests!! -->
     <!-- <dependency> -->
     <!--   <groupId>javax</groupId> -->
     <!--   <artifactId>javaee-web-api</artifactId> -->
@@ -152,6 +159,31 @@
 	    <downloadJavadocs>true</downloadJavadocs>
 	  </configuration>
 	</plugin>
+	<!-- <plugin> -->
+	<!-- 	<groupId>org.apache.maven.plugins</groupId> -->
+	<!-- 	<artifactId>maven-dependency-plugin</artifactId> -->
+	<!-- 	<version>2.1</version> -->
+	<!-- 	<executions> -->
+	<!-- 	  <execution> -->
+	<!-- 	    <phase>validate</phase> -->
+	<!-- 	    <goals> -->
+	<!-- 	      <goal>copy</goal> -->
+	<!-- 	    </goals> -->
+	<!-- 	    <configuration> -->
+	<!-- 	      <outputDirectory>${endorsed.dir}</outputDirectory> -->
+	<!-- 	      <silent>true</silent> -->
+	<!-- 	      <artifactItems> -->
+	<!-- 		<artifactItem> -->
+	<!-- 		  <groupId>javax</groupId> -->
+	<!-- 		  <artifactId>javaee-endorsed-api</artifactId> -->
+	<!-- 		  <version>6.0</version> -->
+	<!-- 		  <type>jar</type> -->
+	<!-- 		</artifactItem> -->
+	<!-- 	      </artifactItems> -->
+	<!-- 	    </configuration> -->
+	<!-- 	  </execution> -->
+	<!-- 	</executions> -->
+	<!-- </plugin> -->
       </plugins>
     </pluginManagement>
   </build>

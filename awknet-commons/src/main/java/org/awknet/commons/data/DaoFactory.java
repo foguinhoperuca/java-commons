@@ -21,17 +21,9 @@ package org.awknet.commons.data;
 import org.awknet.commons.model.entity.BaseEntity;
 
 public class DaoFactory extends GenericDaoFactory {
-
-    // public VersionChangeDao getVersionChangeDao() {
-    // return new VersionChangeDao(this.session);
-    // }
-
-    // public Dao<User> getUserDao() {
-    // return new Dao<User>(super.getSession(), User.class);
-    // }
-    
-    @SuppressWarnings("rawtypes")
-    public <T extends BaseEntity> Dao<T> getRegisterDao(Class _clazz) {
-	return new Dao<T>(super.getSession(), _clazz);
-    }
+	// FIXME Use reflection to get class name in runtime
+	@SuppressWarnings("rawtypes")
+	public <T extends BaseEntity> Dao<T> getRegisterDao(Class _clazz) {
+		return new Dao<T>(super.getSession(), _clazz);
+	}
 }

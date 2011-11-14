@@ -20,16 +20,20 @@ package org.awknet.commons.model.business;
 
 import java.util.List;
 
-public interface Register<T> {
-    public T save(T entity);
+import org.awknet.commons.model.entity.BaseEntity;
 
-    public T update(T entity);
+public interface Register<T extends BaseEntity> {
+	// FIXME need return?
+	public T save(T _entity);
 
-    public void delete(T entity);
+	// FIXME need return?
+	public T update(T _entity);
 
-    public List<T> listAll();
+	public void delete(T _entity);
 
-    public T load(long id);
+	public List<T> listAll();
 
-    public T loadByExemple(long id);
+	public T load(long id);
+
+	public T loadByExemple(T _entity);
 }

@@ -20,60 +20,82 @@ package org.awknet.commons.model.business;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.awknet.commons.data.DaoFactory;
 import org.awknet.commons.model.entity.BaseEntity;
 
-// FIXME error passing generic to getRegisterDao
+// TODO use singleton here...
+// TODO implement default form method
 public class RegisterBOImpl<T extends BaseEntity> implements Register<T> {
 
-    private DaoFactory daoFactory;
+	private DaoFactory daoFactory;
+	private Class clazz;
+	// FIXME Please initialize the log4j system properly.
+	private static final Log LOG = LogFactory.getLog(RegisterBOImpl.class);
 
-    public RegisterBOImpl(DaoFactory _daoFactory) {
-	daoFactory = _daoFactory;
-    }
+	// FIXME One for money...
+	public RegisterBOImpl(DaoFactory _daoFactory, Class _clazz) {
+		this.clazz = _clazz;
+		daoFactory = _daoFactory;
+		LOG.info("[clazz]: Class name is: " + clazz.getName());
+	}
 
-    @Override
-    public T save(T entity) {
-	daoFactory.beginTransaction();
-	daoFactory.getRegisterDao(entity.getClass()).save(entity);
-	daoFactory.commit();
-	return null;
-    }
+	// FIXME Two for the show... must use reflection to get class name
+	public RegisterBOImpl(DaoFactory _daoFactory) {
+		daoFactory = _daoFactory;
+		// FIXME NOT working....
+		// Type type = getClass().getGenericSuperclass();
+		// clazz = (Class) getClass().getGenericSuperclass();
+		// LOG.info("-- Class name is: " + clazz.getName());
+		// ParameterizedType parameterizedType = (ParameterizedType) type;
+		// clazz = (Class) parameterizedType.getActualTypeArguments()[0];
 
-    @Override
-    public T update(T entity) {
-	daoFactory.beginTransaction();
-	daoFactory.getRegisterDao(entity.getClass()).update(entity);
-	daoFactory.commit();
-	return null;
-    }
+	}
 
-    @Override
-    public void delete(T entity) {
-	daoFactory.beginTransaction();
-	daoFactory.getRegisterDao(entity.getClass()).delete(entity);
-	daoFactory.commit();
-    }
+	@Override
+	public T save(T _entity) {
+		daoFactory.beginTransaction();
+		daoFactory.getRegisterDao(this.clazz).save(_entity);
+		daoFactory.commit();
+		return _entity;
+	}
 
-    // FIXME Oh hell! need receive some var of type T - otherwise I need receive the class in sign.
-    @Override
-    public List<T> listAll() {
-	daoFactory.beginTransaction();
-	daoFactory.getRegisterDao(((T) new Object()).getClass()).list(); // only Chuck Norris can do this!!
-	daoFactory.commit();
-	return null;
-    }
+	@Override
+	public T update(T _entity) {
+		daoFactory.beginTransaction();
+		daoFactory.getRegisterDao(clazz).update(_entity);
+		daoFactory.commit();
+		return _entity;
+	}
 
-    @Override
-    public T load(long id) {
-	// TODO Auto-generated method stub
-	return null;
-    }
+	@Override
+	public void delete(T _entity) {
+		daoFactory.beginTransaction();
+		daoFactory.getRegisterDao(clazz).delete(_entity);
+		daoFactory.commit();
+	}
 
-    @Override
-    public T loadByExemple(long id) {
-	// TODO Auto-generated method stub
-	return null;
-    }
+	// FIXME type cast List<BaseEntity> to List<T>
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<T> listAll() {
+		return (List<T>) daoFactory.getRegisterDao(clazz).list();
+	}
+
+	// TODO implement security check for ID: http://code.google.com/p/cofoja/
+	// FIXME type cast BaseEntity to T
+	@SuppressWarnings("unchecked")
+	@Override
+	public T load(long id) {
+		return ((T) daoFactory.getRegisterDao(clazz).load(id));
+	}
+
+	// FIXME type cast BaseEntity to T
+	@SuppressWarnings("unchecked")
+	@Override
+	public T loadByExemple(T _entity) {
+		return (T) daoFactory.getRegisterDao(clazz).loadByExample(_entity);
+	}
 
 }

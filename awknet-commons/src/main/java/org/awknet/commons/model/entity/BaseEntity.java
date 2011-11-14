@@ -19,6 +19,7 @@
 package org.awknet.commons.model.entity;
 
 import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,51 +28,52 @@ import javax.persistence.MappedSuperclass;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 
+// TODO impĺement ID field as default
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Long id;
-
-    public BaseEntity() {
-    }
-
-    public BaseEntity(Long id) {
-	this.id = id;
-    }
-
-    public void setId(Serializable id) {
-	this.id = (Long) id;
-    }
-
-    public Long getId() {
-	return id;
-    }
-
-    public boolean equals(Object obj) {
-
-	if (obj == null)
-	    return false;
-
-	if (!(obj instanceof BaseEntity))
-	    return false;
-
-	BaseEntity element = (BaseEntity) obj;
-
-	if (this == element)
-	    return true;
-
-	if (this.id == null || element.getId() == null)
-	    return false;
-
-	return new EqualsBuilder().append(this.getId(), element.getId())
-		.isEquals();
-    }
-
-    public int hashCode() {
-	return (id != null ? id.hashCode() : super.hashCode());
-    }
+	//
+	// private static final long serialVersionUID = 1L;
+	// @Id
+	// @GeneratedValue(strategy = GenerationType.IDENTITY)
+	// @Column(name = "ID")
+	// private Long id;
+	//
+	// public BaseEntity() {
+	// }
+	//
+	// public BaseEntity(Long id) {
+	// this.id = id;
+	// }
+	//
+	// public void setId(Serializable id) {
+	// this.id = (Long) id;
+	// }
+	//
+	// public Long getId() {
+	// return id;
+	// }
+	//
+	// public boolean equals(Object obj) {
+	//
+	// if (obj == null)
+	// return false;
+	//
+	// if (!(obj instanceof BaseEntity))
+	// return false;
+	//
+	// BaseEntity element = (BaseEntity) obj;
+	//
+	// if (this == element)
+	// return true;
+	//
+	// if (this.id == null || element.getId() == null)
+	// return false;
+	//
+	// return new EqualsBuilder().append(this.getId(), element.getId())
+	// .isEquals();
+	// }
+	//
+	// public int hashCode() {
+	// return (id != null ? id.hashCode() : super.hashCode());
+	// }
 }
