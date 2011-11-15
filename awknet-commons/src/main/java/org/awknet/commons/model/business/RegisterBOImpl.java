@@ -31,14 +31,13 @@ public class RegisterBOImpl<T extends BaseEntity> implements Register<T> {
 
 	private DaoFactory daoFactory;
 	private Class clazz;
-	// FIXME Please initialize the log4j system properly.
 	private static final Log LOG = LogFactory.getLog(RegisterBOImpl.class);
 
 	// FIXME One for money...
 	public RegisterBOImpl(DaoFactory _daoFactory, Class _clazz) {
 		this.clazz = _clazz;
 		daoFactory = _daoFactory;
-		LOG.info("[clazz]: Class name is: " + clazz.getName());
+		LOG.debug("[clazz]: Class name is: " + clazz.getName());
 	}
 
 	// FIXME Two for the show... must use reflection to get class name

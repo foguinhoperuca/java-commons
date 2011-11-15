@@ -20,10 +20,6 @@ package org.awknet.commons.model.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -31,28 +27,33 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 // TODO impĺement ID field as default
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
-	//
-	// private static final long serialVersionUID = 1L;
+
+	private static final long serialVersionUID = -7242252481157329335L;
+
 	// @Id
 	// @GeneratedValue(strategy = GenerationType.IDENTITY)
 	// @Column(name = "ID")
-	// private Long id;
-	//
-	// public BaseEntity() {
-	// }
-	//
+	// private Long ID;
+
+	public BaseEntity() {
+	}
+
 	// public BaseEntity(Long id) {
-	// this.id = id;
+	// this.ID = id;
 	// }
 	//
-	// public void setId(Serializable id) {
-	// this.id = (Long) id;
+	// public Long getID() {
+	// return ID;
 	// }
 	//
-	// public Long getId() {
-	// return id;
+	// public void setID(Long iD) {
+	// ID = iD;
 	// }
-	//
+
+	public abstract Long retriveBasicID();
+
+	public abstract void defineBasicID(Long id);
+
 	// public boolean equals(Object obj) {
 	//
 	// if (obj == null)
@@ -66,14 +67,14 @@ public abstract class BaseEntity implements Serializable {
 	// if (this == element)
 	// return true;
 	//
-	// if (this.id == null || element.getId() == null)
+	// if (this.ID == null || element.getID() == null)
 	// return false;
 	//
-	// return new EqualsBuilder().append(this.getId(), element.getId())
+	// return new EqualsBuilder().append(this.ID(), element.getID())
 	// .isEquals();
 	// }
 	//
 	// public int hashCode() {
-	// return (id != null ? id.hashCode() : super.hashCode());
+	// return (ID != null ? ID.hashCode() : super.hashCode());
 	// }
 }
