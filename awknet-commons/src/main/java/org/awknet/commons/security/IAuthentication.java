@@ -18,7 +18,7 @@
 
 package org.awknet.commons.security;
 
-import org.awknet.commons.model.User;
+import org.awknet.commons.model.entity.User;
 
 public interface IAuthentication {
 

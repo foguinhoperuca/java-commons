@@ -24,54 +24,55 @@ import org.awknet.commons.data.DaoFactory;
 import org.awknet.commons.model.business.RegisterBOImpl;
 import org.awknet.commons.model.entity.BaseEntity;
 
+//TODO implement default form method
 public class GenericControllerBOImpl<T extends BaseEntity> implements
-		GenericController<T> {
+	GenericController<T> {
 
-	protected final RegisterBOImpl<T> register;
-	// FIXME this getter must be enough! No need of specific getter!
-	private T entity;
-	private List<T> entities;
+    protected final RegisterBOImpl<T> register;
+    // FIXME this getter must be enough! No need of specific getter!
+    private T entity;
+    private List<T> entities;
 
-	public GenericControllerBOImpl(DaoFactory _daoFactory, Class _clazz) {
-		register = new RegisterBOImpl<T>(_daoFactory, _clazz);
+    public GenericControllerBOImpl(DaoFactory _daoFactory, Class _clazz) {
+	register = new RegisterBOImpl<T>(_daoFactory, _clazz);
+    }
+
+    @Override
+    public void form(T _entity) {
+	entities = register.listAll();
+	if (_entity.retriveBasicID() != null) {
+	    entity = register.load(_entity.retriveBasicID());
 	}
+    }
 
-	@Override
-	public void form(T _entity) {
-		entities = register.listAll();
-		if (_entity.retriveBasicID() != null) {
-			entity = register.load(_entity.retriveBasicID());
-		}
-	}
+    @Override
+    public void save(T _entity) {
+	register.update(_entity);
+	this.entity = _entity;
+    }
 
-	@Override
-	public void save(T _entity) {
-		register.update(_entity);
-		this.entity = _entity;
-	}
+    @Override
+    public void delete(T _entity) {
+	register.delete(_entity);
+    }
 
-	@Override
-	public void delete(T _entity) {
-		register.delete(_entity);
-	}
+    @Override
+    public List<T> list() {
+	return register.listAll();
+    }
 
-	@Override
-	public List<T> list() {
-		return register.listAll();
-	}
+    @Override
+    public T load(T _entity) {
+	return register.load(_entity.retriveBasicID());
+    }
 
-	@Override
-	public T load(T _entity) {
-		return register.load(_entity.retriveBasicID());
-	}
+    @Override
+    public T getEntity() {
+	return entity;
+    }
 
-	@Override
-	public T getEntity() {
-		return entity;
-	}
-
-	@Override
-	public List<T> getEntities() {
-		return entities;
-	}
+    @Override
+    public List<T> getEntities() {
+	return entities;
+    }
 }

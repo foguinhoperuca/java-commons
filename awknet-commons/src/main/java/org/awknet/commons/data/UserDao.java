@@ -16,10 +16,28 @@
  * along with awknet-commons. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.awknet.commons.model;
+package org.awknet.commons.data;
 
-public class User {
+import org.awknet.commons.model.entity.User;
+import org.hibernate.Query;
+import org.hibernate.Session;
 
-    public String login;
-    public String password;
+public class UserDao extends Dao<User> {
+
+    public UserDao(Session session) {
+	super(session, User.class);
+    }
+
+    /**
+     * Search for a unique user with login/password;
+     */
+    public User onlyOne(User _user) {
+	String hql = "SELECT u FROM User AS u WHERE u.strLoginUsuario = :strLoginUsuario AND "
+		+ "u.strSenhaUsuario = :strSenhaUsuario";
+	Query query = getSession().createQuery(hql);
+	query.setParameter("strLoginUsuario", _user.getStrLoginUsuario());
+	query.setParameter("strSenhaUsuario", _user.getStrSenhaUsuario());
+
+	return (User) query.uniqueResult();
+    }
 }

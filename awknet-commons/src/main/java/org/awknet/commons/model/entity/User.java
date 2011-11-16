@@ -1,139 +1,90 @@
+/*
+ * Copyright (C) 2011 Jefferson Campos <foguinho.peruca@gmail.com>
+ * This file is part of awknet-commons - http://awknet-commons.awknet.org
+ *
+ * Awknet-commons is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Awknet-commons is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with awknet-commons. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.awknet.commons.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 /*import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;*/
+ import javax.persistence.ManyToOne;*/
 import javax.persistence.Table;
 
+// FIXME rename properties strLoginUsuario and strSenhaUsuario
 @Entity
 @Table(name = "TUsuario", catalog = "DBSigerar")
-public class User implements java.io.Serializable {
+public class User extends BaseEntity implements java.io.Serializable {
 
     private static final long serialVersionUID = 6450793412169953366L;
     private Long intIdUsuario;
-/*    private Department department;*/
-    private String strNomeUsuario;
-    private String strCargoUsuario;
-    private String strTelefoneUsuario;
-    private String strEmailUsuario;
-    private String strConhecimentoUsuario;
     private String strLoginUsuario;
     private String strSenhaUsuario;
-    private Boolean blAdministradorUsuario;
 
     public User() {
     }
 
-    public User(Long intIdUsuario, /*Department fkIntIdDepartamento,*/ Boolean blAdministradorUsuario) {
-        this.intIdUsuario = intIdUsuario;
-        /*this.department = fkIntIdDepartamento;*/
-        this.blAdministradorUsuario = blAdministradorUsuario;
+    public User(Long intIdUsuario) {
+	this.intIdUsuario = intIdUsuario;
     }
 
-    public User(Long intIdUsuario, /*Department fkIntIdDepartamento,*/ String strNomeUsuario, String strCargoUsuario, String strTelefoneUsuario, String strEmailUsuario, String strConhecimentoUsuario, String strLoginUsuario, String strSenhaUsuario, Boolean blAdministradorUsuario) {
-        this.intIdUsuario = intIdUsuario;
-        /*this.department = fkIntIdDepartamento;*/
-        this.strNomeUsuario = strNomeUsuario;
-        this.strCargoUsuario = strCargoUsuario;
-        this.strTelefoneUsuario = strTelefoneUsuario;
-        this.strEmailUsuario = strEmailUsuario;
-        this.strConhecimentoUsuario = strConhecimentoUsuario;
-        this.strLoginUsuario = strLoginUsuario;
-        this.strSenhaUsuario = strSenhaUsuario;
-        this.blAdministradorUsuario = blAdministradorUsuario;
+    public User(Long intIdUsuario, String strLoginUsuario,
+	    String strSenhaUsuario) {
+	this.intIdUsuario = intIdUsuario;
+	this.strLoginUsuario = strLoginUsuario;
+	this.strSenhaUsuario = strSenhaUsuario;
+
     }
 
     @Id
     @Column(name = "INT_idUSUARIO", unique = true, nullable = false)
     public Long getIntIdUsuario() {
-        return this.intIdUsuario;
+	return this.intIdUsuario;
     }
 
     public void setIntIdUsuario(Long intIdUsuario) {
-        this.intIdUsuario = intIdUsuario;
-    }
-
-    /*@ManyToOne
-    @JoinColumn(name = "fk_INT_idDEPARTAMENTO", nullable = false)
-    public Department getDepartment() {
-        return this.department;
-    }
-
-    public void setDepartment(Department fkIntIdDepartamento) {
-        this.department = fkIntIdDepartamento;
-    }*/
-
-    @Column(name = "STR_Nome_USUARIO", length = 40)
-    public String getStrNomeUsuario() {
-        return this.strNomeUsuario;
-    }
-
-    public void setStrNomeUsuario(String strNomeUsuario) {
-        this.strNomeUsuario = strNomeUsuario;
-    }
-
-    @Column(name = "STR_Cargo_USUARIO", length = 40)
-    public String getStrCargoUsuario() {
-        return this.strCargoUsuario;
-    }
-
-    public void setStrCargoUsuario(String strCargoUsuario) {
-        this.strCargoUsuario = strCargoUsuario;
-    }
-
-    @Column(name = "STR_Telefone_USUARIO", length = 30)
-    public String getStrTelefoneUsuario() {
-        return this.strTelefoneUsuario;
-    }
-
-    public void setStrTelefoneUsuario(String strTelefoneUsuario) {
-        this.strTelefoneUsuario = strTelefoneUsuario;
-    }
-
-    @Column(name = "STR_Email_USUARIO", length = 128)
-    public String getStrEmailUsuario() {
-        return this.strEmailUsuario;
-    }
-
-    public void setStrEmailUsuario(String strEmailUsuario) {
-        this.strEmailUsuario = strEmailUsuario;
-    }
-
-    @Column(name = "STR_Conhecimento_USUARIO", length = 40)
-    public String getStrConhecimentoUsuario() {
-        return this.strConhecimentoUsuario;
-    }
-
-    public void setStrConhecimentoUsuario(String strConhecimentoUsuario) {
-        this.strConhecimentoUsuario = strConhecimentoUsuario;
+	this.intIdUsuario = intIdUsuario;
     }
 
     @Column(name = "STR_Login_USUARIO", length = 30)
     public String getStrLoginUsuario() {
-        return this.strLoginUsuario;
+	return this.strLoginUsuario;
     }
 
     public void setStrLoginUsuario(String strLoginUsuario) {
-        this.strLoginUsuario = strLoginUsuario;
+	this.strLoginUsuario = strLoginUsuario;
     }
 
     @Column(name = "STR_Senha_USUARIO", length = 40)
     public String getStrSenhaUsuario() {
-        return this.strSenhaUsuario;
+	return this.strSenhaUsuario;
     }
 
     public void setStrSenhaUsuario(String strSenhaUsuario) {
-        this.strSenhaUsuario = strSenhaUsuario;
+	this.strSenhaUsuario = strSenhaUsuario;
     }
 
-    @Column(name = "BL_Administrador_USUARIO", nullable = false)
-    public Boolean getBlAdministradorUsuario() {
-        return this.blAdministradorUsuario;
+    @Override
+    public Long retriveBasicID() {
+	return getIntIdUsuario();
     }
 
-    public void setBlAdministradorUsuario(Boolean blAdministradorUsuario) {
-        this.blAdministradorUsuario = blAdministradorUsuario;
+    @Override
+    public void defineBasicID(Long id) {
+	setIntIdUsuario(id);
     }
 }
