@@ -16,18 +16,11 @@
  * along with awknet-commons. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.awknet.commons.data;
+SET CHARACTER SET UTF8;
 
-import org.awknet.commons.model.entity.BaseEntity;
-
-public class DaoFactory extends GenericDaoFactory {
-    // FIXME Use reflection to get class name in runtime
-    @SuppressWarnings("rawtypes")
-    public <T extends BaseEntity> Dao<T> getRegisterDao(Class _clazz) {
-	return new Dao<T>(super.getSession(), _clazz);
-    }
-
-    public UserDao getUserDao() {
-	return new UserDao(super.getSession());
-    }
-}
+INSERT INTO TUser (ID, login, password) VALUES
+    (1, 'root', '229c3f7e7b9c1be5bfa2f46d90c4ab00'),
+    (2, 'somebody', '229c3f7e7b9c1be5bfa2f46d90c4ab00'),
+    (3, 'simple', '229c3f7e7b9c1be5bfa2f46d90c4ab00'),
+    (4, 'someone', '229c3f7e7b9c1be5bfa2f46d90c4ab00')
+    ;

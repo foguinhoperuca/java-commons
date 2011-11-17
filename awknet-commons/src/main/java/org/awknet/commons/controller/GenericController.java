@@ -20,14 +20,14 @@ package org.awknet.commons.controller;
 
 import java.util.List;
 
-import org.awknet.commons.model.entity.BaseEntity;
+import org.awknet.commons.model.entity.BaseEntityImpl;
 
 /**
  * 
  * Generic controller for CRUD web-apps.
  * 
  */
-public interface GenericController<T extends BaseEntity> {
+public interface GenericController<T extends BaseEntityImpl> {
 
 	public void form(T _entity);
 

@@ -32,11 +32,11 @@ public class UserDao extends Dao<User> {
      * Search for a unique user with login/password;
      */
     public User onlyOne(User _user) {
-	String hql = "SELECT u FROM User AS u WHERE u.strLoginUsuario = :strLoginUsuario AND "
-		+ "u.strSenhaUsuario = :strSenhaUsuario";
+	String hql = "SELECT u FROM User AS u WHERE u.login = :login AND "
+		+ "u.password = :password";
 	Query query = getSession().createQuery(hql);
-	query.setParameter("strLoginUsuario", _user.getStrLoginUsuario());
-	query.setParameter("strSenhaUsuario", _user.getStrSenhaUsuario());
+	query.setParameter("login", _user.getStrLoginUsuario());
+	query.setParameter("password", _user.getStrSenhaUsuario());
 
 	return (User) query.uniqueResult();
     }

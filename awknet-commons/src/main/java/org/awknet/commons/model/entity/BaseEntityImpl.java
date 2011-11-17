@@ -16,18 +16,21 @@
  * along with awknet-commons. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.awknet.commons.data;
+package org.awknet.commons.model.entity;
 
-import org.awknet.commons.model.entity.BaseEntity;
+import java.io.Serializable;
+import javax.persistence.MappedSuperclass;
 
-public class DaoFactory extends GenericDaoFactory {
-    // FIXME Use reflection to get class name in runtime
-    @SuppressWarnings("rawtypes")
-    public <T extends BaseEntity> Dao<T> getRegisterDao(Class _clazz) {
-	return new Dao<T>(super.getSession(), _clazz);
+@MappedSuperclass
+public abstract class BaseEntityImpl implements Serializable, BaseEntity {
+
+    private static final long serialVersionUID = -7242252481157329335L;
+
+    public BaseEntityImpl() {
     }
 
-    public UserDao getUserDao() {
-	return new UserDao(super.getSession());
-    }
+    public abstract Long retriveBasicID();
+
+    public abstract void defineBasicID(Long id);
+
 }

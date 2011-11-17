@@ -27,7 +27,7 @@ import org.vraptor.annotations.InterceptedBy;
 import org.vraptor.annotations.Out;
 import org.vraptor.scope.ScopeType;
 
-
+// FIXME pre-compile a .jsp with form - without css - maybe use gwt
 @Component
 @InterceptedBy(DaoInterceptor.class)
 public class LoginLogic {
@@ -37,28 +37,28 @@ public class LoginLogic {
     private User login;
 
     public LoginLogic(DaoFactory daoFactory) {
-        this.daoFactory = daoFactory;
+	this.daoFactory = daoFactory;
     }
 
     public void login() {
     }
 
     public String doLogin(User _entity) {
-        userBO = new UserBOImpl(daoFactory);
-        if (userBO.verifyUser(_entity)) {
-            login = userBO.getUser();
-            return "ok";
-        } else {
-            return "invalid";
-        }
+	userBO = new UserBOImpl(daoFactory);
+	if (userBO.verifyUser(_entity)) {
+	    login = userBO.getUser();
+	    return "ok";
+	} else {
+	    return "invalid";
+	}
     }
 
     public void logout() {
-        this.login = null;
+	this.login = null;
     }
 
     @Out(scope = ScopeType.SESSION)
     public User getLogin() {
-        return login;
+	return login;
     }
 }

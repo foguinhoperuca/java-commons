@@ -22,10 +22,10 @@ import java.util.List;
 
 import org.awknet.commons.data.DaoFactory;
 import org.awknet.commons.model.business.RegisterBOImpl;
-import org.awknet.commons.model.entity.BaseEntity;
+import org.awknet.commons.model.entity.BaseEntityImpl;
 
 //TODO implement default form method
-public class GenericControllerBOImpl<T extends BaseEntity> implements
+public class GenericControllerBOImpl<T extends BaseEntityImpl> implements
 	GenericController<T> {
 
     protected final RegisterBOImpl<T> register;

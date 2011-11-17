@@ -28,7 +28,7 @@ import javax.persistence.Table;
 // FIXME rename properties strLoginUsuario and strSenhaUsuario
 @Entity
 @Table(name = "TUsuario", catalog = "DBSigerar")
-public class User extends BaseEntity implements java.io.Serializable {
+public class User extends BaseEntityIDImpl implements java.io.Serializable {
 
     private static final long serialVersionUID = 6450793412169953366L;
     private Long intIdUsuario;

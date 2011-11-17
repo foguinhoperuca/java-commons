@@ -19,7 +19,6 @@
 package org.awknet.commons.data;
 
 import java.util.List;
-
 import org.awknet.commons.model.entity.BaseEntity;
 import org.hibernate.Criteria;
 import org.hibernate.Session;

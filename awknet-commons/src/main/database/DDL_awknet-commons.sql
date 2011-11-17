@@ -16,18 +16,9 @@
  * along with awknet-commons. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.awknet.commons.data;
-
-import org.awknet.commons.model.entity.BaseEntity;
-
-public class DaoFactory extends GenericDaoFactory {
-    // FIXME Use reflection to get class name in runtime
-    @SuppressWarnings("rawtypes")
-    public <T extends BaseEntity> Dao<T> getRegisterDao(Class _clazz) {
-	return new Dao<T>(super.getSession(), _clazz);
-    }
-
-    public UserDao getUserDao() {
-	return new UserDao(super.getSession());
-    }
-}
+CREATE TABLE TUser (
+    ID INT(10) NOT NULL,
+    login VARCHAR(30),
+    password VARCHAR(40),
+    PRIMARY KEY (ID)
+);
