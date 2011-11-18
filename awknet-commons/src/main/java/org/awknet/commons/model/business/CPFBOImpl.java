@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  * CPF's routine is very common in softwares that are developed aimed to
  * brazilian's market.
  */
-public class CPFBOImpl implements CPF {
+public class CPFBOImpl implements Document {
 
     private String cpf;
     private int firstDigit;

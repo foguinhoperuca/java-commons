@@ -30,7 +30,7 @@ public class UserBOImpl {
 
     private User user;
     private DaoFactory daoFactory;
-    private static final Log LOG = LogFactory.getLog(CPFBOImpl.class);
+    private static final Log LOG = LogFactory.getLog(UserBOImpl.class);
 
     public UserBOImpl(DaoFactory _daoFactory) {
 	this.daoFactory = _daoFactory;
@@ -59,13 +59,14 @@ public class UserBOImpl {
 	login = login.replace("ä", "a");
 	login = login.replace("é", "e");
 	login = login.replace("è", "e");
+	login = login.replace("ẽ", "e");
 	login = login.replace("ê", "e");
-	login = login.replace("ë", "i");
+	login = login.replace("ë", "e");
 	login = login.replace("í", "i");
 	login = login.replace("ì", "i");
 	login = login.replace("ĩ", "i");
 	login = login.replace("î", "i");
-	login = login.replace("ï", "");
+	login = login.replace("ï", "i");
 	login = login.replace("ó", "o");
 	login = login.replace("ò", "o");
 	login = login.replace("õ", "o");
@@ -130,15 +131,13 @@ public class UserBOImpl {
 	    }
 	    lastName = _name.substring(_name.length() - (i - 1));
 
-	    // u.setStrLoginUsuario(rewriteLogin(firstLetter.concat(lastName)) +
+	    // u.setLogin(rewriteLogin(firstLetter.concat(lastName)) +
 	    // u.getIntIdUsuario());
-	    _entity.setStrLoginUsuario(rewriteLogin(firstLetter
-		    .concat(lastName)));
-	    if (_entity.getStrSenhaUsuario() == null) {
-		_entity.setStrSenhaUsuario("A12345678a");
+	    _entity.setLogin(rewriteLogin(firstLetter.concat(lastName)));
+	    if (_entity.getPassword() == null) {
+		_entity.setPassword("A12345678a");
 	    }
-	    _entity.setStrSenhaUsuario(encryptPassword(_entity
-		    .getStrSenhaUsuario()));
+	    _entity.setPassword(encryptPassword(_entity.getPassword()));
 	} catch (Exception ex) {
 	    LOG.error("Error during the creation of user!", ex);
 	    _entity = null;
@@ -149,8 +148,7 @@ public class UserBOImpl {
     public boolean verifyUser(User entity) {
 	boolean equal = false;
 	try {
-	    entity.setStrSenhaUsuario(encryptPassword(entity
-		    .getStrSenhaUsuario()));
+	    entity.setPassword(encryptPassword(entity.getPassword()));
 	    user = daoFactory.getUserDao().onlyOne(entity);
 	    if (user != null)
 		equal = true;
@@ -167,12 +165,12 @@ public class UserBOImpl {
     // FIXME send email warning about the reset of password
     public User resetPassword(User entity) {
 	try {
-	    entity.setStrSenhaUsuario(encryptPassword("A12345678a"));
+	    entity.setPassword(encryptPassword("A12345678a"));
 	    daoFactory.beginTransaction();
 	    daoFactory.getUserDao().update(entity);
 	    daoFactory.commit();
 	} catch (NoSuchAlgorithmException ex) {
-	    LOG.error("Error during the encryptation of password!", ex);
+	    LOG.error("[RESET] Error during the encryptation of password!", ex);
 	}
 	return entity;
     }

@@ -18,6 +18,8 @@
 
 package org.awknet.commons.controller;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.awknet.commons.data.DaoFactory;
 import org.awknet.commons.interceptor.DaoInterceptor;
 import org.awknet.commons.model.business.UserBOImpl;
@@ -35,6 +37,7 @@ public class LoginLogic {
     private final DaoFactory daoFactory;
     private UserBOImpl userBO;
     private User login;
+    private static final Log LOG = LogFactory.getLog(LoginLogic.class);
 
     public LoginLogic(DaoFactory daoFactory) {
 	this.daoFactory = daoFactory;

@@ -35,8 +35,8 @@ public class UserDao extends Dao<User> {
 	String hql = "SELECT u FROM User AS u WHERE u.login = :login AND "
 		+ "u.password = :password";
 	Query query = getSession().createQuery(hql);
-	query.setParameter("login", _user.getStrLoginUsuario());
-	query.setParameter("password", _user.getStrSenhaUsuario());
+	query.setParameter("login", _user.getLogin());
+	query.setParameter("password", _user.getPassword());
 
 	return (User) query.uniqueResult();
     }

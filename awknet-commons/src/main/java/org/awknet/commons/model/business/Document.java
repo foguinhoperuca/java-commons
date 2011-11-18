@@ -18,7 +18,7 @@
 
 package org.awknet.commons.model.business;
 
-public interface CPF {
+public interface Document {
     public boolean validate(String _cpf, int _firstDigit, int _secondDigit);
     public String digits(String _cpf);
 }
