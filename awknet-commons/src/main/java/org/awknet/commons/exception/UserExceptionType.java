@@ -6,7 +6,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * 
  * Awknet-commons is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,10 +16,20 @@
  * along with awknet-commons. If not, see <http://www.gnu.org/licenses/>.
  */
 
-CREATE TABLE TUser (
-    ID INT(10) NOT NULL,
-    login VARCHAR(30),
-    password VARCHAR(40),
-    email VARCHAR(100),
-    PRIMARY KEY (ID)
-);
+package org.awknet.commons.exception;
+
+public enum UserExceptionType {
+
+    ID(0), PASSWORD(1);
+
+    private int type;
+
+    UserExceptionType(int _type) {
+	this.type = _type;
+    }
+
+    public int getType() {
+	return type;
+    }
+
+}

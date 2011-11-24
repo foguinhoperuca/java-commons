@@ -24,14 +24,16 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
+// FIXME create a diferent user only with login and password
 @Entity
 @Table(name = "TUser")
-@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class User extends BaseEntityIDImpl implements java.io.Serializable {
 
     private static final long serialVersionUID = 6450793412169953366L;
     private String login;
     private String password;
+    private String email;
 
     public User() {
     }
@@ -42,7 +44,7 @@ public class User extends BaseEntityIDImpl implements java.io.Serializable {
 
     }
 
-    @Column(name = "STR_Login_USUARIO", length = 30)
+    @Column(name = "login", length = 30)
     public String getLogin() {
 	return this.login;
     }
@@ -51,13 +53,22 @@ public class User extends BaseEntityIDImpl implements java.io.Serializable {
 	this.login = _login;
     }
 
-    @Column(name = "STR_Senha_USUARIO", length = 40)
+    @Column(name = "-password", length = 40)
     public String getPassword() {
 	return this.password;
     }
 
     public void setPassword(String _password) {
 	this.password = _password;
+    }
+
+    @Column(name = "email", length = 40)
+    public String getEmail() {
+	return email;
+    }
+
+    public void setEmail(String email) {
+	this.email = email;
     }
 
     @Override

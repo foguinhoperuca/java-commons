@@ -18,9 +18,9 @@
 
 SET CHARACTER SET UTF8;
 
-INSERT INTO TUser (ID, login, password) VALUES
-    (1, 'root', '229c3f7e7b9c1be5bfa2f46d90c4ab00'),
-    (2, 'somebody', '229c3f7e7b9c1be5bfa2f46d90c4ab00'),
-    (3, 'simple', '229c3f7e7b9c1be5bfa2f46d90c4ab00'),
-    (4, 'someone', '229c3f7e7b9c1be5bfa2f46d90c4ab00')
+INSERT INTO TUser (ID, login, password, email) VALUES
+    (1, 'root', '229c3f7e7b9c1be5bfa2f46d90c4ab00', 'root@awknet.org'),
+    (2, 'somebody', '229c3f7e7b9c1be5bfa2f46d90c4ab00', 'somebody@awknet.org'),
+    (3, 'simple', '229c3f7e7b9c1be5bfa2f46d90c4ab00', 'simple@awknet.org'),
+    (4, 'someone', '229c3f7e7b9c1be5bfa2f46d90c4ab00', 'someone@awknet.org')
     ;

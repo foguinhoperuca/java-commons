@@ -24,6 +24,8 @@ import java.security.NoSuchAlgorithmException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.awknet.commons.data.DaoFactory;
+import org.awknet.commons.exception.UserException;
+import org.awknet.commons.exception.UserExceptionType;
 import org.awknet.commons.model.entity.User;
 
 public class UserBOImpl {
@@ -44,41 +46,41 @@ public class UserBOImpl {
     /**
      * This method remove all signals that wasn't in English language.
      * 
-     * @param login
+     * @param _login
      *            A login to be rewrite.
      * @return correct login.
      */
-    protected String rewriteLogin(String login) {
-	login = login.toLowerCase();
-	login = login.replace("ç", "c");
-	login = login.replace("ñ", "n");
-	login = login.replace("á", "a");
-	login = login.replace("à", "a");
-	login = login.replace("ã", "a");
-	login = login.replace("â", "a");
-	login = login.replace("ä", "a");
-	login = login.replace("é", "e");
-	login = login.replace("è", "e");
-	login = login.replace("ẽ", "e");
-	login = login.replace("ê", "e");
-	login = login.replace("ë", "e");
-	login = login.replace("í", "i");
-	login = login.replace("ì", "i");
-	login = login.replace("ĩ", "i");
-	login = login.replace("î", "i");
-	login = login.replace("ï", "i");
-	login = login.replace("ó", "o");
-	login = login.replace("ò", "o");
-	login = login.replace("õ", "o");
-	login = login.replace("ô", "o");
-	login = login.replace("ö", "o");
-	login = login.replace("ú", "u");
-	login = login.replace("ù", "u");
-	login = login.replace("ũ", "u");
-	login = login.replace("û", "u");
-	login = login.replace("ü", "u");
+    protected String rewriteLogin(String _login) {
+	_login = _login.toLowerCase();
+	_login = _login.replace("ç", "c");
+	_login = _login.replace("ñ", "n");
+	_login = _login.replace("á", "a");
+	_login = _login.replace("à", "a");
+	_login = _login.replace("ã", "a");
+	_login = _login.replace("â", "a");
+	_login = _login.replace("ä", "a");
+	_login = _login.replace("é", "e");
+	_login = _login.replace("è", "e");
+	_login = _login.replace("ẽ", "e");
+	_login = _login.replace("ê", "e");
+	_login = _login.replace("ë", "e");
+	_login = _login.replace("í", "i");
+	_login = _login.replace("ì", "i");
+	_login = _login.replace("ĩ", "i");
+	_login = _login.replace("î", "i");
+	_login = _login.replace("ï", "i");
+	_login = _login.replace("ó", "o");
+	_login = _login.replace("ò", "o");
+	_login = _login.replace("õ", "o");
+	_login = _login.replace("ô", "o");
+	_login = _login.replace("ö", "o");
+	_login = _login.replace("ú", "u");
+	_login = _login.replace("ù", "u");
+	_login = _login.replace("ũ", "u");
+	_login = _login.replace("û", "u");
+	_login = _login.replace("ü", "u");
 
-	return login;
+	return _login;
     }
 
     /**
@@ -92,10 +94,10 @@ public class UserBOImpl {
      * @since SIGERAR v1.1 - Apr/2008.
      * @throws NoSuchAlgorithmException
      */
-    protected String encryptPassword(String password)
+    protected String encryptPassword(String _password)
 	    throws NoSuchAlgorithmException {
 	MessageDigest md = MessageDigest.getInstance("MD5");
-	BigInteger hash = new BigInteger(1, md.digest(password.getBytes()));
+	BigInteger hash = new BigInteger(1, md.digest(_password.getBytes()));
 	String encryptedPassword = hash.toString(16);
 	if (encryptedPassword.length() % 2 != 0) {
 	    encryptedPassword = "0" + encryptedPassword;
@@ -145,11 +147,11 @@ public class UserBOImpl {
 	return _entity;
     }
 
-    public boolean verifyUser(User entity) {
+    public boolean verifyUser(User _entity) {
 	boolean equal = false;
 	try {
-	    entity.setPassword(encryptPassword(entity.getPassword()));
-	    user = daoFactory.getUserDao().onlyOne(entity);
+	    _entity.setPassword(encryptPassword(_entity.getPassword()));
+	    user = daoFactory.getUserDao().onlyOne(_entity);
 	    if (user != null)
 		equal = true;
 
@@ -163,19 +165,48 @@ public class UserBOImpl {
     }
 
     // FIXME send email warning about the reset of password
-    public User resetPassword(User entity) {
+    public User resetPassword(User _entity) {
 	try {
-	    entity.setPassword(encryptPassword("A12345678a"));
+	    _entity.setPassword(encryptPassword("A12345678a"));
 	    daoFactory.beginTransaction();
-	    daoFactory.getUserDao().update(entity);
+	    daoFactory.getUserDao().update(_entity);
 	    daoFactory.commit();
 	} catch (NoSuchAlgorithmException ex) {
 	    LOG.error("[RESET] Error during the encryptation of password!", ex);
 	}
-	return entity;
+	return _entity;
     }
 
     public User getUser() {
 	return user;
+    }
+
+    /**
+     * 
+     * @param _entity
+     *            a user without password or ID.
+     * @return true if find and send a email to retrieve password.
+     * @throws UserException
+     */
+    public boolean sendLinkToRetrievePassword(User _entity)
+	    throws UserException {
+	boolean success = false;
+	if (_entity.getPassword() != null)
+	    throw new UserException(UserExceptionType.PASSWORD);
+
+	else if (_entity.getID() != null)
+	    throw new UserException(UserExceptionType.ID);
+
+	user = daoFactory.getUserDao().loadByExample(_entity);
+	if (user != null) {
+	    // Email.retrivePassword(user);
+	    success = true;
+	    LOG.info("Link to retrive password send to user " + user.getLogin()
+		    + " - email " + user.getEmail());
+	} else {
+	    LOG.info("User " + _entity.getLogin() + " - email "
+		    + _entity.getEmail() + " -- NOT FOUND!");
+	}
+	return success;
     }
 }

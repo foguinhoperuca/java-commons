@@ -19,7 +19,10 @@
 package org.awknet.commons.model.business;
 
 import junit.framework.TestCase;
+
 import org.awknet.commons.data.DaoFactory;
+import org.awknet.commons.exception.UserException;
+import org.awknet.commons.model.entity.User;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,6 +31,7 @@ public class UserBOImplTest extends TestCase {
 
     private DaoFactory daoFactory;
     private UserBOImpl instance;
+    private User simple;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -37,6 +41,7 @@ public class UserBOImplTest extends TestCase {
     protected void setUp() throws Exception {
 	daoFactory = new DaoFactory();
 	instance = new UserBOImpl(daoFactory);
+	simple = daoFactory.getUserDao().load(new Long(3));
     }
 
     @Test
@@ -89,4 +94,30 @@ public class UserBOImplTest extends TestCase {
     // public void testResetPassword() {
     // fail("Not yet implemented");
     // }
+
+    @Test(expected = UserException.class)
+    public void testSendLinkToRetrievePassword() throws UserException {
+	User inexistent_user = new User();
+	User login_someone = new User();
+	User id_user = new User();
+	User password_user = new User();
+	User email_user = new User();
+
+	inexistent_user.setLogin("fake");
+	login_someone.setLogin("someone");
+	id_user.setID(new Long(1));
+	password_user.setPassword(simple.getPassword());
+	email_user.setEmail(simple.getEmail());
+
+	assertFalse(instance.sendLinkToRetrievePassword(inexistent_user));
+	assertTrue(instance.sendLinkToRetrievePassword(login_someone));
+	try {
+	    assertFalse(instance.sendLinkToRetrievePassword(password_user));
+	    assertFalse(instance.sendLinkToRetrievePassword(id_user));
+	} catch (UserException ue) {
+	}
+
+	assertTrue(instance.sendLinkToRetrievePassword(email_user));
+	//assertTrue(instance.sendLinkToRetrievePassword(simple));
+    }
 }
