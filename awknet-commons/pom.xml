@@ -28,7 +28,6 @@
     <!-- <velocity-version>1.7</velocity-version> -->
   </properties>
 
-
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -107,6 +106,12 @@
     </dependency>
 
     <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <version>1.4.4</version>
+    </dependency>
+
+    <dependency>
       <groupId>javassist</groupId>
       <artifactId>javassist</artifactId>
       <version>3.12.0.GA</version>
@@ -159,6 +164,11 @@
 	    <downloadJavadocs>true</downloadJavadocs>
 	  </configuration>
 	</plugin>
+	<plugin>
+	  <groupId>org.codehaus.mojo</groupId>
+	  <artifactId>sonar-maven-plugin</artifactId>
+	  <version>2.0</version>
+	</plugin>
 	<!-- <plugin> -->
 	<!-- 	<groupId>org.apache.maven.plugins</groupId> -->
 	<!-- 	<artifactId>maven-dependency-plugin</artifactId> -->
@@ -186,6 +196,15 @@
 	<!-- </plugin> -->
       </plugins>
     </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>2.0</version>
+      </plugin>
+    </plugins>
+
   </build>
   <distributionManagement>
     <repository>

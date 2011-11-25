@@ -18,34 +18,38 @@
 
 package org.awknet.commons.util;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 
 // FIXME @SuppressWarnings("deprecation") - need it?
+@SuppressWarnings("deprecation")
 public class HibernateUtil {
 
-    private static final SessionFactory factory;
+    private static final Log LOG = LogFactory.getLog(HibernateUtil.class);
+    private static final SessionFactory FACTORY;
 
     static {
-        try {
-            Configuration conf = new AnnotationConfiguration();
-            conf.configure();
-            factory = conf.buildSessionFactory();
+	try {
+	    Configuration conf = new AnnotationConfiguration();
+	    conf.configure();
+	    FACTORY = conf.buildSessionFactory();
 
-        } catch (Throwable ex) {
-            System.err.println("Ow CRAP! Initial Hibernate Session Factory creation failed!! Motive --> " + ex);
-            throw new ExceptionInInitializerError(ex);
-        }
+	} catch (Exception ex) {
+	    LOG.error("Ow CRAP! Hibernate Session Factory creation !!", ex);
+	    throw new ExceptionInInitializerError(ex);
+	}
     }
 
     public static Session getSession() {
-        return factory.openSession();
+	return FACTORY.openSession();
     }
 
     public static SessionFactory getSessionFactory() {
-        return factory;
+	return FACTORY;
     }
 
 }

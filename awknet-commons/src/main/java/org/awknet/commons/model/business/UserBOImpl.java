@@ -21,6 +21,7 @@ package org.awknet.commons.model.business;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.awknet.commons.data.DaoFactory;
@@ -34,53 +35,53 @@ public class UserBOImpl {
     private DaoFactory daoFactory;
     private static final Log LOG = LogFactory.getLog(UserBOImpl.class);
 
-    public UserBOImpl(DaoFactory _daoFactory) {
-	this.daoFactory = _daoFactory;
+    public UserBOImpl(DaoFactory daoFactory) {
+	this.daoFactory = daoFactory;
     }
 
-    public UserBOImpl(DaoFactory _daoFactory, User _user) {
+    public UserBOImpl(DaoFactory _daoFactory, User user) {
 	this.daoFactory = _daoFactory;
-	this.user = _user;
+	this.user = user;
     }
 
     /**
      * This method remove all signals that wasn't in English language.
      * 
-     * @param _login
+     * @param login
      *            A login to be rewrite.
      * @return correct login.
      */
-    protected String rewriteLogin(String _login) {
-	_login = _login.toLowerCase();
-	_login = _login.replace("ç", "c");
-	_login = _login.replace("ñ", "n");
-	_login = _login.replace("á", "a");
-	_login = _login.replace("à", "a");
-	_login = _login.replace("ã", "a");
-	_login = _login.replace("â", "a");
-	_login = _login.replace("ä", "a");
-	_login = _login.replace("é", "e");
-	_login = _login.replace("è", "e");
-	_login = _login.replace("ẽ", "e");
-	_login = _login.replace("ê", "e");
-	_login = _login.replace("ë", "e");
-	_login = _login.replace("í", "i");
-	_login = _login.replace("ì", "i");
-	_login = _login.replace("ĩ", "i");
-	_login = _login.replace("î", "i");
-	_login = _login.replace("ï", "i");
-	_login = _login.replace("ó", "o");
-	_login = _login.replace("ò", "o");
-	_login = _login.replace("õ", "o");
-	_login = _login.replace("ô", "o");
-	_login = _login.replace("ö", "o");
-	_login = _login.replace("ú", "u");
-	_login = _login.replace("ù", "u");
-	_login = _login.replace("ũ", "u");
-	_login = _login.replace("û", "u");
-	_login = _login.replace("ü", "u");
+    protected String rewriteLogin(String login) {
+	login = login.toLowerCase();
+	login = login.replace("ç", "c");
+	login = login.replace("ñ", "n");
+	login = login.replace("á", "a");
+	login = login.replace("à", "a");
+	login = login.replace("ã", "a");
+	login = login.replace("â", "a");
+	login = login.replace("ä", "a");
+	login = login.replace("é", "e");
+	login = login.replace("è", "e");
+	login = login.replace("ẽ", "e");
+	login = login.replace("ê", "e");
+	login = login.replace("ë", "e");
+	login = login.replace("í", "i");
+	login = login.replace("ì", "i");
+	login = login.replace("ĩ", "i");
+	login = login.replace("î", "i");
+	login = login.replace("ï", "i");
+	login = login.replace("ó", "o");
+	login = login.replace("ò", "o");
+	login = login.replace("õ", "o");
+	login = login.replace("ô", "o");
+	login = login.replace("ö", "o");
+	login = login.replace("ú", "u");
+	login = login.replace("ù", "u");
+	login = login.replace("ũ", "u");
+	login = login.replace("û", "u");
+	login = login.replace("ü", "u");
 
-	return _login;
+	return login;
     }
 
     /**
@@ -94,10 +95,10 @@ public class UserBOImpl {
      * @since SIGERAR v1.1 - Apr/2008.
      * @throws NoSuchAlgorithmException
      */
-    protected String encryptPassword(String _password)
+    protected String encryptPassword(String password)
 	    throws NoSuchAlgorithmException {
 	MessageDigest md = MessageDigest.getInstance("MD5");
-	BigInteger hash = new BigInteger(1, md.digest(_password.getBytes()));
+	BigInteger hash = new BigInteger(1, md.digest(password.getBytes()));
 	String encryptedPassword = hash.toString(16);
 	if (encryptedPassword.length() % 2 != 0) {
 	    encryptedPassword = "0" + encryptedPassword;
@@ -121,37 +122,37 @@ public class UserBOImpl {
      *            : A user to be filled.
      * @since SIGERAR v1.1 - Apr/2008.
      */
-    public User createUser(User _entity, String _name) {
+    public User createUser(User entity, String name) {
 	try {
 	    int i = 1;
 	    // String _name = _entity.getStrNomeUsuario();
-	    String firstLetter = _name.substring(0, 1);
+	    String firstLetter = name.substring(0, 1);
 	    String lastName = "";
 
-	    while (!(_name.charAt(_name.length() - i) == " ".charAt(0))) {
+	    while (!(name.charAt(name.length() - i) == " ".charAt(0))) {
 		i++;
 	    }
-	    lastName = _name.substring(_name.length() - (i - 1));
+	    lastName = name.substring(name.length() - (i - 1));
 
 	    // u.setLogin(rewriteLogin(firstLetter.concat(lastName)) +
 	    // u.getIntIdUsuario());
-	    _entity.setLogin(rewriteLogin(firstLetter.concat(lastName)));
-	    if (_entity.getPassword() == null) {
-		_entity.setPassword("A12345678a");
+	    entity.setLogin(rewriteLogin(firstLetter.concat(lastName)));
+	    if (entity.getPassword() == null) {
+		entity.setPassword("A12345678a");
 	    }
-	    _entity.setPassword(encryptPassword(_entity.getPassword()));
+	    entity.setPassword(encryptPassword(entity.getPassword()));
 	} catch (Exception ex) {
 	    LOG.error("Error during the creation of user!", ex);
-	    _entity = null;
+	    entity = null;
 	}
-	return _entity;
+	return entity;
     }
 
-    public boolean verifyUser(User _entity) {
+    public boolean verifyUser(User entity) {
 	boolean equal = false;
 	try {
-	    _entity.setPassword(encryptPassword(_entity.getPassword()));
-	    user = daoFactory.getUserDao().onlyOne(_entity);
+	    entity.setPassword(encryptPassword(entity.getPassword()));
+	    user = daoFactory.getUserDao().onlyOne(entity);
 	    if (user != null)
 		equal = true;
 
@@ -165,16 +166,16 @@ public class UserBOImpl {
     }
 
     // FIXME send email warning about the reset of password
-    public User resetPassword(User _entity) {
+    public User resetPassword(User entity) {
 	try {
-	    _entity.setPassword(encryptPassword("A12345678a"));
+	    entity.setPassword(encryptPassword("A12345678a"));
 	    daoFactory.beginTransaction();
-	    daoFactory.getUserDao().update(_entity);
+	    daoFactory.getUserDao().update(entity);
 	    daoFactory.commit();
 	} catch (NoSuchAlgorithmException ex) {
 	    LOG.error("[RESET] Error during the encryptation of password!", ex);
 	}
-	return _entity;
+	return entity;
     }
 
     public User getUser() {
@@ -183,30 +184,131 @@ public class UserBOImpl {
 
     /**
      * 
-     * @param _entity
+     * @param entity
      *            a user without password or ID.
      * @return true if find and send a email to retrieve password.
      * @throws UserException
      */
-    public boolean sendLinkToRetrievePassword(User _entity)
+    public boolean sendLinkToRetrievePassword(User entity)
 	    throws UserException {
 	boolean success = false;
-	if (_entity.getPassword() != null)
+
+	if (entity.getPassword() != null)
 	    throw new UserException(UserExceptionType.PASSWORD);
 
-	else if (_entity.getID() != null)
+	else if (entity.getID() != null)
 	    throw new UserException(UserExceptionType.ID);
 
-	user = daoFactory.getUserDao().loadByExample(_entity);
+	user = daoFactory.getUserDao().loadByExample(entity);
 	if (user != null) {
 	    // Email.retrivePassword(user);
 	    success = true;
 	    LOG.info("Link to retrive password send to user " + user.getLogin()
 		    + " - email " + user.getEmail());
 	} else {
-	    LOG.info("User " + _entity.getLogin() + " - email "
-		    + _entity.getEmail() + " -- NOT FOUND!");
+	    LOG.info("User " + entity.getLogin() + " - email "
+		    + entity.getEmail() + " -- NOT FOUND!");
 	}
 	return success;
     }
+    
+    /******************************************************************************/
+
+    // public void createUserProspectRequest(User user, String requestIp) {
+    // user.setCreationDate(new Date());
+    // String profileName = SystemMessageAcessor
+    // .getSystemMessage("user.creation.profile");
+    //
+    // if (StringUtils.hasText(profileName)) {
+    // UserProfile profile = userSecurityRepository
+    // .getProfileByName(profileName);
+    //
+    // if (profile != null)
+    // user.addProfile(profile);
+    // }
+    //
+    // this.saveUser(user);
+    //
+    // RequestActivationForm raf = new RequestActivationForm(requestIp,
+    // new Date(), user.getId());
+    // userSecurityRepository.saveBaseElement(raf);
+    //
+    // String templateName = "confirm_creation_user_mail";
+    // Map<String, Object> params = new HashMap<String, Object>();
+    // params.put("requestId", raf.getId());
+    // params.put("user", user);
+    // params.put("homepage",
+    // SystemMessageAcessor.getSystemMessage("site.url"));
+    //
+    // MailMessage mail = new MailMessage();
+    // // mail.setHomePage(homepage);
+    // mail.setFrom(SystemMessageAcessor.getSystemMessage("mail.from"));
+    // mail.setSubject(SystemMessageAcessor
+    // .getSystemMessage("request.user.creation.activation.mail.subject"));
+    // mail.setTemplate(templateName);
+    //
+    // mail.setTo(user.getEmail());
+    // mail.setHtmlPlain(" ");
+    // mail.setTextPlain(" ");
+    // mail.setParams(params);
+    //
+    // messageService.sendThreadMail(mail);
+    // }
+    //
+    // private void saveUser(User user) {
+    // String encodePassword = Md5Encoder.getInstance().encodePassword(
+    // user.getPassword());
+    // user.setPassword(encodePassword);
+    //
+    // if (this.existUserByLogin(user.getLogin()))
+    // throw new DuplicateLoginError(
+    // SystemMessageAcessor
+    // .getSystemMessage("error.duplicated.user.login"));
+    //
+    // userSecurityRepository.save(user);
+    // }
+    //
+    // protected boolean isValidRequest(Date requestDate) {
+    // int days = SystemMessageAcessor
+    // .getPropertyAsInteger("request.activation.form.valid.until.days");
+    //
+    // GregorianCalendar dateGenerateLink = new GregorianCalendar();
+    // dateGenerateLink.setTime(requestDate);
+    // dateGenerateLink.add(Calendar.DAY_OF_YEAR, days);
+    //
+    // GregorianCalendar currentDate = new GregorianCalendar();
+    // return currentDate.before(dateGenerateLink);
+    // }
+    //
+    // public void activationUser(Long requestId, Long userId, String ip)
+    // throws ActivationUserError {
+    // RequestActivationForm raf = userSecurityRepository
+    // .getRequestActivationForm(requestId);
+    //
+    // if (raf == null)
+    // throw new ActivationUserError(
+    // SystemMessageAcessor
+    // .getSystemMessage("active.user.errors.invalid.requisition"));
+    //
+    // if (!raf.getRequestIp().equalsIgnoreCase(ip)
+    // || !raf.getObjectId().equals(userId))
+    // throw new ActivationUserError(
+    // SystemMessageAcessor
+    // .getSystemMessage("active.user.errors.different.ip"));
+    //
+    // if (!raf.isValid())
+    // throw new ActivationUserError(
+    // SystemMessageAcessor
+    // .getSystemMessage("active.user.errors.invalid.requisition"));
+    //
+    // if (!isValidRequest(raf.getRequestDate()))
+    // throw new ActivationUserError(
+    // SystemMessageAcessor
+    // .getSystemMessage("active.user.errors.requisition.expired"));
+    //
+    // User user = userSecurityRepository.get(userId);
+    // user.setActive(true);
+    //
+    // raf.setValid(false);
+    // }
 }

@@ -18,27 +18,24 @@
 
 package org.awknet.commons.model.business;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.awknet.commons.data.DaoFactory;
 import org.awknet.commons.exception.UserException;
 import org.awknet.commons.model.entity.User;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class UserBOImplTest extends TestCase {
+public class UserBOImplTest {
 
     private DaoFactory daoFactory;
     private UserBOImpl instance;
     private User simple;
 
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-    }
-
     @Before
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
 	daoFactory = new DaoFactory();
 	instance = new UserBOImpl(daoFactory);
 	simple = daoFactory.getUserDao().load(new Long(3));
@@ -95,29 +92,34 @@ public class UserBOImplTest extends TestCase {
     // fail("Not yet implemented");
     // }
 
-    @Test(expected = UserException.class)
-    public void testSendLinkToRetrievePassword() throws UserException {
+    @Test
+    public void testSendLinkToRetrievePassword() throws Exception {
 	User inexistent_user = new User();
 	User login_someone = new User();
-	User id_user = new User();
-	User password_user = new User();
 	User email_user = new User();
 
 	inexistent_user.setLogin("fake");
 	login_someone.setLogin("someone");
-	id_user.setID(new Long(1));
-	password_user.setPassword(simple.getPassword());
 	email_user.setEmail(simple.getEmail());
 
 	assertFalse(instance.sendLinkToRetrievePassword(inexistent_user));
 	assertTrue(instance.sendLinkToRetrievePassword(login_someone));
-	try {
-	    assertFalse(instance.sendLinkToRetrievePassword(password_user));
-	    assertFalse(instance.sendLinkToRetrievePassword(id_user));
-	} catch (UserException ue) {
-	}
-
 	assertTrue(instance.sendLinkToRetrievePassword(email_user));
-	//assertTrue(instance.sendLinkToRetrievePassword(simple));
+    }
+
+    @Test(expected = UserException.class)
+    public void testSendLinkRetrivePasswordUsingPassword() throws UserException {
+	User password_user = new User();
+	password_user.setPassword(simple.getPassword());
+
+	instance.sendLinkToRetrievePassword(password_user);
+    }
+
+    @Test(expected = UserException.class)
+    public void testSendLinkRetrivePasswordUsingID() throws UserException {
+	User id_user = new User();
+	id_user.setID(new Long(1));
+
+	instance.sendLinkToRetrievePassword(id_user);
     }
 }

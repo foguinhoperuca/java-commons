@@ -34,7 +34,7 @@ public class UserException extends Exception {
     public UserException(int _error) {
 	this.code = _error;
     }
-    
+
     public UserException(UserExceptionType _error) {
 	this.code = _error.getType();
     }
@@ -43,16 +43,13 @@ public class UserException extends Exception {
     public String getMessage() {
 	switch (code) {
 	case 0:
-//	    LOG.error(UserException.MSG_ID_ERROR);
-	    LOG.info(UserException.MSG_ID_ERROR);
+	    LOG.error(UserException.MSG_ID_ERROR);
 	    return UserException.MSG_ID_ERROR;
 	case 1:
-//	    LOG.error(UserException.MSG_PASSWORD_ERROR);
-	    LOG.info(UserException.MSG_PASSWORD_ERROR);
+	    LOG.error(UserException.MSG_PASSWORD_ERROR);
 	    return UserException.MSG_PASSWORD_ERROR;
 	default:
-//	    LOG.error("NOSENSE!!! - USER WITH PASSWORD AND ID!");
-	    LOG.info("NOSENSE!!! - USER WITH PASSWORD AND ID!");
+	     LOG.error("NOSENSE!!! - USER WITH PASSWORD AND ID!");
 	    return "NOSENSE!!!";
 	}
     }
