@@ -18,15 +18,22 @@
 
 package org.awknet.commons.model.business;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Properties;
+
+import javax.mail.MessagingException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.awknet.commons.data.DaoFactory;
 import org.awknet.commons.exception.UserException;
 import org.awknet.commons.exception.UserExceptionType;
+import org.awknet.commons.mail.Mail;
+import org.awknet.commons.mail.RecipientType;
 import org.awknet.commons.model.entity.User;
 
 public class UserBOImpl {
@@ -183,15 +190,18 @@ public class UserBOImpl {
     }
 
     /**
+     * Send a link to retrieve a password.
      * 
      * @param entity
      *            a user without password or ID.
      * @return true if find and send a email to retrieve password.
      * @throws UserException
      */
-    public boolean sendLinkToRetrievePassword(User entity)
-	    throws UserException {
+    // FIXME import data from another file than awknet-commons.properties
+    public boolean sendLinkToRetrievePassword(User entity) throws UserException {
 	boolean success = false;
+	Mail mail;
+	Properties mailProperties = new Properties();
 
 	if (entity.getPassword() != null)
 	    throw new UserException(UserExceptionType.PASSWORD);
@@ -201,17 +211,30 @@ public class UserBOImpl {
 
 	user = daoFactory.getUserDao().loadByExample(entity);
 	if (user != null) {
-	    // Email.retrivePassword(user);
-	    success = true;
-	    LOG.info("Link to retrive password send to user " + user.getLogin()
-		    + " - email " + user.getEmail());
+	    try {
+		mailProperties.load(new FileInputStream("awknet-commons.properties"));
+		mail = new Mail(
+			mailProperties
+				.getProperty("mail.retrievePassword.subject"),
+			mailProperties
+				.getProperty("mail.retrievePassword.mailText"));
+		mail.addMailRecipient(RecipientType.RECIPIENT_TYPE_TO,
+			user.getEmail());
+		mail.send();
+		success = true;
+		LOG.info("Link to retrive password send to user "
+			+ user.getLogin() + " - email " + user.getEmail());
+	    } catch (IOException e) {
+		LOG.error("Error handling with properties of app.", e);
+	    } catch (MessagingException e) {
+		LOG.error("Error sending e-mail.", e);
+	    }
 	} else {
 	    LOG.info("User " + entity.getLogin() + " - email "
 		    + entity.getEmail() + " -- NOT FOUND!");
 	}
 	return success;
     }
-    
     /******************************************************************************/
 
     // public void createUserProspectRequest(User user, String requestIp) {

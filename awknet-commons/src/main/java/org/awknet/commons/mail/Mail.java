@@ -41,22 +41,15 @@ import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.awknet.commons.data.DaoFactory;
 import org.awknet.commons.model.entity.User;
 
 public class Mail {
     private static final Log LOG = LogFactory.getLog(Mail.class);
-    public static final int RECIPIENT_TYPE_TO = 0;
-    public static final int RECIPIENT_TYPE_CC = 1;
-    public static final int RECIPIENT_TYPE_BCC = 2;
-
     private String mailSubject;
     private String mailText;
-    private ArrayList<Address> recipientsTo, recipientsCc, recipientsBcc;
-    private final DaoFactory daoFactory;
+    private List<Address> recipientsTo, recipientsCc, recipientsBcc;
 
-    public Mail(String subject, String mailText, DaoFactory daoFactory) {
-	this.daoFactory = daoFactory;
+    public Mail(String subject, String mailText) {
 	this.mailSubject = subject;
 	this.mailText = mailText;
 	recipientsTo = new ArrayList<Address>();
@@ -70,10 +63,11 @@ public class Mail {
 		+ recipientsBcc.size();
 	if (count == 0)
 	    return;
+
 	deleteDuplicates();
 
 	Properties javaMailProperties = new Properties();
-	javaMailProperties.load(new FileInputStream("awknet-commons.org"));
+	javaMailProperties.load(new FileInputStream("awknet-commons.properties"));
 
 	final String mailUsername = javaMailProperties
 		.getProperty("mail.autentication.username");
@@ -113,6 +107,10 @@ public class Mail {
 	}).start();
     }
 
+    /**
+     * Delete duplicates recipients. It is not allowed a same e-mail in 2
+     * recipients fields. In this case, all new occurrence is removed.
+     */
     private void deleteDuplicates() {
 	for (int i = 0; i < recipientsTo.size(); i++) {
 	    Address to = recipientsTo.get(i);
@@ -149,17 +147,24 @@ public class Mail {
 	}
     }
 
-    public void addMailsRecipient(int recitientType, String[] mails) {
+    public void addUsersRecipient(RecipientType recipientType, List<User> users) {
+	for (User u : users)
+	    if (u != null)
+		addMailRecipient(recipientType, u.getEmail());
+    }
+
+    public void addMailsRecipient(RecipientType recitientType, String[] mails) {
 	for (String s : mails)
 	    addMailRecipient(recitientType, s);
     }
 
-    public void addMailsRecipient(int recitientType, List<String> mails) {
+    public void addMailsRecipient(RecipientType recipientType,
+	    List<String> mails) {
 	for (String s : mails)
-	    addMailRecipient(recitientType, s);
+	    addMailRecipient(recipientType, s);
     }
 
-    public void addMailRecipient(int recipientType, String mail) {
+    public void addMailRecipient(RecipientType recipientType, String mail) {
 	if (mail != null && mail.trim().length() == 0)
 	    return;
 	try {
@@ -177,12 +182,11 @@ public class Mail {
 	}
     }
 
-    public void addUsersRecipient(int recitientType, List<User> users) {
-	for (User u : users)
-	    if (u != null)
-		addMailRecipient(recitientType, u.getEmail());
-    }
-
+    /**
+     * Just convert a list to array.
+     * 
+     * @return a array of recipients
+     */
     private Address[] getToRecipientsArray() {
 	Address[] array = new Address[recipientsTo.size()];
 	for (int i = 0; i < recipientsTo.size(); i++)
@@ -190,6 +194,11 @@ public class Mail {
 	return array;
     }
 
+    /**
+     * Just convert a list to array.
+     * 
+     * @return a array of recipients
+     */
     private Address[] getCcRecipientsArray() {
 	Address[] array = new Address[recipientsCc.size()];
 	for (int i = 0; i < recipientsCc.size(); i++)
@@ -197,6 +206,11 @@ public class Mail {
 	return array;
     }
 
+    /**
+     * Just convert a list to array.
+     * 
+     * @return a array of recipients
+     */
     private Address[] getBccRecipientsArray() {
 	Address[] array = new Address[recipientsBcc.size()];
 	for (int i = 0; i < recipientsBcc.size(); i++)

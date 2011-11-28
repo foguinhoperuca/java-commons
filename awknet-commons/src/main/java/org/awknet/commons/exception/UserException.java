@@ -31,12 +31,12 @@ public class UserException extends Exception {
     public static int PASSWORD_ERROR = 1;
     private int code;
 
-    public UserException(int _error) {
-	this.code = _error;
+    public UserException(int error) {
+	this.code = error;
     }
 
-    public UserException(UserExceptionType _error) {
-	this.code = _error.getType();
+    public UserException(UserExceptionType error) {
+	this.code = error.getType();
     }
 
     @Override
