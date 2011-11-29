@@ -18,7 +18,6 @@
 
 package org.awknet.commons.mail;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -67,7 +66,8 @@ public class Mail {
 	deleteDuplicates();
 
 	Properties javaMailProperties = new Properties();
-	javaMailProperties.load(new FileInputStream("awknet-commons.properties"));
+	javaMailProperties.load(getClass().getResourceAsStream(
+		"/awknet-commons.properties"));
 
 	final String mailUsername = javaMailProperties
 		.getProperty("mail.autentication.username");

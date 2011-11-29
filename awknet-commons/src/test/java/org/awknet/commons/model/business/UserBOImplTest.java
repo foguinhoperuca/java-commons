@@ -22,23 +22,29 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.security.NoSuchAlgorithmException;
+
 import org.awknet.commons.data.DaoFactory;
 import org.awknet.commons.exception.UserException;
 import org.awknet.commons.model.entity.User;
 import org.junit.Before;
 import org.junit.Test;
 
+// FIXME update tests to reflect new implementations.
 public class UserBOImplTest {
 
     private DaoFactory daoFactory;
     private UserBOImpl instance;
     private User simple;
+    private String subject, mailText;
 
     @Before
     public void setUp() throws Exception {
 	daoFactory = new DaoFactory();
 	instance = new UserBOImpl(daoFactory);
 	simple = daoFactory.getUserDao().load(new Long(3));
+	subject = "[TEST] UserBOImpl email subject.";
+	mailText = "[TEST] UserBOImpl email mailText.";
     }
 
     @Test
@@ -73,11 +79,6 @@ public class UserBOImplTest {
     }
 
     // @Test
-    // public void testEncryptPassword() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
     // public void testCreateUser() {
     // fail("Not yet implemented");
     // }
@@ -102,9 +103,12 @@ public class UserBOImplTest {
 	login_someone.setLogin("someone");
 	email_user.setEmail(simple.getEmail());
 
-	assertFalse(instance.sendLinkToRetrievePassword(inexistent_user));
-	assertTrue(instance.sendLinkToRetrievePassword(login_someone));
-	assertTrue(instance.sendLinkToRetrievePassword(email_user));
+	assertFalse(instance.sendLinkToRetrievePassword(inexistent_user,
+		subject, mailText));
+	assertTrue(instance.sendLinkToRetrievePassword(login_someone, subject,
+		mailText));
+	assertTrue(instance.sendLinkToRetrievePassword(email_user, subject,
+		mailText));
     }
 
     @Test(expected = UserException.class)
@@ -112,7 +116,7 @@ public class UserBOImplTest {
 	User password_user = new User();
 	password_user.setPassword(simple.getPassword());
 
-	instance.sendLinkToRetrievePassword(password_user);
+	instance.sendLinkToRetrievePassword(password_user, subject, mailText);
     }
 
     @Test(expected = UserException.class)
@@ -120,6 +124,6 @@ public class UserBOImplTest {
 	User id_user = new User();
 	id_user.setID(new Long(1));
 
-	instance.sendLinkToRetrievePassword(id_user);
+	instance.sendLinkToRetrievePassword(id_user, subject, mailText);
     }
 }

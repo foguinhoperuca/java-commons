@@ -18,7 +18,6 @@
 
 package org.awknet.commons.model.business;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -35,7 +34,10 @@ import org.awknet.commons.exception.UserExceptionType;
 import org.awknet.commons.mail.Mail;
 import org.awknet.commons.mail.RecipientType;
 import org.awknet.commons.model.entity.User;
+import org.awknet.commons.security.Encryption;
 
+// TODO implement a "validator" for user
+// TODO create link to send in email. (use ip and what to create link?)
 public class UserBOImpl {
 
     private User user;
@@ -96,21 +98,22 @@ public class UserBOImpl {
      * This function encrypt the password with MD5 method.
      * </p>
      * 
-     * @param pwd
+     * @param password
      *            : a password to be encrypt.
      * @return A encrypted password.
-     * @since SIGERAR v1.1 - Apr/2008.
      * @throws NoSuchAlgorithmException
      */
+    // TODO test it!
     protected String encryptPassword(String password)
 	    throws NoSuchAlgorithmException {
-	MessageDigest md = MessageDigest.getInstance("MD5");
-	BigInteger hash = new BigInteger(1, md.digest(password.getBytes()));
-	String encryptedPassword = hash.toString(16);
-	if (encryptedPassword.length() % 2 != 0) {
-	    encryptedPassword = "0" + encryptedPassword;
-	}
-	return encryptedPassword;
+	// MessageDigest md = MessageDigest.getInstance("MD5");
+	// BigInteger hash = new BigInteger(1, md.digest(password.getBytes()));
+	// String encryptedPassword = hash.toString(16);
+	// if (encryptedPassword.length() % 2 != 0) {
+	// encryptedPassword = "0" + encryptedPassword;
+	// }
+	// return encryptedPassword;
+	return Encryption.encrypt(password);
     }
 
     /**
@@ -125,7 +128,7 @@ public class UserBOImpl {
      * 
      * @param name
      *            : A name to get login.
-     * @param usuario
+     * @param entity
      *            : A user to be filled.
      * @since SIGERAR v1.1 - Apr/2008.
      */
@@ -164,7 +167,7 @@ public class UserBOImpl {
 		equal = true;
 
 	} catch (NoSuchAlgorithmException ex) {
-	    LOG.error("Error during the encryptation of password!", ex);
+	    LOG.error("[CRYPT] Error during the encryptation of password!", ex);
 	} catch (Exception ex) {
 	    LOG.error("Error during the verification of user!", ex);
 	}
@@ -190,34 +193,70 @@ public class UserBOImpl {
     }
 
     /**
+     * Send a link to retrieve a password. Don't implement it self, but call
+     * sendLinkToRetrievePassword(User entity, String subject, String mailText)
+     * and load properties from file. <br/>
+     * If file name is null, use default file: /awknet-commons.properties
+     * 
+     * @param entity
+     *            a user without password or ID.
+     * @param fileName
+     *            if null, use default file: /awknet-commons.properties
+     * @return call sendLinkToRetrievePassword(User entity, String subject,
+     *         String mailText) and return a boolean
+     * @throws UserException
+     */
+    // FIXME must implement http://sourcemaking.com/design_patterns/null_object
+    public boolean sendLinkToRetrievePassword(User entity, String fileName)
+	    throws UserException {
+	String subject, mailText;
+	Properties mailProperties = new Properties();
+
+	if (fileName.equals("") || fileName.equals(null))
+	    fileName = "/awknet-commons.properties";
+
+	try {
+	    mailProperties.load(getClass().getResourceAsStream(fileName));
+	    subject = mailProperties
+		    .getProperty("mail.retrievePassword.subject");
+	    mailText = mailProperties
+		    .getProperty("mail.retrievePassword.mailText");
+	    return sendLinkToRetrievePassword(entity, subject, mailText);
+	} catch (IOException e) {
+	    LOG.error("Error handling with properties of app.", e);
+	}
+	return false;
+    }
+
+    /**
      * Send a link to retrieve a password.
      * 
      * @param entity
      *            a user without password or ID.
+     * @param subject
+     *            defined by user.
+     * @param mailText
+     *            body of e-mail defined by user.
      * @return true if find and send a email to retrieve password.
      * @throws UserException
      */
-    // FIXME import data from another file than awknet-commons.properties
-    public boolean sendLinkToRetrievePassword(User entity) throws UserException {
+    // FIXME email is mandatory!
+    public boolean sendLinkToRetrievePassword(User entity, String subject,
+	    String mailText) throws UserException {
 	boolean success = false;
 	Mail mail;
-	Properties mailProperties = new Properties();
-
 	if (entity.getPassword() != null)
 	    throw new UserException(UserExceptionType.PASSWORD);
-
 	else if (entity.getID() != null)
 	    throw new UserException(UserExceptionType.ID);
 
 	user = daoFactory.getUserDao().loadByExample(entity);
 	if (user != null) {
 	    try {
-		mailProperties.load(new FileInputStream("awknet-commons.properties"));
-		mail = new Mail(
-			mailProperties
-				.getProperty("mail.retrievePassword.subject"),
-			mailProperties
-				.getProperty("mail.retrievePassword.mailText"));
+		if (user.getEmail().equals(null))
+		    throw new UserException(UserExceptionType.EMAIL_NULL);
+
+		mail = new Mail(subject, mailText);
 		mail.addMailRecipient(RecipientType.RECIPIENT_TYPE_TO,
 			user.getEmail());
 		mail.send();
@@ -291,6 +330,8 @@ public class UserBOImpl {
     // userSecurityRepository.save(user);
     // }
     //
+    // /**************************************************************************/
+    //
     // protected boolean isValidRequest(Date requestDate) {
     // int days = SystemMessageAcessor
     // .getPropertyAsInteger("request.activation.form.valid.until.days");
@@ -302,6 +343,8 @@ public class UserBOImpl {
     // GregorianCalendar currentDate = new GregorianCalendar();
     // return currentDate.before(dateGenerateLink);
     // }
+    //
+    // /**************************************************************************/
     //
     // public void activationUser(Long requestId, Long userId, String ip)
     // throws ActivationUserError {

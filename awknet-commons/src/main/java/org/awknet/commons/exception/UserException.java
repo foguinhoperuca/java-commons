@@ -27,8 +27,10 @@ public class UserException extends Exception {
     private static final Log LOG = LogFactory.getLog(UserException.class);
     public static String MSG_ID_ERROR = "NOSENSE a user with ID!";
     public static String MSG_PASSWORD_ERROR = "NOSENSE a user with PASSWORD!";
+    public static String MSG_EMAIL_NULL_ERROR = "user without PASSWORD in DB!";
     public static int ID_ERROR = 0;
     public static int PASSWORD_ERROR = 1;
+    public static int MAIL_NULL = 2;
     private int code;
 
     public UserException(int error) {
@@ -48,6 +50,9 @@ public class UserException extends Exception {
 	case 1:
 	    LOG.error(UserException.MSG_PASSWORD_ERROR);
 	    return UserException.MSG_PASSWORD_ERROR;
+	case 2:
+	    LOG.error(UserException.MSG_EMAIL_NULL_ERROR);
+	    return UserException.MSG_EMAIL_NULL_ERROR;
 	default:
 	     LOG.error("NOSENSE!!! - USER WITH PASSWORD AND ID!");
 	    return "NOSENSE!!!";

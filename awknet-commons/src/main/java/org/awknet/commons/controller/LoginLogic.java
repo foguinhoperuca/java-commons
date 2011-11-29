@@ -29,7 +29,7 @@ import org.vraptor.annotations.InterceptedBy;
 import org.vraptor.annotations.Out;
 import org.vraptor.scope.ScopeType;
 
-// FIXME pre-compile a .jsp with form - without css - maybe use gwt
+// TODO pre-compile a .jsp with form (without css or using a default). Maybe use gwt
 @Component
 @InterceptedBy(DaoInterceptor.class)
 public class LoginLogic {
