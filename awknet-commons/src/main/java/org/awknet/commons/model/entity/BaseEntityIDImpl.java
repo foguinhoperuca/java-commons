@@ -27,7 +27,7 @@ import javax.persistence.MappedSuperclass;
 import org.apache.commons.lang.builder.EqualsBuilder;
 
 @MappedSuperclass
-public class BaseEntityIDImpl implements BaseEntity {
+public class BaseEntityIDImpl<T> implements BaseEntity<T> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,6 +49,7 @@ public class BaseEntityIDImpl implements BaseEntity {
 	ID = iD;
     }
 
+    // FIXME type safety unchecked!
     public boolean equals(Object obj) {
 
 	if (obj == null)
@@ -57,7 +58,7 @@ public class BaseEntityIDImpl implements BaseEntity {
 	if (!(obj instanceof BaseEntityIDImpl))
 	    return false;
 
-	BaseEntityIDImpl element = (BaseEntityIDImpl) obj;
+	BaseEntityIDImpl<T> element = (BaseEntityIDImpl<T>) obj;
 
 	if (this == element)
 	    return true;
@@ -74,13 +75,15 @@ public class BaseEntityIDImpl implements BaseEntity {
     }
 
     @Override
-    public Long retriveBasicID() {
-	return this.getID();
+    // FIXME type safety unchecked!
+    public T retrieveBasicID() {
+	return (T) this.getID();
     }
 
     @Override
-    public void defineBasicID(Long id) {
-	setID(id);
+    // FIXME type safety unchecked!
+    public void defineBasicID(T id) {
+	setID((Long) id);
     }
 
 }

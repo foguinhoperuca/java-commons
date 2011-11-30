@@ -38,10 +38,10 @@ public class Encryption {
      * @param value
      *            : a password to be encrypt.
      * @return A encrypted password.
-     * @since SIGERAR v1.1 - Apr/2008.
+     * @since SIGERAR v1.1 - April/2008.
      * @throws NoSuchAlgorithmException
      */
-    public String genericEncrypt(String value) throws NoSuchAlgorithmException {
+    public String genericEncryptMD5(String value) throws NoSuchAlgorithmException {
 	MessageDigest md = MessageDigest.getInstance("MD5");
 	BigInteger hash = new BigInteger(1, md.digest(value.getBytes()));
 	String encryptedValue = hash.toString(16);
@@ -53,7 +53,7 @@ public class Encryption {
 
     public static String encrypt(String value) {
 	try {
-	    return new Encryption().genericEncrypt(value);
+	    return new Encryption().genericEncryptMD5(value);
 	} catch (NoSuchAlgorithmException e) {
 	    LOG.error("[CRYPT] Error during the encryptation of password!", e);
 	}

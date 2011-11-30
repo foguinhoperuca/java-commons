@@ -19,9 +19,9 @@
 package org.awknet.commons.model.business;
 
 import java.io.IOException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Properties;
 
 import javax.mail.MessagingException;
@@ -33,13 +33,15 @@ import org.awknet.commons.exception.UserException;
 import org.awknet.commons.exception.UserExceptionType;
 import org.awknet.commons.mail.Mail;
 import org.awknet.commons.mail.RecipientType;
+import org.awknet.commons.model.entity.RetrievePasswordLog;
 import org.awknet.commons.model.entity.User;
 import org.awknet.commons.security.Encryption;
+import org.hibernate.exception.ConstraintViolationException;
 
 // TODO implement a "validator" for user
 // TODO create link to send in email. (use ip and what to create link?)
 public class UserBOImpl {
-
+    private static final String DEFAULT_PROPERTIES_FILE = "/awknet-commons.properties";
     private User user;
     private DaoFactory daoFactory;
     private static final Log LOG = LogFactory.getLog(UserBOImpl.class);
@@ -61,36 +63,37 @@ public class UserBOImpl {
      * @return correct login.
      */
     protected String rewriteLogin(String login) {
-	login = login.toLowerCase();
-	login = login.replace("ç", "c");
-	login = login.replace("ñ", "n");
-	login = login.replace("á", "a");
-	login = login.replace("à", "a");
-	login = login.replace("ã", "a");
-	login = login.replace("â", "a");
-	login = login.replace("ä", "a");
-	login = login.replace("é", "e");
-	login = login.replace("è", "e");
-	login = login.replace("ẽ", "e");
-	login = login.replace("ê", "e");
-	login = login.replace("ë", "e");
-	login = login.replace("í", "i");
-	login = login.replace("ì", "i");
-	login = login.replace("ĩ", "i");
-	login = login.replace("î", "i");
-	login = login.replace("ï", "i");
-	login = login.replace("ó", "o");
-	login = login.replace("ò", "o");
-	login = login.replace("õ", "o");
-	login = login.replace("ô", "o");
-	login = login.replace("ö", "o");
-	login = login.replace("ú", "u");
-	login = login.replace("ù", "u");
-	login = login.replace("ũ", "u");
-	login = login.replace("û", "u");
-	login = login.replace("ü", "u");
+	String newLogin = login.toLowerCase();
 
-	return login;
+	newLogin = newLogin.replace("ç", "c");
+	newLogin = newLogin.replace("ñ", "n");
+	newLogin = newLogin.replace("á", "a");
+	newLogin = newLogin.replace("à", "a");
+	newLogin = newLogin.replace("ã", "a");
+	newLogin = newLogin.replace("â", "a");
+	newLogin = newLogin.replace("ä", "a");
+	newLogin = newLogin.replace("é", "e");
+	newLogin = newLogin.replace("è", "e");
+	newLogin = newLogin.replace("ẽ", "e");
+	newLogin = newLogin.replace("ê", "e");
+	newLogin = newLogin.replace("ë", "e");
+	newLogin = newLogin.replace("í", "i");
+	newLogin = newLogin.replace("ì", "i");
+	newLogin = newLogin.replace("ĩ", "i");
+	newLogin = newLogin.replace("î", "i");
+	newLogin = newLogin.replace("ï", "i");
+	newLogin = newLogin.replace("ó", "o");
+	newLogin = newLogin.replace("ò", "o");
+	newLogin = newLogin.replace("õ", "o");
+	newLogin = newLogin.replace("ô", "o");
+	newLogin = newLogin.replace("ö", "o");
+	newLogin = newLogin.replace("ú", "u");
+	newLogin = newLogin.replace("ù", "u");
+	newLogin = newLogin.replace("ũ", "u");
+	newLogin = newLogin.replace("û", "u");
+	newLogin = newLogin.replace("ü", "u");
+
+	return newLogin;
     }
 
     /**
@@ -207,13 +210,14 @@ public class UserBOImpl {
      * @throws UserException
      */
     // FIXME must implement http://sourcemaking.com/design_patterns/null_object
+    // FIXME merge it with sendLinkToRetrievePassword
     public boolean sendLinkToRetrievePassword(User entity, String fileName)
 	    throws UserException {
 	String subject, mailText;
 	Properties mailProperties = new Properties();
 
-	if (fileName.equals("") || fileName.equals(null))
-	    fileName = "/awknet-commons.properties";
+	if (fileName.equals("") || fileName == null)
+	    fileName = DEFAULT_PROPERTIES_FILE;
 
 	try {
 	    mailProperties.load(getClass().getResourceAsStream(fileName));
@@ -221,7 +225,8 @@ public class UserBOImpl {
 		    .getProperty("mail.retrievePassword.subject");
 	    mailText = mailProperties
 		    .getProperty("mail.retrievePassword.mailText");
-	    return sendLinkToRetrievePassword(entity, subject, mailText);
+	    return sendLinkToRetrievePassword(entity, subject, mailText,
+		    fileName);
 	} catch (IOException e) {
 	    LOG.error("Error handling with properties of app.", e);
 	}
@@ -242,7 +247,7 @@ public class UserBOImpl {
      */
     // FIXME email is mandatory!
     public boolean sendLinkToRetrievePassword(User entity, String subject,
-	    String mailText) throws UserException {
+	    String mailText, String fileName) throws UserException {
 	boolean success = false;
 	Mail mail;
 	if (entity.getPassword() != null)
@@ -253,10 +258,11 @@ public class UserBOImpl {
 	user = daoFactory.getUserDao().loadByExample(entity);
 	if (user != null) {
 	    try {
-		if (user.getEmail().equals(null))
+		// TODO email validation.
+		if (user.getEmail().equals("") || user.getEmail() == null)
 		    throw new UserException(UserExceptionType.EMAIL_NULL);
 
-		mail = new Mail(subject, mailText);
+		mail = new Mail(subject, mailText, fileName);
 		mail.addMailRecipient(RecipientType.RECIPIENT_TYPE_TO,
 			user.getEmail());
 		mail.send();
@@ -273,6 +279,51 @@ public class UserBOImpl {
 		    + entity.getEmail() + " -- NOT FOUND!");
 	}
 	return success;
+    }
+
+    /**
+     * Create a code basead in:<br/>
+     * retrieveCode = id_user + login + email + actual date<br/>
+     * If the code is already in DB, will throw a exception (the code must be
+     * unique!)!
+     * 
+     * @param userID
+     * @return a retrieve code to password
+     * @throws UserException
+     */
+    // FIXME getTime: must have millisecond precision! Use JODA TIME!
+    public String generateCodeToRetrievePassword(Long userID)
+	    throws UserException {
+
+	String retrieveCode;
+	Date dateRequestedNewPassword = Calendar.getInstance().getTime();
+	RetrievePasswordLog rpLog;
+
+	if (userID == null)
+	    throw new UserException(UserExceptionType.ID);
+
+	User entity = daoFactory.getUserDao().load(userID);
+	if (entity == null)
+	    throw new UserException(UserExceptionType.ID);
+
+	retrieveCode = Encryption.encrypt(entity.getID() + entity.getLogin()
+		+ entity.getEmail() + dateRequestedNewPassword.toString());
+
+	try {
+	    daoFactory.beginTransaction();
+	    rpLog = new RetrievePasswordLog(retrieveCode, userID,
+		    "172.16.1.110", dateRequestedNewPassword, false);
+	    daoFactory.getRegisterDao(RetrievePasswordLog.class).save(rpLog);
+	    daoFactory.commit();
+	} catch (ConstraintViolationException e) {
+	    LOG.error("[RETRIEVE PASSWORD] code not saved in DB.", e);
+	    return null;
+	} catch (Exception e) {
+	    LOG.error("[RETRIEVE PASSWORD] generic error in DB.", e);
+	    return null;
+	}
+
+	return retrieveCode;
     }
     /******************************************************************************/
 
@@ -316,6 +367,8 @@ public class UserBOImpl {
     //
     // messageService.sendThreadMail(mail);
     // }
+    //
+    // /**************************************************************************/
     //
     // private void saveUser(User user) {
     // String encodePassword = Md5Encoder.getInstance().encodePassword(

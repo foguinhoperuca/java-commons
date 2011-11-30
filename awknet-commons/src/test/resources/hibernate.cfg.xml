@@ -12,5 +12,6 @@
 		<property name="show_sql">true</property>
 		<property name="hibernate.format_sql">true</property>
 		<mapping class="org.awknet.commons.model.entity.User" />
+		<mapping class="org.awknet.commons.model.entity.RetrievePasswordLog" />
 	</session-factory>
 </hibernate-configuration>

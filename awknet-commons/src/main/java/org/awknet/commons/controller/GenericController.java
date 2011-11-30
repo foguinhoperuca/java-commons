@@ -20,14 +20,15 @@ package org.awknet.commons.controller;
 
 import java.util.List;
 
-import org.awknet.commons.model.entity.BaseEntityImpl;
+import org.awknet.commons.model.entity.BaseEntityIDImpl;
 
 /**
  * 
  * Generic controller for CRUD web-apps.
  * 
  */
-public interface GenericController<T extends BaseEntityImpl> {
+//FIXME change BaseEntityIDImpl to BaseEntityImpl - use a second generic type?
+public interface GenericController<T extends BaseEntityIDImpl<Long>> {
 
 	public void form(T _entity);
 

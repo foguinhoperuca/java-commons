@@ -18,10 +18,10 @@
 
 package org.awknet.commons.model.entity;
 
-public interface BaseEntity {
+public interface BaseEntity<T> {
 
-    public Long retriveBasicID();
+    public T retrieveBasicID();
 
-    public void defineBasicID(Long id);
+    public void defineBasicID(T id);
 
 }

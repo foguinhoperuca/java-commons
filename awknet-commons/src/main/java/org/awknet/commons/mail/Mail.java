@@ -44,11 +44,14 @@ import org.awknet.commons.model.entity.User;
 
 public class Mail {
     private static final Log LOG = LogFactory.getLog(Mail.class);
+    private static final String DEFAULT_PROPERTIES_FILE = "/awknet-commons.properties";
+    private String fileName;
     private String mailSubject;
     private String mailText;
     private List<Address> recipientsTo, recipientsCc, recipientsBcc;
 
-    public Mail(String subject, String mailText) {
+    public Mail(String subject, String mailText, String fileName) {
+	this.fileName = fileName;
 	this.mailSubject = subject;
 	this.mailText = mailText;
 	recipientsTo = new ArrayList<Address>();
@@ -66,8 +69,11 @@ public class Mail {
 	deleteDuplicates();
 
 	Properties javaMailProperties = new Properties();
-	javaMailProperties.load(getClass().getResourceAsStream(
-		"/awknet-commons.properties"));
+
+	if (fileName.equals("") || fileName == null)
+	    fileName = DEFAULT_PROPERTIES_FILE;
+
+	javaMailProperties.load(getClass().getResourceAsStream(fileName));
 
 	final String mailUsername = javaMailProperties
 		.getProperty("mail.autentication.username");

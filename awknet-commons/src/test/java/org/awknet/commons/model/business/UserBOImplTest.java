@@ -21,8 +21,7 @@ package org.awknet.commons.model.business;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import java.security.NoSuchAlgorithmException;
+import static org.junit.Assert.*;
 
 import org.awknet.commons.data.DaoFactory;
 import org.awknet.commons.exception.UserException;
@@ -33,18 +32,25 @@ import org.junit.Test;
 // FIXME update tests to reflect new implementations.
 public class UserBOImplTest {
 
+    private static final String DEFAULT_PROPERTIES_FILE = "/awknet-commons.properties";
     private DaoFactory daoFactory;
     private UserBOImpl instance;
+    private User root;
+    private User somebody;
     private User simple;
+    private User someone;
     private String subject, mailText;
 
     @Before
     public void setUp() throws Exception {
 	daoFactory = new DaoFactory();
 	instance = new UserBOImpl(daoFactory);
-	simple = daoFactory.getUserDao().load(new Long(3));
 	subject = "[TEST] UserBOImpl email subject.";
 	mailText = "[TEST] UserBOImpl email mailText.";
+	root = daoFactory.getUserDao().load(new Long(1));
+	somebody = daoFactory.getUserDao().load(new Long(2));
+	simple = daoFactory.getUserDao().load(new Long(3));
+	someone = daoFactory.getUserDao().load(new Long(4));
     }
 
     @Test
@@ -104,11 +110,11 @@ public class UserBOImplTest {
 	email_user.setEmail(simple.getEmail());
 
 	assertFalse(instance.sendLinkToRetrievePassword(inexistent_user,
-		subject, mailText));
+		subject, mailText, DEFAULT_PROPERTIES_FILE));
 	assertTrue(instance.sendLinkToRetrievePassword(login_someone, subject,
-		mailText));
+		mailText, DEFAULT_PROPERTIES_FILE));
 	assertTrue(instance.sendLinkToRetrievePassword(email_user, subject,
-		mailText));
+		mailText, DEFAULT_PROPERTIES_FILE));
     }
 
     @Test(expected = UserException.class)
@@ -116,7 +122,8 @@ public class UserBOImplTest {
 	User password_user = new User();
 	password_user.setPassword(simple.getPassword());
 
-	instance.sendLinkToRetrievePassword(password_user, subject, mailText);
+	instance.sendLinkToRetrievePassword(password_user, subject, mailText,
+		DEFAULT_PROPERTIES_FILE);
     }
 
     @Test(expected = UserException.class)
@@ -124,6 +131,26 @@ public class UserBOImplTest {
 	User id_user = new User();
 	id_user.setID(new Long(1));
 
-	instance.sendLinkToRetrievePassword(id_user, subject, mailText);
+	instance.sendLinkToRetrievePassword(id_user, subject, mailText,
+		DEFAULT_PROPERTIES_FILE);
+    }
+
+    @Test
+    public void testGenerateCodeToRetrievePassword() throws UserException  {
+	String rootRetrieveCode = instance.generateCodeToRetrievePassword(root.getID());
+	String somebodyRetrieveCode = instance.generateCodeToRetrievePassword(somebody.getID());
+	String simpleRetrieveCode = instance.generateCodeToRetrievePassword(simple.getID());
+	String someoneRetrieveCode = instance.generateCodeToRetrievePassword(someone.getID());
+
+	assertNotNull(rootRetrieveCode);
+	assertNotNull(somebodyRetrieveCode);
+	assertNotNull(simpleRetrieveCode);
+	assertNotNull(someoneRetrieveCode);
+	
+	System.out.println("Retrieve code generated:");
+	System.out.println(rootRetrieveCode);
+	System.out.println(somebodyRetrieveCode);
+	System.out.println(simpleRetrieveCode);
+	System.out.println(someoneRetrieveCode);
     }
 }

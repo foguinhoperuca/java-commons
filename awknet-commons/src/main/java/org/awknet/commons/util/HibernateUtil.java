@@ -25,7 +25,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 
-// FIXME @SuppressWarnings("deprecation") - need it?
+// FIXME verify doc - new use of HibernateUtil
 @SuppressWarnings("deprecation")
 public class HibernateUtil {
 

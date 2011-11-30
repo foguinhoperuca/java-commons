@@ -75,17 +75,17 @@ public class EncryptionTest {
 	// System.out.println(instance.genericEncrypt("CR4CK3R"));
 	// System.out.println(instance.genericEncrypt("123456"));
 
-	assertEquals(pass_A12345678a, instance.genericEncrypt("A12345678a"));
-	assertEquals(pass_somePass, instance.genericEncrypt("someP@ss"));
-	assertEquals(pass_adminadmin, instance.genericEncrypt("adminadmin"));
-	assertEquals(pass_masterkey, instance.genericEncrypt("masterkey"));
-	assertEquals(pass_xpto, instance.genericEncrypt("xpto"));
+	assertEquals(pass_A12345678a, instance.genericEncryptMD5("A12345678a"));
+	assertEquals(pass_somePass, instance.genericEncryptMD5("someP@ss"));
+	assertEquals(pass_adminadmin, instance.genericEncryptMD5("adminadmin"));
+	assertEquals(pass_masterkey, instance.genericEncryptMD5("masterkey"));
+	assertEquals(pass_xpto, instance.genericEncryptMD5("xpto"));
 	assertEquals(pass_securePassword,
-		instance.genericEncrypt("S3cur3P@ssw0rd"));
-	assertEquals(pass_lammer, instance.genericEncrypt("L4MM3R"));
-	assertEquals(pass_hoax_booter, instance.genericEncrypt("H0ax_B00t3r"));
-	assertEquals(pass_cracker, instance.genericEncrypt("CR4CK3R"));
-	assertEquals(pass_123456, instance.genericEncrypt("123456"));
+		instance.genericEncryptMD5("S3cur3P@ssw0rd"));
+	assertEquals(pass_lammer, instance.genericEncryptMD5("L4MM3R"));
+	assertEquals(pass_hoax_booter, instance.genericEncryptMD5("H0ax_B00t3r"));
+	assertEquals(pass_cracker, instance.genericEncryptMD5("CR4CK3R"));
+	assertEquals(pass_123456, instance.genericEncryptMD5("123456"));
 	System.out.println("Testing Ecnryptation DONE!");
     }
 

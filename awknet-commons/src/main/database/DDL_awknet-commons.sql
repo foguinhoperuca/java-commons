@@ -23,3 +23,13 @@ CREATE TABLE TUser (
     email VARCHAR(100),
     PRIMARY KEY (ID)
 );
+
+CREATE TABLE TRetrieve_Password_LOG (
+    retrieveCode VARCHAR(32),
+    userID INT(10) NOT NULL,
+    IP VARCHAR(15),
+    request DATETIME NOT NULL,
+    updated BOOLEAN,
+    PRIMARY KEY (retrieveCode),
+    FOREIGN KEY (userID) REFERENCES TUser(ID)
+);

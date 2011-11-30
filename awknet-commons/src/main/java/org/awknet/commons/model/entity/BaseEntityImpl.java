@@ -19,18 +19,19 @@
 package org.awknet.commons.model.entity;
 
 import java.io.Serializable;
+
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public abstract class BaseEntityImpl implements Serializable, BaseEntity {
+public abstract class BaseEntityImpl<T> implements Serializable, BaseEntity<T> {
 
     private static final long serialVersionUID = -7242252481157329335L;
 
     public BaseEntityImpl() {
     }
 
-    public abstract Long retriveBasicID();
+    public abstract T retrieveBasicID();
 
-    public abstract void defineBasicID(Long id);
+    public abstract void defineBasicID(T id);
 
 }

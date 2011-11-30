@@ -24,11 +24,11 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
-// FIXME create a diferent user only with login and password
+// TODO create a diferent user only with login and password
 @Entity
 @Table(name = "TUser")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class User extends BaseEntityIDImpl implements java.io.Serializable {
+public class User extends BaseEntityIDImpl<Long> implements java.io.Serializable {
 
     private static final long serialVersionUID = 6450793412169953366L;
     private String login;
@@ -72,7 +72,7 @@ public class User extends BaseEntityIDImpl implements java.io.Serializable {
     }
 
     @Override
-    public Long retriveBasicID() {
+    public Long retrieveBasicID() {
 	return getID();
     }
 

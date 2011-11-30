@@ -22,10 +22,11 @@ import java.util.List;
 
 import org.awknet.commons.data.DaoFactory;
 import org.awknet.commons.model.business.RegisterBOImpl;
-import org.awknet.commons.model.entity.BaseEntityImpl;
+import org.awknet.commons.model.entity.BaseEntityIDImpl;
 
-//TODO implement default form method
-public class GenericControllerBOImpl<T extends BaseEntityImpl> implements
+// TODO implement default form method
+// FIXME change BaseEntityIDImpl to BaseEntityImpl - use a second generic type? 
+public class GenericControllerBOImpl<T extends BaseEntityIDImpl<Long>> implements
 	GenericController<T> {
 
     protected final RegisterBOImpl<T> register;
@@ -40,8 +41,8 @@ public class GenericControllerBOImpl<T extends BaseEntityImpl> implements
     @Override
     public void form(T _entity) {
 	entities = register.listAll();
-	if (_entity.retriveBasicID() != null) {
-	    entity = register.load(_entity.retriveBasicID());
+	if (_entity.retrieveBasicID() != null) {
+	    entity = register.load(_entity.retrieveBasicID());
 	}
     }
 
@@ -63,7 +64,7 @@ public class GenericControllerBOImpl<T extends BaseEntityImpl> implements
 
     @Override
     public T load(T _entity) {
-	return register.load(_entity.retriveBasicID());
+	return register.load(_entity.retrieveBasicID());
     }
 
     @Override

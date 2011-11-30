@@ -19,9 +19,12 @@
 package org.awknet.commons.data;
 
 import org.awknet.commons.model.entity.BaseEntity;
+import org.awknet.commons.model.entity.RetrievePasswordLog;
 
+// FIXME Use reflection to get class name in runtime
+// TODO Use a specific DaoFactory to awknet-commons entity's
 public class DaoFactory extends GenericDaoFactory {
-    // FIXME Use reflection to get class name in runtime
+
     @SuppressWarnings("rawtypes")
     public <T extends BaseEntity> Dao<T> getRegisterDao(Class _clazz) {
 	return new Dao<T>(super.getSession(), _clazz);
