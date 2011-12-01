@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Properties;
 
 import javax.mail.MessagingException;
@@ -29,6 +30,8 @@ import javax.mail.MessagingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.awknet.commons.data.DaoFactory;
+import org.awknet.commons.exception.RetrieveCodeException;
+import org.awknet.commons.exception.RetrieveCodeExceptionType;
 import org.awknet.commons.exception.UserException;
 import org.awknet.commons.exception.UserExceptionType;
 import org.awknet.commons.mail.Mail;
@@ -39,7 +42,6 @@ import org.awknet.commons.security.Encryption;
 import org.hibernate.exception.ConstraintViolationException;
 
 // TODO implement a "validator" for user
-// TODO create link to send in email. (use ip and what to create link?)
 public class UserBOImpl {
     private static final String DEFAULT_PROPERTIES_FILE = "/awknet-commons.properties";
     private User user;
@@ -135,7 +137,12 @@ public class UserBOImpl {
      *            : A user to be filled.
      * @since SIGERAR v1.1 - Apr/2008.
      */
-    public User createUser(User entity, String name) {
+    // FIXME receiving a User as parameter
+    // FIXME create login
+    // FIXME password encryptation
+    // TODO implement unit tests!
+    public User createUser(String name) {
+	User entity = new User();
 	try {
 	    int i = 1;
 	    // String _name = _entity.getStrNomeUsuario();
@@ -246,6 +253,7 @@ public class UserBOImpl {
      * @throws UserException
      */
     // FIXME email is mandatory!
+    // TODO include link to sendo to user
     public boolean sendLinkToRetrievePassword(User entity, String subject,
 	    String mailText, String fileName) throws UserException {
 	boolean success = false;
@@ -282,8 +290,8 @@ public class UserBOImpl {
     }
 
     /**
-     * Create a code basead in:<br/>
-     * retrieveCode = id_user + login + email + actual date<br/>
+     * Create a code based in:<br/>
+     * retrieveCode = id_user + login + email + IP address + actual date<br/>
      * If the code is already in DB, will throw a exception (the code must be
      * unique!)!
      * 
@@ -291,13 +299,15 @@ public class UserBOImpl {
      * @return a retrieve code to password
      * @throws UserException
      */
-    // FIXME getTime: must have millisecond precision! Use JODA TIME!
-    public String generateCodeToRetrievePassword(Long userID)
-	    throws UserException {
+    public String generateCodeToRetrievePassword(Long userID, String ip)
+	    throws UserException, RetrieveCodeException {
 
 	String retrieveCode;
 	Date dateRequestedNewPassword = Calendar.getInstance().getTime();
-	RetrievePasswordLog rpLog;
+	RetrievePasswordLog rpLog = new RetrievePasswordLog();
+
+	if (ip.equals("") || ip == null)
+	    throw new RetrieveCodeException(RetrieveCodeExceptionType.IP);
 
 	if (userID == null)
 	    throw new UserException(UserExceptionType.ID);
@@ -307,13 +317,23 @@ public class UserBOImpl {
 	    throw new UserException(UserExceptionType.ID);
 
 	retrieveCode = Encryption.encrypt(entity.getID() + entity.getLogin()
-		+ entity.getEmail() + dateRequestedNewPassword.toString());
+		+ entity.getEmail() + ip + dateRequestedNewPassword.toString());
+
+	if (daoFactory.getRetrievePasswordLogDao().findRetrieveCode(
+		retrieveCode) != null)
+	    throw new RetrieveCodeException(
+		    RetrieveCodeExceptionType.RETRIEVE_CODE);
+
+	rpLog.setRetrieveCode(retrieveCode);
+	rpLog.setUserId(userID);
+	rpLog.setIp(ip);
+	rpLog.setRequest(dateRequestedNewPassword);
+	rpLog.setUpdated(false);
 
 	try {
 	    daoFactory.beginTransaction();
-	    rpLog = new RetrievePasswordLog(retrieveCode, userID,
-		    "172.16.1.110", dateRequestedNewPassword, false);
 	    daoFactory.getRegisterDao(RetrievePasswordLog.class).save(rpLog);
+	    daoFactory.getRetrievePasswordLogDao().save(rpLog);
 	    daoFactory.commit();
 	} catch (ConstraintViolationException e) {
 	    LOG.error("[RETRIEVE PASSWORD] code not saved in DB.", e);
@@ -325,6 +345,52 @@ public class UserBOImpl {
 
 	return retrieveCode;
     }
+
+    /**
+     * Verify if a retrieve code still valid. The default time validation is 2
+     * days.
+     * 
+     * @param requestDate
+     * @return
+     */
+    public boolean isValidRequest(Date requestDate, String retrieveCode)
+	    throws RetrieveCodeException {
+
+	RetrievePasswordLog rpLog = daoFactory.getRetrievePasswordLogDao()
+		.findRetrieveCode(retrieveCode);
+	if (rpLog == null)
+	    throw new RetrieveCodeException(
+		    RetrieveCodeExceptionType.RETRIEVE_CODE);
+
+	// int
+	// days=SystemMessageAcessor.getPropertyAsInteger("request.activation.form.valid.until.days");
+
+	int days = RetrievePasswordLog.DEFAULT_TIME_RETRIEVE_CODE;
+
+	GregorianCalendar currentDate = new GregorianCalendar();
+	GregorianCalendar dateGenerateLink = new GregorianCalendar();
+	dateGenerateLink.setTime(requestDate);
+	dateGenerateLink.add(Calendar.DAY_OF_YEAR, days);
+
+	if (currentDate.before(dateGenerateLink)) {
+	    try {
+		rpLog.setUpdated(true);
+		daoFactory.beginTransaction();
+		daoFactory.getRetrievePasswordLogDao().update(rpLog);
+		daoFactory.commit();
+		return true;
+	    } catch (ConstraintViolationException e) {
+		LOG.error("[VALID REQUEST] code not updated in DB.", e);
+		return false;
+	    } catch (Exception e) {
+		LOG.error("[VALID REQUEST] generic error in DB.", e);
+		return false;
+	    }
+	}
+
+	return false;
+    }
+
     /******************************************************************************/
 
     // public void createUserProspectRequest(User user, String requestIp) {
@@ -381,20 +447,6 @@ public class UserBOImpl {
     // .getSystemMessage("error.duplicated.user.login"));
     //
     // userSecurityRepository.save(user);
-    // }
-    //
-    // /**************************************************************************/
-    //
-    // protected boolean isValidRequest(Date requestDate) {
-    // int days = SystemMessageAcessor
-    // .getPropertyAsInteger("request.activation.form.valid.until.days");
-    //
-    // GregorianCalendar dateGenerateLink = new GregorianCalendar();
-    // dateGenerateLink.setTime(requestDate);
-    // dateGenerateLink.add(Calendar.DAY_OF_YEAR, days);
-    //
-    // GregorianCalendar currentDate = new GregorianCalendar();
-    // return currentDate.before(dateGenerateLink);
     // }
     //
     // /**************************************************************************/

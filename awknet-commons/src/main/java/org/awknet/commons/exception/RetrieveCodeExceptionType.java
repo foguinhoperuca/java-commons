@@ -16,17 +16,15 @@
  * along with awknet-commons. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.awknet.commons.mail;
+package org.awknet.commons.exception;
 
-// FIXME java mail library already have recipient type!
-public enum RecipientType {
-
-    RECIPIENT_TYPE_TO(0), RECIPIENT_TYPE_CC(1), RECIPIENT_TYPE_BCC(3);
+public enum RetrieveCodeExceptionType {
+    RETRIEVE_CODE(0), LOGIN(1), EMAIL(2), IP(3), DATE(4);
 
     private int type;
 
-    RecipientType(int type) {
-	this.type = type;
+    RetrieveCodeExceptionType(int _type) {
+	this.type = _type;
     }
 
     public int getType() {

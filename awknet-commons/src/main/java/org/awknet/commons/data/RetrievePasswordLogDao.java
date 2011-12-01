@@ -6,7 +6,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Awknet-commons is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,21 +16,29 @@
  * along with awknet-commons. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.awknet.commons.mail;
+package org.awknet.commons.data;
 
-// FIXME java mail library already have recipient type!
-public enum RecipientType {
+import org.awknet.commons.model.entity.RetrievePasswordLog;
+import org.hibernate.Query;
+import org.hibernate.Session;
 
-    RECIPIENT_TYPE_TO(0), RECIPIENT_TYPE_CC(1), RECIPIENT_TYPE_BCC(3);
+public class RetrievePasswordLogDao extends Dao<RetrievePasswordLog> {
 
-    private int type;
-
-    RecipientType(int type) {
-	this.type = type;
+    public RetrievePasswordLogDao(Session session) {
+	super(session, RetrievePasswordLog.class);
     }
 
-    public int getType() {
-	return type;
-    }
+    /**
+     * Find a retrieve code already in DB.
+     * @param rpLog
+     * @return
+     */
+    public RetrievePasswordLog findRetrieveCode(String retrieveCode) {
+	String hql = "SELECT r FROM RetrievePasswordLog AS r "
+		+ "WHERE r.retrieveCode = :retrieveCode";
+	Query query = getSession().createQuery(hql);
+	query.setParameter("retrieveCode", retrieveCode);
 
+	return (RetrievePasswordLog) query.uniqueResult();
+    }
 }

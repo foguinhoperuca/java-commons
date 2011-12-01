@@ -19,7 +19,6 @@
 package org.awknet.commons.data;
 
 import org.awknet.commons.model.entity.BaseEntity;
-import org.awknet.commons.model.entity.RetrievePasswordLog;
 
 // FIXME Use reflection to get class name in runtime
 // TODO Use a specific DaoFactory to awknet-commons entity's
@@ -32,5 +31,9 @@ public class DaoFactory extends GenericDaoFactory {
 
     public UserDao getUserDao() {
 	return new UserDao(super.getSession());
+    }
+
+    public RetrievePasswordLogDao getRetrievePasswordLogDao() {
+	return new RetrievePasswordLogDao(super.getSession());
     }
 }

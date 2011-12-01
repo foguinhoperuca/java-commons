@@ -45,8 +45,8 @@ public class BaseEntityIDImpl<T> implements BaseEntity<T> {
 	return ID;
     }
 
-    public void setID(Long iD) {
-	ID = iD;
+    public void setID(Long id) {
+	ID = id;
     }
 
     // FIXME type safety unchecked!

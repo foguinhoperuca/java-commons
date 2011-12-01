@@ -37,11 +37,17 @@ public class User extends BaseEntityIDImpl<Long> implements java.io.Serializable
 
     public User() {
     }
+    
+    public User(Long id, String login, String password, String email) {
+	super.setID(id);
+	this.login = login;
+	this.password = password;
+	this.email = email;
+    }
 
-    public User(String _login, String _password) {
-	this.login = _login;
-	this.password = _password;
-
+    public User(String login, String password) {
+	this.login = login;
+	this.password = password;
     }
 
     @Column(name = "login", length = 30)
@@ -53,7 +59,7 @@ public class User extends BaseEntityIDImpl<Long> implements java.io.Serializable
 	this.login = _login;
     }
 
-    @Column(name = "-password", length = 40)
+    @Column(name = "password", length = 40)
     public String getPassword() {
 	return this.password;
     }
@@ -73,11 +79,11 @@ public class User extends BaseEntityIDImpl<Long> implements java.io.Serializable
 
     @Override
     public Long retrieveBasicID() {
-	return getID();
+	return super.getID();
     }
 
     @Override
     public void defineBasicID(Long id) {
-	setID(id);
+	super.setID(id);
     }
 }

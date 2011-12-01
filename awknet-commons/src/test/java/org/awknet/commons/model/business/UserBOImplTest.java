@@ -20,11 +20,15 @@ package org.awknet.commons.model.business;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.*;
+
+import java.util.Date;
 
 import org.awknet.commons.data.DaoFactory;
+import org.awknet.commons.exception.RetrieveCodeException;
 import org.awknet.commons.exception.UserException;
+import org.awknet.commons.model.entity.RetrievePasswordLog;
 import org.awknet.commons.model.entity.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,12 +37,14 @@ import org.junit.Test;
 public class UserBOImplTest {
 
     private static final String DEFAULT_PROPERTIES_FILE = "/awknet-commons.properties";
+    private static final String IP = "172.16.1.110";
     private DaoFactory daoFactory;
     private UserBOImpl instance;
     private User root;
     private User somebody;
     private User simple;
     private User someone;
+    private User jcampos6669;
     private String subject, mailText;
 
     @Before
@@ -51,6 +57,8 @@ public class UserBOImplTest {
 	somebody = daoFactory.getUserDao().load(new Long(2));
 	simple = daoFactory.getUserDao().load(new Long(3));
 	someone = daoFactory.getUserDao().load(new Long(4));
+	jcampos6669 = new User(new Long(6669), "jcampos6669",
+		"229c3f7e7b9c1be5bfa2f46d90c4ab00", "jcampos6669@awknet.org");
     }
 
     @Test
@@ -86,9 +94,9 @@ public class UserBOImplTest {
 
     // @Test
     // public void testCreateUser() {
-    // fail("Not yet implemented");
+    // assertEquals("jcampos6669", instance.createUser("Jefferson Campos"));
     // }
-    //
+
     // @Test
     // public void testVerifyUser() {
     // fail("Not yet implemented");
@@ -136,21 +144,37 @@ public class UserBOImplTest {
     }
 
     @Test
-    public void testGenerateCodeToRetrievePassword() throws UserException  {
-	String rootRetrieveCode = instance.generateCodeToRetrievePassword(root.getID());
-	String somebodyRetrieveCode = instance.generateCodeToRetrievePassword(somebody.getID());
-	String simpleRetrieveCode = instance.generateCodeToRetrievePassword(simple.getID());
-	String someoneRetrieveCode = instance.generateCodeToRetrievePassword(someone.getID());
+    public void testGenerateCodeToRetrievePassword() throws UserException,
+	    RetrieveCodeException {
+	String rootRetrieveCode = instance.generateCodeToRetrievePassword(
+		root.getID(), IP);
+	String somebodyRetrieveCode = instance.generateCodeToRetrievePassword(
+		somebody.getID(), IP);
+	String simpleRetrieveCode = instance.generateCodeToRetrievePassword(
+		simple.getID(), IP);
+	String someoneRetrieveCode = instance.generateCodeToRetrievePassword(
+		someone.getID(), IP);
 
 	assertNotNull(rootRetrieveCode);
 	assertNotNull(somebodyRetrieveCode);
 	assertNotNull(simpleRetrieveCode);
 	assertNotNull(someoneRetrieveCode);
-	
+
 	System.out.println("Retrieve code generated:");
 	System.out.println(rootRetrieveCode);
 	System.out.println(somebodyRetrieveCode);
 	System.out.println(simpleRetrieveCode);
 	System.out.println(someoneRetrieveCode);
+    }
+
+    @Test
+    // FIXME must run clean up DB script before execute this test!
+    public void testIsValidRequest() throws RetrieveCodeException {
+	RetrievePasswordLog rpLog = new RetrievePasswordLog();
+	rpLog.setUserId(new Long(1));
+	String retrieveCode = daoFactory.getRetrievePasswordLogDao()
+		.loadByExample(rpLog).getRetrieveCode();
+
+	assertTrue(instance.isValidRequest(new Date(), retrieveCode));
     }
 }
