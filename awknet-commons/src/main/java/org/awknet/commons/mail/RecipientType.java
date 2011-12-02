@@ -18,7 +18,6 @@
 
 package org.awknet.commons.mail;
 
-// FIXME [RecipientType] java mail library already have recipient type!
 public enum RecipientType {
 
     RECIPIENT_TYPE_TO(0), RECIPIENT_TYPE_CC(1), RECIPIENT_TYPE_BCC(3);

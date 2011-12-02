@@ -108,16 +108,8 @@ public class UserBOImpl {
 	 * @return A encrypted password.
 	 * @throws NoSuchAlgorithmException
 	 */
-	// TODO [encryptPassword] test it!
 	protected String encryptPassword(String password)
 			throws NoSuchAlgorithmException {
-		// MessageDigest md = MessageDigest.getInstance("MD5");
-		// BigInteger hash = new BigInteger(1, md.digest(password.getBytes()));
-		// String encryptedPassword = hash.toString(16);
-		// if (encryptedPassword.length() % 2 != 0) {
-		// encryptedPassword = "0" + encryptedPassword;
-		// }
-		// return encryptedPassword;
 		return Encryption.encrypt(password);
 	}
 
