@@ -26,7 +26,6 @@ import org.junit.Test;
 public class CPFBOImplTest {
 
     private CPFBOImpl sameNumber;
-    private CPFBOImpl internal;
     private CPFBOImpl invalid;
     private CPFBOImpl valid;
     private CPFBOImpl clean;
@@ -48,6 +47,8 @@ public class CPFBOImplTest {
     public void testValidate() throws Exception {
 	assertTrue(clean.validate("346104938", 7, 0));
 	assertFalse(invalid.validateInternalCPF());
+	assertFalse(sameNumber.validateInternalCPF());
+	assertTrue(valid.validateInternalCPF());
     }
 
     /*@Test

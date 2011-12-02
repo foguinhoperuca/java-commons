@@ -30,92 +30,92 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "TRetrieve_Password_LOG")
 // FIXME relationship with user must be implemented!
-// TODO rename it to RequestActivationForm
+// FIXME rename it to RequestActivationForm
 public class RetrievePasswordLog extends BaseEntityImpl<String> implements
-	java.io.Serializable {
+		java.io.Serializable {
 
-    private static final long serialVersionUID = 2143850686198332077L;
-    public static final int DEFAULT_TIME_RETRIEVE_CODE = 2;
-    // FIXME use CHAR with CHECK OPTION instead VARCHAR in DB
-    private String retrieveCode;
-    private Long userId;
-    private String ip;
-    // FIXME getTime: must have millisecond precision! Use JODA TIME!
-    private Date request;
-    private Boolean updated;
+	private static final long serialVersionUID = 2143850686198332077L;
+	public static final int DEFAULT_TIME_RETRIEVE_CODE = 2;
+	// FIXME [RetrievePasswordLog] use CHAR with CHECK OPTION instead VARCHAR
+	private String retrieveCode;
+	private Long userId;
+	private String ip;
+	// FIXME [RetrievePasswordLog] millisecond precision! Use JODA TIME!
+	private Date request;
+	private Boolean updated;
 
-    public RetrievePasswordLog() {
-    }
+	public RetrievePasswordLog() {
+	}
 
-    public RetrievePasswordLog(String retrieveCode, Long userId, Date request) {
-	this.retrieveCode = retrieveCode;
-	this.userId = userId;
-	this.request = request;
-    }
+	public RetrievePasswordLog(String retrieveCode, Long userId, Date request) {
+		this.retrieveCode = retrieveCode;
+		this.userId = userId;
+		this.request = request;
+	}
 
-    public RetrievePasswordLog(String retrieveCode, Long userId, String ip,
-	    Date request, Boolean updated) {
-	this.retrieveCode = retrieveCode;
-	this.userId = userId;
-	this.ip = ip;
-	this.request = request;
-	this.updated = updated;
-    }
+	public RetrievePasswordLog(String retrieveCode, Long userId, String ip,
+			Date request, Boolean updated) {
+		this.retrieveCode = retrieveCode;
+		this.userId = userId;
+		this.ip = ip;
+		this.request = request;
+		this.updated = updated;
+	}
 
-    @Id
-    @Column(name = "retrieveCode", unique = true, nullable = false, length = 32)
-    public String getRetrieveCode() {
-	return this.retrieveCode;
-    }
+	@Id
+	@Column(name = "retrieveCode", unique = true, nullable = false, length = 32)
+	public String getRetrieveCode() {
+		return this.retrieveCode;
+	}
 
-    public void setRetrieveCode(String retrieveCode) {
-	this.retrieveCode = retrieveCode;
-    }
+	public void setRetrieveCode(String retrieveCode) {
+		this.retrieveCode = retrieveCode;
+	}
 
-    @Column(name = "userID", nullable = false)
-    public Long getUserId() {
-	return this.userId;
-    }
+	@Column(name = "userID", nullable = false)
+	public Long getUserId() {
+		return this.userId;
+	}
 
-    public void setUserId(Long userId) {
-	this.userId = userId;
-    }
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
 
-    @Column(name = "IP", length = 15)
-    public String getIp() {
-	return this.ip;
-    }
+	@Column(name = "IP", length = 15)
+	public String getIp() {
+		return this.ip;
+	}
 
-    public void setIp(String ip) {
-	this.ip = ip;
-    }
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "request", nullable = false, length = 10)
-    public Date getRequest() {
-	return this.request;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "request", nullable = false, length = 10)
+	public Date getRequest() {
+		return this.request;
+	}
 
-    public void setRequest(Date request) {
-	this.request = request;
-    }
+	public void setRequest(Date request) {
+		this.request = request;
+	}
 
-    @Column(name = "updated")
-    public Boolean getUpdated() {
-	return this.updated;
-    }
+	@Column(name = "updated")
+	public Boolean getUpdated() {
+		return this.updated;
+	}
 
-    public void setUpdated(Boolean updated) {
-	this.updated = updated;
-    }
+	public void setUpdated(Boolean updated) {
+		this.updated = updated;
+	}
 
-    @Override
-    public String retrieveBasicID() {
-	return getRetrieveCode();
-    }
+	@Override
+	public String retrieveBasicID() {
+		return getRetrieveCode();
+	}
 
-    @Override
-    public void defineBasicID(String id) {
-	setRetrieveCode(id);
-    }
+	@Override
+	public void defineBasicID(String id) {
+		setRetrieveCode(id);
+	}
 }
