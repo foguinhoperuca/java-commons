@@ -18,18 +18,26 @@
 
 package org.awknet.commons.mail;
 
+/**
+ * Return the recipient type (email logic). The types ares: <br/>
+ * <ul>
+ * <li>RECIPIENT_TYPE_TO(0);</li>
+ * <li>RECIPIENT_TYPE_CC(1);</li>
+ * <li>RECIPIENT_TYPE_BCC(2);</li>
+ * </ul>
+ */
 public enum RecipientType {
 
-    RECIPIENT_TYPE_TO(0), RECIPIENT_TYPE_CC(1), RECIPIENT_TYPE_BCC(3);
+	RECIPIENT_TYPE_TO(0), RECIPIENT_TYPE_CC(1), RECIPIENT_TYPE_BCC(2);
 
-    private int type;
+	private int type;
 
-    RecipientType(int type) {
-	this.type = type;
-    }
+	RecipientType(int type) {
+		this.type = type;
+	}
 
-    public int getType() {
-	return type;
-    }
+	public int getType() {
+		return type;
+	}
 
 }

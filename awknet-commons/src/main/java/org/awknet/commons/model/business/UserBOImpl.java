@@ -104,8 +104,8 @@ public class UserBOImpl {
 	 * </p>
 	 * 
 	 * @param password
-	 *            : a password to be encrypt.
-	 * @return A encrypted password.
+	 *            A password to be encrypt.
+	 * @return a encrypted password.
 	 * @throws NoSuchAlgorithmException
 	 */
 	protected String encryptPassword(String password)
@@ -354,6 +354,7 @@ public class UserBOImpl {
 			throw new RetrieveCodeException(
 					RetrieveCodeExceptionType.RETRIEVE_CODE);
 
+		LOG.debug("[VALID REQUEST] found something!");
 		// int
 		// days=SystemMessageAcessor.getPropertyAsInteger("request.activation.form.valid.until.days");
 

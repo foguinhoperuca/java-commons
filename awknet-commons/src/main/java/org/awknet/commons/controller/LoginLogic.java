@@ -18,14 +18,18 @@
 
 package org.awknet.commons.controller;
 
+import java.util.Date;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.awknet.commons.data.DaoFactory;
+import org.awknet.commons.exception.RetrieveCodeException;
 import org.awknet.commons.interceptor.DaoInterceptor;
 import org.awknet.commons.model.business.UserBOImpl;
 import org.awknet.commons.model.entity.User;
 import org.vraptor.annotations.Component;
 import org.vraptor.annotations.InterceptedBy;
+import org.vraptor.annotations.Logic;
 import org.vraptor.annotations.Out;
 import org.vraptor.scope.ScopeType;
 
@@ -34,34 +38,59 @@ import org.vraptor.scope.ScopeType;
 @InterceptedBy(DaoInterceptor.class)
 public class LoginLogic {
 
-    private final DaoFactory daoFactory;
-    private UserBOImpl userBO;
-    private User login;
-    private static final Log LOG = LogFactory.getLog(LoginLogic.class);
+	private final DaoFactory daoFactory;
+	private UserBOImpl userBO;
+	private User login;
+	private static final Log LOG = LogFactory.getLog(LoginLogic.class);
 
-    public LoginLogic(DaoFactory daoFactory) {
-	this.daoFactory = daoFactory;
-    }
-
-    public void login() {
-    }
-
-    public String doLogin(User _entity) {
-	userBO = new UserBOImpl(daoFactory);
-	if (userBO.verifyUser(_entity)) {
-	    login = userBO.getUser();
-	    return "ok";
-	} else {
-	    return "invalid";
+	// FIXME must use new userBO in constructor or in method? Memory usage...
+	public LoginLogic(DaoFactory daoFactory) {
+		this.daoFactory = daoFactory;
+		userBO = new UserBOImpl(daoFactory);
 	}
-    }
 
-    public void logout() {
-	this.login = null;
-    }
+	public void login() {
+	}
 
-    @Out(scope = ScopeType.SESSION)
-    public User getLogin() {
-	return login;
-    }
+	public String doLogin(User _entity) {
+		if (userBO.verifyUser(_entity)) {
+			login = userBO.getUser();
+			return "ok";
+		} else {
+			return "invalid";
+		}
+	}
+
+	public void logout() {
+		this.login = null;
+	}
+
+	public void retrievePassword() {
+	}
+
+	@Logic(parameters = "retrieveCode")
+	public String retrieveCodeValidation(String retrieveCode) {
+		if (retrieveCode == null)
+			return "error";
+
+		try {
+			if (userBO.isValidRequest(new Date(), retrieveCode))
+				return "ok";
+		} catch (RetrieveCodeException e) {
+			LOG.error("[RETRIEVE CODE] retrieve code #:" + retrieveCode, e);
+			return "error";
+		}
+
+		LOG.info("[RETRIEVE CODE] Retrieve code is invalid!!");
+		return "error";
+	}
+
+	public void updatePassword() {
+
+	}
+
+	@Out(scope = ScopeType.SESSION)
+	public User getLogin() {
+		return login;
+	}
 }
