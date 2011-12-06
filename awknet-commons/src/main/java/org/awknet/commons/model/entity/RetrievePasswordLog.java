@@ -42,7 +42,7 @@ public class RetrievePasswordLog extends BaseEntityImpl<String> implements
 	private String ip;
 	// FIXME [RetrievePasswordLog] millisecond precision! Use JODA TIME!
 	private Date request;
-	private Boolean updated;
+	private boolean updated;
 
 	public RetrievePasswordLog() {
 	}
@@ -101,11 +101,11 @@ public class RetrievePasswordLog extends BaseEntityImpl<String> implements
 	}
 
 	@Column(name = "updated")
-	public Boolean getUpdated() {
+	public boolean getUpdated() {
 		return this.updated;
 	}
 
-	public void setUpdated(Boolean updated) {
+	public void setUpdated(boolean updated) {
 		this.updated = updated;
 	}
 

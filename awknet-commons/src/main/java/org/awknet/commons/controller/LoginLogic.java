@@ -43,7 +43,7 @@ public class LoginLogic {
 	private User login;
 	private static final Log LOG = LogFactory.getLog(LoginLogic.class);
 
-	// FIXME must use new userBO in constructor or in method? Memory usage...
+	// FIXME must use new userBO in constructor or method? See Memory usage....
 	public LoginLogic(DaoFactory daoFactory) {
 		this.daoFactory = daoFactory;
 		userBO = new UserBOImpl(daoFactory);
@@ -73,6 +73,8 @@ public class LoginLogic {
 		if (retrieveCode == null)
 			return "error";
 
+		LOG.debug("RETRIEVE CODE IS: " + retrieveCode);
+
 		try {
 			if (userBO.isValidRequest(new Date(), retrieveCode))
 				return "ok";
@@ -85,7 +87,8 @@ public class LoginLogic {
 		return "error";
 	}
 
-	public void updatePassword() {
+	@Logic(parameters = "retrieveCode")
+	public void updatePassword(String retrieveCode) {
 
 	}
 

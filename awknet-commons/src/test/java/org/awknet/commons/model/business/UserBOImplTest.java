@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -156,38 +157,71 @@ public class UserBOImplTest {
 	}
 
 	@Test
+	// FIXME adust test to use loop - generateCodeToRetrievePassword method
 	public void testGenerateCodeToRetrievePassword() throws UserException,
 			RetrieveCodeException {
-		String rootRetrieveCode = instance.generateCodeToRetrievePassword(
-				root.getID(), IP);
-		String somebodyRetrieveCode = instance.generateCodeToRetrievePassword(
-				somebody.getID(), IP);
-		String simpleRetrieveCode = instance.generateCodeToRetrievePassword(
-				simple.getID(), IP);
-		String someoneRetrieveCode = instance.generateCodeToRetrievePassword(
-				someone.getID(), IP);
+		List<String> retrieveCodeGenerated = new ArrayList<String>();
 
-		assertNotNull(rootRetrieveCode);
-		assertNotNull(somebodyRetrieveCode);
-		assertNotNull(simpleRetrieveCode);
-		assertNotNull(someoneRetrieveCode);
+		// String rootRetrieveCode = instance.generateCodeToRetrievePassword(
+		// root.getID(), IP);
+		// String somebodyRetrieveCode =
+		// instance.generateCodeToRetrievePassword(
+		// somebody.getID(), IP);
+		// String simpleRetrieveCode = instance.generateCodeToRetrievePassword(
+		// simple.getID(), IP);
+		// String someoneRetrieveCode = instance.generateCodeToRetrievePassword(
+		// someone.getID(), IP);
+
+		// assertNotNull(rootRetrieveCode);
+		// assertNotNull(somebodyRetrieveCode);
+		// assertNotNull(simpleRetrieveCode);
+		// assertNotNull(someoneRetrieveCode);
+
+		// retrieveCodeGenerated.add(rootRetrieveCode);
+		// retrieveCodeGenerated.add(somebodyRetrieveCode);
+		// retrieveCodeGenerated.add(simpleRetrieveCode);
+		// retrieveCodeGenerated.add(someoneRetrieveCode);
 
 		System.out.println("Retrieve code generated:");
-		System.out.println(rootRetrieveCode);
-		System.out.println(somebodyRetrieveCode);
-		System.out.println(simpleRetrieveCode);
-		System.out.println(someoneRetrieveCode);
+
+		retrieveCodeGenerated.add(instance.generateCodeToRetrievePassword(
+				root.getID(), IP));
+		retrieveCodeGenerated.add(instance.generateCodeToRetrievePassword(
+				somebody.getID(), IP));
+		retrieveCodeGenerated.add(instance.generateCodeToRetrievePassword(
+				simple.getID(), IP));
+		retrieveCodeGenerated.add(instance.generateCodeToRetrievePassword(
+				someone.getID(), IP));
+
+		// FIXME isValidRequest rpLog.setUpdated(true) - lead to an error
+		for (String rc : retrieveCodeGenerated) {
+			assertNotNull(rc);// FIXME dumb test?!?!
+			assertFalse(rc.equals(""));
+			assertFalse(daoFactory.getRetrievePasswordLogDao()
+					.findRetrieveCode(rc).getUpdated());
+			System.out.println("For code: "
+					+ rc
+					+ " updated field is: "
+					+ daoFactory.getRetrievePasswordLogDao()
+							.findRetrieveCode(rc).getUpdated());
+		}
+
+		// System.out.println("Retrieve code generated:");
+		// System.out.println(rootRetrieveCode);
+		// System.out.println(somebodyRetrieveCode);
+		// System.out.println(simpleRetrieveCode);
+		// System.out.println(someoneRetrieveCode);
 	}
 
 	@Test
-	// FIXME must run clean up DB script before execute this test!
+	// FIXME must run clean up DB script before execute this test! DBUnit!!
 	public void testIsValidRequest() throws RetrieveCodeException {
 
 		List<RetrievePasswordLog> codes = daoFactory
 				.getRetrievePasswordLogDao().list();
-		
-		for (RetrievePasswordLog rip : codes)
+
+		for (RetrievePasswordLog rpLog : codes)
 			assertTrue(instance.isValidRequest(new Date(),
-					rip.getRetrieveCode()));
+					rpLog.getRetrieveCode()));
 	}
 }

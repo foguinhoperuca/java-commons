@@ -24,21 +24,22 @@ import org.hibernate.Session;
 
 public class RetrievePasswordLogDao extends Dao<RetrievePasswordLog> {
 
-    public RetrievePasswordLogDao(Session session) {
-	super(session, RetrievePasswordLog.class);
-    }
+	public RetrievePasswordLogDao(Session session) {
+		super(session, RetrievePasswordLog.class);
+	}
 
-    /**
-     * Find a retrieve code already in DB.
-     * @param rpLog
-     * @return
-     */
-    public RetrievePasswordLog findRetrieveCode(String retrieveCode) {
-	String hql = "SELECT r FROM RetrievePasswordLog AS r "
-		+ "WHERE r.retrieveCode = :retrieveCode";
-	Query query = getSession().createQuery(hql);
-	query.setParameter("retrieveCode", retrieveCode);
+	/**
+	 * Find a retrieve code already in DB.
+	 * 
+	 * @param rpLog
+	 * @return
+	 */
+	public RetrievePasswordLog findRetrieveCode(String retrieveCode) {
+		String hql = "SELECT r FROM RetrievePasswordLog AS r "
+				+ "WHERE r.retrieveCode = :retrieveCode";
+		Query query = getSession().createQuery(hql);
+		query.setParameter("retrieveCode", retrieveCode);
 
-	return (RetrievePasswordLog) query.uniqueResult();
-    }
+		return (RetrievePasswordLog) query.uniqueResult();
+	}
 }

@@ -291,6 +291,7 @@ public class UserBOImpl {
 	 * @return a retrieve code to password
 	 * @throws UserException
 	 */
+	// FIXME setUpdate to false is not working!
 	public String generateCodeToRetrievePassword(Long userID, String ip)
 			throws UserException, RetrieveCodeException {
 
@@ -345,7 +346,7 @@ public class UserBOImpl {
 	 * @param requestDate
 	 * @return
 	 */
-	public boolean isValidRequest(Date requestDate, String retrieveCode)
+	public boolean isValidRequest(Date requestDate, final String retrieveCode)
 			throws RetrieveCodeException {
 
 		RetrievePasswordLog rpLog = daoFactory.getRetrievePasswordLogDao()
@@ -367,12 +368,14 @@ public class UserBOImpl {
 
 		if (currentDate.before(dateGenerateLink)) {
 			try {
+				// FIXME must set true here?
 				rpLog.setUpdated(true);
 				daoFactory.beginTransaction();
 				daoFactory.getRetrievePasswordLogDao().update(rpLog);
 				daoFactory.commit();
 				return true;
 			} catch (ConstraintViolationException e) {
+				// FIXME adjust message
 				LOG.error("[VALID REQUEST] code not updated in DB.", e);
 				return false;
 			} catch (Exception e) {
@@ -382,6 +385,38 @@ public class UserBOImpl {
 		}
 
 		return false;
+	}
+
+	public void updatePassword(User entity, final String retrieveCode) {
+		String password;
+		RetrievePasswordLog rpLog;
+		try {
+			if (!isValidRequest(new Date(), retrieveCode))
+				return;
+		} catch (RetrieveCodeException e) {
+			LOG.error("[RETRIEVE CODE] error with retrieve code!", e);
+		}
+
+		if (entity.getPassword().equals(""))
+			return;
+
+		try {
+			password = entity.getPassword();
+			entity.setPassword(encryptPassword(password));
+		} catch (NoSuchAlgorithmException e) {
+			LOG.error("[ENCRYPT PASSWORD] error during encryptation.", e);
+		}
+		
+		rpLog = daoFactory.getRetrievePasswordLogDao().findRetrieveCode(retrieveCode);
+		if (rpLog == null)
+			return;
+		
+		rpLog.setUpdated(true);
+		
+		daoFactory.beginTransaction();
+		daoFactory.getUserDao().update(entity);
+		daoFactory.getRetrievePasswordLogDao().update(rpLog);
+		daoFactory.commit();
 	}
 
 	/******************************************************************************/
