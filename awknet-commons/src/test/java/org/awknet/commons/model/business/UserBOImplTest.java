@@ -20,7 +20,6 @@ package org.awknet.commons.model.business;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.security.NoSuchAlgorithmException;
@@ -33,10 +32,11 @@ import org.awknet.commons.exception.RetrieveCodeException;
 import org.awknet.commons.exception.UserException;
 import org.awknet.commons.model.entity.RetrievePasswordLog;
 import org.awknet.commons.model.entity.User;
+import org.awknet.commons.security.PasswordDefault;
 import org.junit.Before;
 import org.junit.Test;
 
-// FIXME update tests to reflect new implementations.
+// FIXME must run clean up DB script before execute this test! DBUnit!!
 public class UserBOImplTest {
 
 	private static final String DEFAULT_PROPERTIES_FILE = "/awknet-commons.properties";
@@ -157,30 +157,9 @@ public class UserBOImplTest {
 	}
 
 	@Test
-	// FIXME adust test to use loop - generateCodeToRetrievePassword method
 	public void testGenerateCodeToRetrievePassword() throws UserException,
 			RetrieveCodeException {
 		List<String> retrieveCodeGenerated = new ArrayList<String>();
-
-		// String rootRetrieveCode = instance.generateCodeToRetrievePassword(
-		// root.getID(), IP);
-		// String somebodyRetrieveCode =
-		// instance.generateCodeToRetrievePassword(
-		// somebody.getID(), IP);
-		// String simpleRetrieveCode = instance.generateCodeToRetrievePassword(
-		// simple.getID(), IP);
-		// String someoneRetrieveCode = instance.generateCodeToRetrievePassword(
-		// someone.getID(), IP);
-
-		// assertNotNull(rootRetrieveCode);
-		// assertNotNull(somebodyRetrieveCode);
-		// assertNotNull(simpleRetrieveCode);
-		// assertNotNull(someoneRetrieveCode);
-
-		// retrieveCodeGenerated.add(rootRetrieveCode);
-		// retrieveCodeGenerated.add(somebodyRetrieveCode);
-		// retrieveCodeGenerated.add(simpleRetrieveCode);
-		// retrieveCodeGenerated.add(someoneRetrieveCode);
 
 		System.out.println("Retrieve code generated:");
 
@@ -193,9 +172,7 @@ public class UserBOImplTest {
 		retrieveCodeGenerated.add(instance.generateCodeToRetrievePassword(
 				someone.getID(), IP));
 
-		// FIXME isValidRequest rpLog.setUpdated(true) - lead to an error
 		for (String rc : retrieveCodeGenerated) {
-			assertNotNull(rc);// FIXME dumb test?!?!
 			assertFalse(rc.equals(""));
 			assertFalse(daoFactory.getRetrievePasswordLogDao()
 					.findRetrieveCode(rc).getUpdated());
@@ -205,18 +182,10 @@ public class UserBOImplTest {
 					+ daoFactory.getRetrievePasswordLogDao()
 							.findRetrieveCode(rc).getUpdated());
 		}
-
-		// System.out.println("Retrieve code generated:");
-		// System.out.println(rootRetrieveCode);
-		// System.out.println(somebodyRetrieveCode);
-		// System.out.println(simpleRetrieveCode);
-		// System.out.println(someoneRetrieveCode);
 	}
 
 	@Test
-	// FIXME must run clean up DB script before execute this test! DBUnit!!
 	public void testIsValidRequest() throws RetrieveCodeException {
-
 		List<RetrievePasswordLog> codes = daoFactory
 				.getRetrievePasswordLogDao().list();
 
@@ -224,4 +193,61 @@ public class UserBOImplTest {
 			assertTrue(instance.isValidRequest(new Date(),
 					rpLog.getRetrieveCode()));
 	}
+
+	/**************************************************************************/
+	// @Test
+	// FIXME need clean DB before use! need use DBunit here!!
+	public void testUpdatePassword() {
+		// // List<String> retrieveCodes = new ArrayList<String>();
+		//
+		// List<RetrievePasswordLog> rpLogInDB = daoFactory
+		// .getRetrievePasswordLogDao().list();
+		// List<User> users = daoFactory.getRetrievePasswordLogDao()
+		// .getUsersThaCanUseRetrieveCode();
+		//
+		// for (RetrievePasswordLog rpLog : rpLogInDB) {
+		// // retrieveCodes.add(rpLog.getRetrieveCode());
+		// assertTrue(instance.updatePassword(PasswordDefault.pass_somePass,
+		// rpLog.getRetrieveCode()));
+		// }
+		//
+		// // for (String rc : retrieveCodes) {
+		// // assertTrue(instance.updatePassword(PasswordDefault.pass_somePass,
+		// // rc));
+		// // }
+		//
+		// for (User user : users)
+		// assertEquals(PasswordDefault.pass_somePass_encrypted,
+		// user.getPassword());
+	}
+
+	@Test
+	public void testUpdatePasswordInvalidRequest() {
+		// try {
+		// if (!isValidRequest(new Date(), retrieveCode))
+		// return false;
+
+		assertFalse(instance.updatePassword(PasswordDefault.pass_somePass,
+				"invalid_retrieveCode"));
+	}
+
+	@Test
+	public void testUpdatePasswordVoidPassword() throws UserException,
+			RetrieveCodeException {
+		// if (entity.getPassword().equals(""))
+		// return false;
+
+		String validRetrieveCode = instance.generateCodeToRetrievePassword(
+				new Long(1), "172.16.1.112");
+
+		// RetrievePasswordLog rpLog = daoFactory.getRetrievePasswordLogDao()
+		// .findRetrieveCode(validRetrieveCode);
+		User user = daoFactory.getRetrievePasswordLogDao()
+				.getUserByRetrieveCode(validRetrieveCode);
+
+		instance.updatePasswordToDefault(validRetrieveCode);
+		assertEquals(PasswordDefault.pass_A12345678a_encrypted,
+				user.getPassword());
+	}
+	/**************************************************************************/
 }

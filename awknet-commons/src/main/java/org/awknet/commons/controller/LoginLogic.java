@@ -18,7 +18,9 @@
 
 package org.awknet.commons.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,6 +28,7 @@ import org.awknet.commons.data.DaoFactory;
 import org.awknet.commons.exception.RetrieveCodeException;
 import org.awknet.commons.interceptor.DaoInterceptor;
 import org.awknet.commons.model.business.UserBOImpl;
+import org.awknet.commons.model.entity.RetrievePasswordLog;
 import org.awknet.commons.model.entity.User;
 import org.vraptor.annotations.Component;
 import org.vraptor.annotations.InterceptedBy;
@@ -87,9 +90,12 @@ public class LoginLogic {
 		return "error";
 	}
 
-	@Logic(parameters = "retrieveCode")
-	public void updatePassword(String retrieveCode) {
+	@Logic(parameters = { "newPassword", "retrieveCode" })
+	public String updatePassword(String newPassword, String retrieveCode) {
+		if (!userBO.updatePassword(newPassword, retrieveCode))
+			return "error";
 
+		return "ok";
 	}
 
 	@Out(scope = ScopeType.SESSION)

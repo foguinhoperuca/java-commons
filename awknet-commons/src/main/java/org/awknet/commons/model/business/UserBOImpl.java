@@ -291,7 +291,7 @@ public class UserBOImpl {
 	 * @return a retrieve code to password
 	 * @throws UserException
 	 */
-	// FIXME setUpdate to false is not working!
+	// FIXME must have just one active retrieveCode in DB!
 	public String generateCodeToRetrievePassword(Long userID, String ip)
 			throws UserException, RetrieveCodeException {
 
@@ -367,56 +367,97 @@ public class UserBOImpl {
 		dateGenerateLink.add(Calendar.DAY_OF_YEAR, days);
 
 		if (currentDate.before(dateGenerateLink)) {
-			try {
-				// FIXME must set true here?
-				rpLog.setUpdated(true);
-				daoFactory.beginTransaction();
-				daoFactory.getRetrievePasswordLogDao().update(rpLog);
-				daoFactory.commit();
-				return true;
-			} catch (ConstraintViolationException e) {
-				// FIXME adjust message
-				LOG.error("[VALID REQUEST] code not updated in DB.", e);
-				return false;
-			} catch (Exception e) {
-				LOG.error("[VALID REQUEST] generic error in DB.", e);
-				return false;
-			}
+			return true;
+			// try {
+			// FIXME must set true here?
+			// rpLog.setUpdated(true);
+			// daoFactory.beginTransaction();
+			// daoFactory.getRetrievePasswordLogDao().update(rpLog);
+			// daoFactory.commit();
+			// return true;
+			// } catch (ConstraintViolationException e) {
+			// // FIXME adjust message
+			// LOG.error("[VALID REQUEST] code not updated in DB.", e);
+			// return false;
+			// } catch (Exception e) {
+			// LOG.error("[VALID REQUEST] generic error in DB.", e);
+			// return false;
+			// }
 		}
 
 		return false;
 	}
 
-	public void updatePassword(User entity, final String retrieveCode) {
-		String password;
+	/**
+	 * Update password using default password: <b>A12345678a</b>.
+	 * 
+	 * @param retireveCode
+	 *            must be a valid one!
+	 * @return true if update was successful.
+	 */
+	// TODO default password must not be hard coded!
+	public boolean updatePasswordToDefault(final String retireveCode) {
+		return updatePassword("A12345678a", retireveCode);
+	}
+
+	public boolean updatePassword(String newPassword, final String retrieveCode) {
 		RetrievePasswordLog rpLog;
+		User user;
+
+		// All parameters must HAVE a value and must be different than null.
+		if (newPassword.equals("") || newPassword == null)
+			return false;
+
+		if (retrieveCode.equals("") || retrieveCode == null)
+			return false;
+
 		try {
 			if (!isValidRequest(new Date(), retrieveCode))
-				return;
+				return false;
 		} catch (RetrieveCodeException e) {
-			LOG.error("[RETRIEVE CODE] error with retrieve code!", e);
+			LOG.error("[RETRIEVE CODE ERROR] Password was not updated!", e);
+			return false;
 		}
 
-		if (entity.getPassword().equals(""))
-			return;
+		rpLog = daoFactory.getRetrievePasswordLogDao().findRetrieveCode(
+				retrieveCode);
+		// FIXME already know that is a valid request. Need make sure?
+		if (rpLog == null)
+			return false;
+
+		// FIXME already used the code? Couldn't update password with this code!
+		if (rpLog.getUpdated())
+			return false;
+
+		rpLog.setUpdated(true);
+
+		// user = daoFactory.getUserDao().load(rpLog.getUserId());
+		user = daoFactory.getRetrievePasswordLogDao().getUserByRetrieveCode(
+				retrieveCode);
+		if (user == null)
+			return false;
 
 		try {
-			password = entity.getPassword();
-			entity.setPassword(encryptPassword(password));
+			user.setPassword(encryptPassword(newPassword));
 		} catch (NoSuchAlgorithmException e) {
 			LOG.error("[ENCRYPT PASSWORD] error during encryptation.", e);
+			return false;
 		}
-		
-		rpLog = daoFactory.getRetrievePasswordLogDao().findRetrieveCode(retrieveCode);
-		if (rpLog == null)
-			return;
-		
-		rpLog.setUpdated(true);
-		
-		daoFactory.beginTransaction();
-		daoFactory.getUserDao().update(entity);
-		daoFactory.getRetrievePasswordLogDao().update(rpLog);
-		daoFactory.commit();
+
+		try {
+			daoFactory.beginTransaction();
+			daoFactory.getUserDao().update(user);
+			daoFactory.getRetrievePasswordLogDao().update(rpLog);
+			daoFactory.commit();
+		} catch (ConstraintViolationException e) {
+			LOG.error("[UPDATE PASSWORD] code not updated in DB.", e);
+			return false;
+		} catch (Exception e) {
+			LOG.error("[UPDATE PASSWORD] generic error in DB.", e);
+			return false;
+		}
+
+		return true;
 	}
 
 	/******************************************************************************/
