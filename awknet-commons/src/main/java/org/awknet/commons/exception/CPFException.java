@@ -6,7 +6,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Awknet-commons is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -21,10 +21,10 @@ package org.awknet.commons.exception;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-// TODO internationalization of messages!
-public class RetrieveCodeException extends Exception {
+// TODO must implement correct exceptions
+public class CPFException extends Exception {
 
-    private static final long serialVersionUID = 6196598941109275246L;
+    private static final long serialVersionUID = 8288239246941573999L;
     private static final Log LOG = LogFactory.getLog(UserException.class);
     public static String MSG_RETRIEVE_CODE_ERROR = "[RETRIEVE CODE EXCEPTION] a user with ID already in use!";
     public static String MSG_LOGIN_ERROR = "[RETRIEVE CODE EXCEPTION] error with login of user!";
@@ -40,11 +40,11 @@ public class RetrieveCodeException extends Exception {
 
     private int code;
 
-    public RetrieveCodeException(int error) {
+    public CPFException(int error) {
 	this.code = error;
     }
 
-    public RetrieveCodeException(RetrieveCodeExceptionType error) {
+    public CPFException(CPFExceptionType error) {
 	this.code = error.getType();
     }
 

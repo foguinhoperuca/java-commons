@@ -25,12 +25,15 @@ public class UserException extends Exception {
 
     private static final long serialVersionUID = 6196598941109275246L;
     private static final Log LOG = LogFactory.getLog(UserException.class);
-    public static String MSG_ID_ERROR = "NOSENSE a user with ID!";
-    public static String MSG_PASSWORD_ERROR = "NOSENSE a user with PASSWORD!";
-    public static String MSG_EMAIL_NULL_ERROR = "user without PASSWORD in DB!";
-    public static int ID_ERROR = 0;
-    public static int PASSWORD_ERROR = 1;
+    public static String MSG_GENERIC = "NOSENSE!!! - GENERIC ERROR WITH USER!";
+    public static String MSG_ID = "NOSENSE a user with ID!";
+    public static String MSG_PASSWORD = "NOSENSE a user with PASSWORD!";
+    public static String MSG_EMAIL_NULL = "user without PASSWORD in DB!";
+    public static String MSG_LOGIN = "User with LOGIN INVALID!";
+    public static int ID = 0;
+    public static int PASSWORD = 1;
     public static int MAIL_NULL = 2;
+    public static int LOGIN = 3;
     private int code;
 
     public UserException(int error) {
@@ -45,17 +48,17 @@ public class UserException extends Exception {
     public String getMessage() {
 	switch (code) {
 	case 0:
-	    LOG.error(UserException.MSG_ID_ERROR);
-	    return UserException.MSG_ID_ERROR;
+	    LOG.error(UserException.MSG_ID);
+	    return UserException.MSG_ID;
 	case 1:
-	    LOG.error(UserException.MSG_PASSWORD_ERROR);
-	    return UserException.MSG_PASSWORD_ERROR;
+	    LOG.error(UserException.MSG_PASSWORD);
+	    return UserException.MSG_PASSWORD;
 	case 2:
-	    LOG.error(UserException.MSG_EMAIL_NULL_ERROR);
-	    return UserException.MSG_EMAIL_NULL_ERROR;
+	    LOG.error(UserException.MSG_EMAIL_NULL);
+	    return UserException.MSG_EMAIL_NULL;
 	default:
-	     LOG.error("NOSENSE!!! - USER WITH PASSWORD AND ID!");
-	    return "NOSENSE!!!";
+	    LOG.error(MSG_GENERIC);
+	    return MSG_GENERIC;
 	}
     }
 

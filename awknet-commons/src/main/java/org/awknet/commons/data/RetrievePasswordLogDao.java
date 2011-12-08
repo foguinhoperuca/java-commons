@@ -28,43 +28,43 @@ import org.hibernate.Session;
 // TODO must implement all tests!
 public class RetrievePasswordLogDao extends Dao<RetrievePasswordLog> {
 
-	public RetrievePasswordLogDao(Session session) {
-		super(session, RetrievePasswordLog.class);
-	}
+    public RetrievePasswordLogDao(Session session) {
+	super(session, RetrievePasswordLog.class);
+    }
 
-	/**
-	 * Find a retrieve code already in DB.
-	 * 
-	 * @param rpLog
-	 * @return
-	 */
-	public RetrievePasswordLog findRetrieveCode(String retrieveCode) {
-		String hql = "SELECT r FROM RetrievePasswordLog AS r "
-				+ "WHERE r.retrieveCode = :retrieveCode";
-		Query query = getSession().createQuery(hql);
-		query.setParameter("retrieveCode", retrieveCode);
+    /**
+     * Find a retrieve code already in DB.
+     * 
+     * @param rpLog
+     * @return
+     */
+    public RetrievePasswordLog findRetrieveCode(String retrieveCode) {
+	String hql = "SELECT r FROM RetrievePasswordLog AS r "
+		+ "WHERE r.retrieveCode = :retrieveCode";
+	Query query = getSession().createQuery(hql);
+	query.setParameter("retrieveCode", retrieveCode);
 
-		return (RetrievePasswordLog) query.uniqueResult();
-	}
+	return (RetrievePasswordLog) query.uniqueResult();
+    }
 
-	// TODO must implement it UserBOImpl.updatePassword
-	public User getUserByRetrieveCode(String retrieveCode) {
-		String hql = "SELECT u FROM User AS u, RetrievePasswordLog AS r "
-				+ "WHERE u.ID = r.userId AND r.retrieveCode = :retrieveCode";
-		Query query = getSession().createQuery(hql);
-		query.setParameter("retrieveCode", retrieveCode);
+    // TODO must implement it UserBOImpl.updatePassword
+    public User getUserByRetrieveCode(String retrieveCode) {
+	String hql = "SELECT u FROM User AS u, RetrievePasswordLog AS r "
+		+ "WHERE u.ID = r.userId AND r.retrieveCode = :retrieveCode";
+	Query query = getSession().createQuery(hql);
+	query.setParameter("retrieveCode", retrieveCode);
 
-		return (User) query.uniqueResult();
-	}
+	return (User) query.uniqueResult();
+    }
 
-	// SELECT u.login, email FROM TUser AS u, TRetrieve_Password_LOG as r WHERE
-	// u.ID = r.userID AND r.updated = FALSE GROUP BY u.login;
-	@SuppressWarnings("unchecked")
-	public List<User> getUsersThaCanUseRetrieveCode() {
-		String hql = "SELECT u FROM User AS u, RetrievePasswordLog AS r "
-				+ "WHERE u.ID = r.userId AND r.updated = FALSE GROUP BY u.login";
-		Query query = getSession().createQuery(hql);
+    // SELECT u.login, email FROM TUser AS u, TRetrieve_Password_LOG as r WHERE
+    // u.ID = r.userID AND r.updated = FALSE GROUP BY u.login;
+    @SuppressWarnings("unchecked")
+    public List<User> getUsersThaCanUseRetrieveCode() {
+	String hql = "SELECT u FROM User AS u, RetrievePasswordLog AS r "
+		+ "WHERE u.ID = r.userId AND r.updated = FALSE GROUP BY u.login";
+	Query query = getSession().createQuery(hql);
 
-		return (List<User>) query.list();
-	}
+	return (List<User>) query.list();
+    }
 }

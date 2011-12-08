@@ -18,13 +18,14 @@
 
 package org.awknet.commons.exception;
 
-public enum UserExceptionType {
+// TODO must implement all errors
+public enum CPFExceptionType {
 
-    ID(0), PASSWORD(1), EMAIL_NULL(2), LOGIN(3);
+    UNKNOW(0);
 
     private int type;
 
-    UserExceptionType(int _type) {
+    CPFExceptionType(int _type) {
 	this.type = _type;
     }
 
