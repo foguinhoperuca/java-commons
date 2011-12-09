@@ -18,7 +18,27 @@
 
 package org.awknet.commons.model.business;
 
+/**
+ * STEPS:<br/>
+ * 0 - validate document body<br/>
+ * 1- validate digits<br/>
+ * 2 - validate all document<br/>
+ * 3 - mask<br/>
+ * 4 - unmask<br/>
+ * 5 - return digits using document body<br/>
+ */
 public interface Document {
-    public boolean validate(String _cpf, int _firstDigit, int _secondDigit);
-    public String digits(String _cpf);
+
+    public boolean validateDocumentBody();
+
+    public boolean validateDigits();
+
+    public boolean validateDocument();
+
+    public String maskDocument();
+
+    public String unmaskDocument();
+
+    public String getDocumentDigits();
+
 }

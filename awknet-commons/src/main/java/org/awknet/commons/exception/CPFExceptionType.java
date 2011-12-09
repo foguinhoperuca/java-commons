@@ -21,7 +21,7 @@ package org.awknet.commons.exception;
 // TODO must implement all errors
 public enum CPFExceptionType {
 
-    UNKNOW(0);
+    CPFBodyEmpty(0);
 
     private int type;
 

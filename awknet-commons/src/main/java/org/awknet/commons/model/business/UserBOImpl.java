@@ -464,7 +464,8 @@ public class UserBOImpl {
 	User user = null;
 
 	try {
-	    if (CPFBOImpl.validate(cpfNumber))
+	    // FIXME use service or use entity?
+	    if (CPFServiceProvider.validate(cpfNumber))
 		user = loadUserByLogin(cpfNumber);
 	} catch (Exception e) {
 	    LOG.error("[LOAD USER BY CPF] Couldn't load user by CPF!");

@@ -20,28 +20,35 @@ package org.awknet.commons.model.business;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-;
+import org.awknet.commons.exception.CPFException;
 
 /**
  * This software is dealing with CPF (brazilian's income tax document). That
  * CPF's routine is very common in softwares that are developed aimed to
  * brazilian's market.
  */
+// FIXME verify some design pattern - delegate method or something
 public class CPFBOImpl implements Document {
-
+    private static final Log LOG = LogFactory.getLog(CPFBOImpl.class);
     private String cpfBody;
     private int firstDigit;
     private int secondDigit;
-    private static final Log LOG = LogFactory.getLog(CPFBOImpl.class);
-    // FIXME remove all magic numbers!
-    private static final int LAST_DIGIT_CPF_NUMBER = 9;
-    private static final int FIRST_DIGIT_POSITION = 10;
-    private static final int SECOND_DIGIT_POSITION = 11;
 
     public CPFBOImpl() {
 	firstDigit = 0;
 	secondDigit = 0;
+    }
+
+    public CPFBOImpl(String cpfBody) {
+	this.cpfBody = cpfBody;
+	try {
+	    firstDigit = CPFServiceProvider.calculateFirstDigit(cpfBody);
+	    secondDigit = CPFServiceProvider.calculateSecondDigit(cpfBody);
+	} catch (CPFException e) {
+	    LOG.error("[CONSTR] Error with CPFServiceProvider.getDigits", e);
+	    firstDigit = 0;
+	    secondDigit = 0;
+	}
     }
 
     public CPFBOImpl(String cpfBody, int digitOne, int digitTwo) {
@@ -50,15 +57,25 @@ public class CPFBOImpl implements Document {
 	this.secondDigit = digitTwo;
     }
 
-    /**
-     * Given a CPF without digits, Calculates "all" 2 digits and returns them.
-     * 
-     * @return a string with 2 digits.
-     */
     @Override
-    public String digits(String cpfBody) {
-	return new String(Integer.toString(calculateFirstDigit(cpfBody)))
-		.concat(Integer.toString(calculateSecondDigit(cpfBody)));
+    public boolean validateDocumentBody() {
+	return CPFServiceProvider.validateDocumentBody(cpfBody);
+    }
+
+    @Override
+    public boolean validateDigits() {
+	if (cpfBody == null || cpfBody.equals(""))
+	    return false;
+	try {
+	    if (CPFServiceProvider.calculateFirstDigit(cpfBody) != firstDigit
+		    || CPFServiceProvider.calculateSecondDigit(cpfBody) != secondDigit)
+		return false;
+	} catch (CPFException e) {
+	    LOG.error("[getDigits] Error with CPFServiceProvider.getDigits", e);
+	    return false;
+	}
+
+	return true;
     }
 
     /**
@@ -66,140 +83,29 @@ public class CPFBOImpl implements Document {
      * 
      * @return Given a CPF, without digits, return true if it is valid.
      */
-    public boolean validateInternalCPF() throws Exception {
-	try {
-	    if (cpfBody == "") {
-		LOG.error("CPF unfilled.");
-		throw new Exception("CPF unfilled. Returning false.");
-	    }
-	} catch (Exception ex) {
-	    LOG.info("CPF unfilled - Returning false");
-	    return false;
-	}
-
-	return validate(this.cpfBody, this.firstDigit, this.secondDigit);
-    }
-
-    // FIXME better use a static method!
-    public static boolean validate(String cpfComplete) {
-	// try {
-	// if (cpfComplete == null || cpfComplete.length() != 11)
-	// throw new ExceptionInInitializerError();
-	//
-	// firstDigit = Integer.parseInt(cpfComplete.substring(
-	// FIRST_DIGIT_POSITION, 1));
-	// secondDigit = Integer.parseInt(cpfComplete.substring(
-	// SECOND_DIGIT_POSITION, 1));
-	// cpfBody = cpfComplete.substring(0, LAST_DIGIT_CPF_NUMBER);
-	//
-	// if (!validate(cpfBody, firstDigit, secondDigit))
-	// throw new CPFException();
-	// } catch (ExceptionInInitializerError e) {
-	// LOG.error("[CPF INIT] CPF is INVALID!", e);
-	// return;
-	// } catch (CPFException e) {
-	// LOG.error("[CPF INIT] CPFBOIimpl FAILED to VALIDATE!", e);
-	// return;
-	// } catch (Exception e) {
-	// LOG.error("[CPF INIT] GENERAL ERROR on creation of CPFBOImpl!", e);
-	// return;
-	// }
-	return false;
-    }
-
-    /**
-     * Validates a CPF, without digits.
-     * 
-     * @return Given a CPF, without digits, return true if it is valid.
-     */
-    // FIXME _cpf argument is useless!!
-    // FIXME refactor all returns (specially "return false").
     @Override
-    public boolean validate(String cpfBody, int firstDigit, int secondDigit) {
-	if (isValid(cpfBody)) {
-	    if (calculateFirstDigit(cpfBody) == firstDigit) {
-		LOG.info("First digit is fine!");
-		if (this.calculateSecondDigit(cpfBody) == secondDigit) {
-		    LOG.info("Second digit is fine!");
-		    return true;
-		} else {
-		    LOG.info("Error with SECOND digit!");
-		    /* return false; */
-		}
-	    } else {
-		LOG.info("Error with FIRST digit!");
-		/* return false; */
-	    }
-	} else {
-	    LOG.info("Error with FORMAT!");
-	    /* return false; */
-	}
-	return false;
+    public boolean validateDocument() {
+	return CPFServiceProvider.validate(this.cpfBody);
+    }
+
+    @Override
+    public String maskDocument() {
+	return CPFServiceProvider.mask(cpfBody);
+    }
+
+    @Override
+    public String unmaskDocument() {
+	return CPFServiceProvider.unmask(cpfBody);
     }
 
     /**
-     * Checks the validity of the CPF, indicating as invalid all those who have
-     * repeated digits. Eg.: 111111111-11 is invalid.
+     * Given a CPF without digits, Calculates "all" 2 digits and returns them.
      * 
-     * @return true if CPF is valid.
+     * @return a string with 2 digits.
      */
-    // FIXME verify the length
-    public Boolean isValid(String cpfBody) {
-	int i;
-	String initialDigit = cpfBody.substring(0, 1);
-	Boolean valid = false;
-
-	for (i = 1; i < 9; i++) {
-	    // FIXME must break if CPF is valid?
-	    if (!initialDigit.equals(cpfBody.substring(i, i + 1))) {
-		valid = true;
-	    }
-	}
-	return valid;
-    }
-
-    /**
-     * Calculate the first digit.
-     * 
-     * @return the number of first digit.
-     */
-    public int calculateFirstDigit(String cpf) {
-	int i, rest, dig, sum = 0;
-
-	for (i = 0; i < 9; i++) {
-	    sum += ((Integer.parseInt(cpf.substring(i, i + 1))) * (i + 1));
-	}
-	rest = sum % 11;
-	if (rest == 10) {
-	    dig = 0;
-	} else {
-	    dig = rest;
-	}
-
-	return dig;
-    }
-
-    /**
-     * Calculate the second digit.
-     * 
-     * @return the number of second digit.
-     */
-    public int calculateSecondDigit(String cpf) {
-	int i, rest, dig, sum = 0;
-
-	for (i = 0; i < 9; i++) {
-	    sum += ((Integer.parseInt(cpf.substring(i, i + 1))) * (12 - (i + 1)));
-	}
-	sum += calculateFirstDigit(cpf) * 2;
-	sum *= 10;
-	rest = sum % 11;
-	if (rest == 10) {
-	    dig = 0;
-	} else {
-	    dig = rest;
-	}
-
-	return dig;
+    @Override
+    public String getDocumentDigits() {
+	return CPFServiceProvider.getDigits(cpfBody);
     }
 
     public String getCpf() {
