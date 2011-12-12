@@ -21,22 +21,19 @@ package org.awknet.commons.exception;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-// TODO must implement correct exceptions
 public class CPFException extends Exception {
 
     private static final long serialVersionUID = 8288239246941573999L;
     private static final Log LOG = LogFactory.getLog(UserException.class);
-    public static String MSG_RETRIEVE_CODE_ERROR = "[RETRIEVE CODE EXCEPTION] a user with ID already in use!";
-    public static String MSG_LOGIN_ERROR = "[RETRIEVE CODE EXCEPTION] error with login of user!";
-    public static String MSG_EMAIL_ERROR = "[RETRIEVE CODE EXCEPTION] error with email of user!";
-    public static String MSG_IP_ERROR = "[RETRIEVE CODE EXCEPTION] IP was null but is MANDATORY!";
-    public static String MSG_DATE_ERROR = "[RETRIEVE CODE EXCEPTION] error with date!";
-    public static String MSG_GENERIC_ERROR = "[RETRIEVE CODE EXCEPTION] IT WAS THROWN A GENERIC ERROR!";
-    public static int RETRIEVE_CODE_ERROR = 0;
-    public static int PASSWORD_ERROR = 1;
-    public static int MAIL_NULL = 2;
-    public static int IP_ERROR = 3;
-    public static int DATE_ERROR = 4;
+    public static String MSG_BODY_EMPTY_ERROR = "[CPF EXCEPTION] CPF was null. Please, fill it!";
+    public static String MSG_FIRST_DIGIT_VALIDATION_ERROR = "[CPF EXCEPTION] FIRST digit is not valid!";
+    public static String MSG_SECOND_DIGIT_VALIDATION_ERROR = "[CPF EXCEPTION] SECOND digit is not valid!";
+    public static String MSG_BODY_VALIDATION_ERROR = "[CPF EXCEPTION] CPF is invalid";
+    public static String MSG_GENERIC_ERROR = "[CPF EXCEPTION] IT WAS THROWN A GENERIC ERROR!";
+    public static int BODY_EMPTY_ERROR = 0;
+    public static int FIRST_DIGIT_VALIDATION_ERROR = 1;
+    public static int SECOND_DIGIT_VALIDATION_ERROR = 2;
+    public static int BODY_VALIDATION_ERROR = 3;
 
     private int code;
 
@@ -52,20 +49,17 @@ public class CPFException extends Exception {
     public String getMessage() {
 	switch (code) {
 	case 0:
-	    LOG.error(RetrieveCodeException.MSG_RETRIEVE_CODE_ERROR);
-	    return RetrieveCodeException.MSG_RETRIEVE_CODE_ERROR;
+	    LOG.error(MSG_BODY_EMPTY_ERROR);
+	    return MSG_BODY_EMPTY_ERROR;
 	case 1:
-	    LOG.error(RetrieveCodeException.MSG_LOGIN_ERROR);
-	    return RetrieveCodeException.MSG_LOGIN_ERROR;
+	    LOG.error(MSG_FIRST_DIGIT_VALIDATION_ERROR);
+	    return MSG_FIRST_DIGIT_VALIDATION_ERROR;
 	case 2:
-	    LOG.error(RetrieveCodeException.MSG_EMAIL_ERROR);
-	    return RetrieveCodeException.MSG_EMAIL_ERROR;
+	    LOG.error(MSG_SECOND_DIGIT_VALIDATION_ERROR);
+	    return MSG_SECOND_DIGIT_VALIDATION_ERROR;
 	case 3:
-	    LOG.error(RetrieveCodeException.MSG_IP_ERROR);
-	    return RetrieveCodeException.MSG_IP_ERROR;
-	case 4:
-	    LOG.error(RetrieveCodeException.MSG_DATE_ERROR);
-	    return RetrieveCodeException.MSG_DATE_ERROR;
+	    LOG.error(MSG_BODY_VALIDATION_ERROR);
+	    return MSG_BODY_VALIDATION_ERROR;
 	default:
 	    LOG.error(MSG_GENERIC_ERROR);
 	    return MSG_GENERIC_ERROR;

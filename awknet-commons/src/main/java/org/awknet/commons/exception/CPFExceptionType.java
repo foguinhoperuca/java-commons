@@ -18,15 +18,14 @@
 
 package org.awknet.commons.exception;
 
-// TODO must implement all errors
 public enum CPFExceptionType {
 
-    CPFBodyEmpty(0);
+    CPFBodyEmpty(0), CPFFirstDigit(1), CPFSecondDigit(2), CPFBodyValidation(3);
 
     private int type;
 
-    CPFExceptionType(int _type) {
-	this.type = _type;
+    CPFExceptionType(int type) {
+	this.type = type;
     }
 
     public int getType() {

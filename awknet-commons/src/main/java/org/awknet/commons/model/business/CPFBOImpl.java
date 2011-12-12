@@ -28,6 +28,7 @@ import org.awknet.commons.exception.CPFException;
  * brazilian's market.
  */
 // FIXME verify some design pattern - delegate method or something
+// TODO implement test (migrate tests from CCPFBOImpl
 public class CPFBOImpl implements Document {
     private static final Log LOG = LogFactory.getLog(CPFBOImpl.class);
     private String cpfBody;
@@ -60,6 +61,7 @@ public class CPFBOImpl implements Document {
     @Override
     public boolean validateDocumentBody() {
 	return CPFServiceProvider.validateDocumentBody(cpfBody);
+
     }
 
     @Override
@@ -85,7 +87,12 @@ public class CPFBOImpl implements Document {
      */
     @Override
     public boolean validateDocument() {
-	return CPFServiceProvider.validate(this.cpfBody);
+	try {
+	    return CPFServiceProvider.validate(this.cpfBody);
+	} catch (CPFException e) {
+	    LOG.error("[CPFBOImpl] error with validation of CPF: ", e);
+	}
+	return false;
     }
 
     @Override

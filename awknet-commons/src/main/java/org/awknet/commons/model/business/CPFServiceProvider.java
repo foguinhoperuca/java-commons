@@ -26,7 +26,6 @@ import org.awknet.commons.exception.CPFExceptionType;
 public final class CPFServiceProvider {
 
     private static final Log LOG = LogFactory.getLog(CPFServiceProvider.class);
-    // FIXME remove all magic numbers!
     private static final int LAST_DIGIT_CPF_NUMBER = 9;
     private static final int FIRST_DIGIT_POSITION = 10;
     private static final int SECOND_DIGIT_POSITION = 11;
@@ -51,53 +50,30 @@ public final class CPFServiceProvider {
      * 
      * @return Given a CPF, without digits, return true if it is valid.
      */
-    // FIXME better use a static method!
-    // FIXME refactor all returns (specially "return false").
-    public static boolean validate(String documentComplete) {
-	// try {
-	// if (cpfComplete == null || cpfComplete.length() != 11)
-	// throw new ExceptionInInitializerError();
-	//
-	// firstDigit = Integer.parseInt(cpfComplete.substring(
-	// FIRST_DIGIT_POSITION, 1));
-	// secondDigit = Integer.parseInt(cpfComplete.substring(
-	// SECOND_DIGIT_POSITION, 1));
-	// cpfBody = cpfComplete.substring(0, LAST_DIGIT_CPF_NUMBER);
-	//
-	// if (!validate(cpfBody, firstDigit, secondDigit))
-	// throw new CPFException();
-	// } catch (ExceptionInInitializerError e) {
-	// LOG.error("[CPF INIT] CPF is INVALID!", e);
-	// return;
-	// } catch (CPFException e) {
-	// LOG.error("[CPF INIT] CPFBOIimpl FAILED to VALIDATE!", e);
-	// return;
-	// } catch (Exception e) {
-	// LOG.error("[CPF INIT] GENERAL ERROR on creation of CPFBOImpl!", e);
-	// return;
-	// }
+    public static boolean validate(String documentComplete) throws CPFException {
+	if (documentComplete == null || documentComplete.length() != 11)
+	    throw new CPFException(CPFExceptionType.CPFBodyEmpty);
 
-	// // FIXME JOIN WITH CODE ABOVE
-	// if (isValid(cpfBody)) {
-	// if (calculateFirstDigit(cpfBody) == firstDigit) {
-	// LOG.info("First digit is fine!");
-	// if (this.calculateSecondDigit(cpfBody) == secondDigit) {
-	// LOG.info("Second digit is fine!");
-	// return true;
-	// } else {
-	// LOG.info("Error with SECOND digit!");
-	// /* return false; */
-	// }
-	// } else {
-	// LOG.info("Error with FIRST digit!");
-	// /* return false; */
-	// }
-	// } else {
-	// LOG.info("Error with FORMAT!");
-	// /* return false; */
-	// }
-	// return false;
-	return false;
+	String documentBody = getCPFBody(documentComplete);
+	int firstDigit = getFirstDigit(documentComplete);
+	int secondDigit = getSecondDigit(documentComplete);
+
+	try {
+	    if (!validateDocumentBody(documentBody))
+		throw new CPFException(CPFExceptionType.CPFBodyValidation);
+
+	    if (calculateFirstDigit(documentBody) != firstDigit)
+		throw new CPFException(CPFExceptionType.CPFFirstDigit);
+
+	    if (calculateSecondDigit(documentBody) != secondDigit)
+		throw new CPFException(CPFExceptionType.CPFSecondDigit);
+
+	    return true;
+
+	} catch (CPFException e) {
+	    LOG.error("[CPF VALIDATION} ERROR during validation!", e);
+	    return false;
+	}
     }
 
     /**
@@ -106,22 +82,24 @@ public final class CPFServiceProvider {
      * 
      * @return true if CPF is valid.
      */
-    // FIXME verify the length
     public static boolean validateDocumentBody(String documentBody) {
 	int i;
 	String initialDigit = documentBody.substring(0, 1);
-	Boolean valid = false;
+	// boolean valid = false;
 
-	// if (cpfBody == null || cpfBody.length() != 11)
-	// return false;
+	if (documentBody == null || documentBody.length() != 11)
+	    return false;
 
 	for (i = 1; i < 9; i++) {
 	    // FIXME must break if CPF is valid?
 	    if (!initialDigit.equals(documentBody.substring(i, i + 1))) {
-		valid = true;
+		// valid = true;
+		// break;
+		return true;
 	    }
 	}
-	return valid;
+	// return valid;
+	return false;
     }
 
     /**
@@ -174,16 +152,57 @@ public final class CPFServiceProvider {
 	return dig;
     }
 
+    // FIXME create method to get cpf body and digits
+    public static String getCPFBody(String documentComplete) {
+	try {
+	    if (documentComplete == null || documentComplete.equals(""))
+		throw new CPFException(CPFExceptionType.CPFBodyEmpty);
+
+	    return documentComplete.substring(0, LAST_DIGIT_CPF_NUMBER);
+	} catch (CPFException e) {
+	    LOG.error("[getCPFBody] Error with CPF: ", e);
+	}
+	return null;
+    }
+
+    public static Integer getFirstDigit(String documentComplete) {
+	try {
+	    if (documentComplete == null || documentComplete.equals(""))
+		throw new CPFException(CPFExceptionType.CPFBodyEmpty);
+
+	    return Integer.parseInt(documentComplete.substring(
+		    FIRST_DIGIT_POSITION, 1));
+	} catch (CPFException e) {
+	    LOG.error("[getFirstDigit] Error with 1st digit: ", e);
+	}
+	return null;
+    }
+
+    public static Integer getSecondDigit(String documentComplete) {
+	try {
+	    if (documentComplete == null || documentComplete.equals(""))
+		throw new CPFException(CPFExceptionType.CPFBodyEmpty);
+
+	    return Integer.parseInt(documentComplete.substring(
+		    SECOND_DIGIT_POSITION, 1));
+	} catch (CPFException e) {
+	    LOG.error("[getSecondDigit] Error with 2nd digit: ", e);
+	}
+	return null;
+    }
+
+    // FIXME [CPFServiceProvider.mask] must implement it!
     public static String mask(String documentComplete) {
 	if (documentComplete == null || documentComplete.equals(""))
-	    return "";
+	    return null;
 
 	return "";
     }
 
+    // FIXME [CPFServiceProvider.unmask] must implement it!
     public static String unmask(String documentComplete) {
 	if (documentComplete == null || documentComplete.equals(""))
-	    return "";
+	    return null;
 
 	return "";
     }
