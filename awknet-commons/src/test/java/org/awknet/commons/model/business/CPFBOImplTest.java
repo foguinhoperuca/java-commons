@@ -26,7 +26,7 @@ public class CPFBOImplTest {
     private CPFBOImpl invalid;
     private CPFBOImpl valid;
     private CPFBOImpl clean;
-    
+
     @Before
     public void setUp() throws Exception {
 	sameNumber = new CPFBOImpl("111111111", 1, 1);
@@ -48,20 +48,4 @@ public class CPFBOImplTest {
     // assertFalse(sameNumber.validateInternalCPF());
     // assertTrue(valid.validateInternalCPF());
     // }
-
-    /*@Test
-    public void testIsValid() {
-	fail("Not yet implemented");
-    }
-
-    @Test
-    public void testCalculateFirstDigit() {
-	fail("Not yet implemented");
-    }
-
-    @Test
-    public void testCalculateSecondDigit() {
-	fail("Not yet implemented");
-    }*/
-
 }

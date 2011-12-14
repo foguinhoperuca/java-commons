@@ -31,10 +31,10 @@ public final class CPFServiceProvider {
     private static final int SECOND_DIGIT_POSITION = 11;
 
     public static String getDigits(String documentBody) {
-	if (documentBody == null || documentBody.equals(""))
-	    return "";
-
 	try {
+	    if (documentBody == null || documentBody.equals(""))
+		throw new CPFException(CPFExceptionType.CPFBodyEmpty);
+
 	    return new String(
 		    Integer.toString(calculateFirstDigit(documentBody)))
 		    .concat(Integer
@@ -55,8 +55,11 @@ public final class CPFServiceProvider {
 	    throw new CPFException(CPFExceptionType.CPFBodyEmpty);
 
 	String documentBody = getCPFBody(documentComplete);
+	LOG.debug("Document body is: " + documentBody);
 	int firstDigit = getFirstDigit(documentComplete);
+	LOG.debug("FIRST digit is: " + firstDigit);
 	int secondDigit = getSecondDigit(documentComplete);
+	LOG.debug("SECOND digit is: " + secondDigit);
 
 	try {
 	    if (!validateDocumentBody(documentBody))
@@ -71,7 +74,7 @@ public final class CPFServiceProvider {
 	    return true;
 
 	} catch (CPFException e) {
-	    LOG.error("[CPF VALIDATION} ERROR during validation!", e);
+	    LOG.error("[CPF VALIDATION] ERROR during validation!", e);
 	    return false;
 	}
     }
@@ -87,19 +90,24 @@ public final class CPFServiceProvider {
 	String initialDigit = documentBody.substring(0, 1);
 	// boolean valid = false;
 
-	if (documentBody == null || documentBody.length() != 11)
-	    return false;
+	try {
+	    if (documentBody == null || documentBody.length() != 9)
+		throw new CPFException(CPFExceptionType.CPFBodyEmpty);
 
-	for (i = 1; i < 9; i++) {
-	    // FIXME must break if CPF is valid?
-	    if (!initialDigit.equals(documentBody.substring(i, i + 1))) {
-		// valid = true;
-		// break;
-		return true;
+	    for (i = 1; i < 9; i++) {
+		// FIXME must break if CPF is valid?
+		if (!initialDigit.equals(documentBody.substring(i, i + 1))) {
+		    // valid = true;
+		    // break;
+		    return true;
+		}
 	    }
+	    // return valid;
+	    return false;
+	} catch (CPFException e) {
+	    LOG.error("[CPF VALIDATION BODY] CPF BODY is invalid!", e);
+	    return false;
 	}
-	// return valid;
-	return false;
     }
 
     /**
@@ -131,7 +139,6 @@ public final class CPFServiceProvider {
      * 
      * @return the number of second digit.
      */
-    // FIXME validate it before calculate?
     public static int calculateSecondDigit(String cpf) throws CPFException {
 	if (cpf == null || cpf.equals(""))
 	    throw new CPFException(CPFExceptionType.CPFBodyEmpty);
@@ -152,7 +159,6 @@ public final class CPFServiceProvider {
 	return dig;
     }
 
-    // FIXME create method to get cpf body and digits
     public static String getCPFBody(String documentComplete) {
 	try {
 	    if (documentComplete == null || documentComplete.equals(""))
@@ -171,7 +177,7 @@ public final class CPFServiceProvider {
 		throw new CPFException(CPFExceptionType.CPFBodyEmpty);
 
 	    return Integer.parseInt(documentComplete.substring(
-		    FIRST_DIGIT_POSITION, 1));
+		    LAST_DIGIT_CPF_NUMBER, FIRST_DIGIT_POSITION));
 	} catch (CPFException e) {
 	    LOG.error("[getFirstDigit] Error with 1st digit: ", e);
 	}
@@ -184,11 +190,39 @@ public final class CPFServiceProvider {
 		throw new CPFException(CPFExceptionType.CPFBodyEmpty);
 
 	    return Integer.parseInt(documentComplete.substring(
-		    SECOND_DIGIT_POSITION, 1));
+		    FIRST_DIGIT_POSITION, SECOND_DIGIT_POSITION));
 	} catch (CPFException e) {
 	    LOG.error("[getSecondDigit] Error with 2nd digit: ", e);
 	}
 	return null;
+    }
+
+    public static String generateValidCPF() {
+	String cpfBody = new String(), cpfComplete = "";
+	Double rndDigit;
+	Integer digit;
+
+	try {
+	    for (int i = 1; i < 10; i++) {
+		rndDigit = (Math.random() * 10);
+		digit = rndDigit.intValue();
+		cpfBody += digit.toString();
+	    }
+
+	    if (!validateDocumentBody(cpfBody))
+		throw new CPFException(CPFExceptionType.CPFGeneration);
+
+	    cpfComplete = cpfBody + getDigits(cpfBody);
+	    LOG.debug("value of CPF complete: " + cpfComplete);
+	    if (!validate(cpfComplete))
+		// CPFServiceProvider.generateValidCPF(); // FIXME loop infinite
+		throw new CPFException(CPFExceptionType.CPFCompleteValidation);
+	} catch (CPFException e) {
+	    LOG.error("[genereteValidCPF] error during creation of CPF.", e);
+	    return null;
+	}
+
+	return cpfComplete;
     }
 
     // FIXME [CPFServiceProvider.mask] must implement it!

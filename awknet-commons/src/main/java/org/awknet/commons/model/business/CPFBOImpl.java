@@ -28,7 +28,7 @@ import org.awknet.commons.exception.CPFException;
  * brazilian's market.
  */
 // FIXME verify some design pattern - delegate method or something
-// TODO implement test (migrate tests from CCPFBOImpl
+// TODO implement test (migrate tests from CCPFBOImpl)
 public class CPFBOImpl implements Document {
     private static final Log LOG = LogFactory.getLog(CPFBOImpl.class);
     private String cpfBody;

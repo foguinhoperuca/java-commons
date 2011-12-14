@@ -42,11 +42,16 @@ import org.awknet.commons.security.Encryption;
 import org.hibernate.exception.ConstraintViolationException;
 
 // TODO implement a "validator" for user
+// FIXME WHO is responsible by open/close DaoFactory? [BOImpl | controller] ?
 public class UserBOImpl {
     private static final String DEFAULT_PROPERTIES_FILE = "/awknet-commons.properties";
     private User user;
     private DaoFactory daoFactory;
     private static final Log LOG = LogFactory.getLog(UserBOImpl.class);
+
+    public UserBOImpl() {
+	daoFactory = new DaoFactory();
+    }
 
     public UserBOImpl(DaoFactory daoFactory) {
 	this.daoFactory = daoFactory;
@@ -426,8 +431,10 @@ public class UserBOImpl {
 	    return false;
 
 	// FIXME already used the code? Couldn't update password with this code!
-	if (rpLog.getUpdated())
+	if (rpLog.getUpdated()) {
+	    LOG.error("[UPDATE PASSWORD] Retrieved Code already used!");
 	    return false;
+	}
 
 	rpLog.setUpdated(true);
 
@@ -475,7 +482,12 @@ public class UserBOImpl {
     public User loadUserByLogin(String login) {
 	return daoFactory.getUserDao().loadUserByLogin(login);
     }
+
     /******************************************************************************/
+
+    public User loadUserByRetrieveCode(String retrieveCode) {
+	return daoFactory.getUserDao().loadUserByRetrieveCode(retrieveCode);
+    }
 
     // public void createUserProspectRequest(User user, String requestIp) {
     // user.setCreationDate(new Date());

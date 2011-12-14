@@ -30,6 +30,7 @@ import org.awknet.commons.exception.UserException;
 import org.awknet.commons.exception.UserExceptionType;
 import org.awknet.commons.interceptor.DaoInterceptor;
 import org.awknet.commons.model.business.UserBOImpl;
+import org.awknet.commons.model.entity.RetrievePasswordLog;
 import org.awknet.commons.model.entity.User;
 import org.vraptor.annotations.Component;
 import org.vraptor.annotations.In;
@@ -45,14 +46,15 @@ public class LoginLogic {
 
     @In
     private HttpServletRequest request;
-    private DaoFactory daoFactory;
+    // private DaoFactory daoFactory;
     private UserBOImpl userBO;
     private User login;
+    private RetrievePasswordLog retrievePasswordLog;
     private static final Log LOG = LogFactory.getLog(LoginLogic.class);
 
     // FIXME must use new userBO in constructor or method? See Memory usage....
     public LoginLogic(DaoFactory daoFactory) {
-	this.daoFactory = daoFactory;
+	// this.daoFactory = daoFactory;
 	userBO = new UserBOImpl(daoFactory);
     }
 
@@ -76,6 +78,7 @@ public class LoginLogic {
     }
 
     @Logic(parameters = "login")
+    // FIXME must send link to user!
     public String retrievePassword(String login) {
 	User user;
 	if (login.equals(""))
@@ -107,8 +110,19 @@ public class LoginLogic {
 	LOG.debug("RETRIEVE CODE IS: " + retrieveCode);
 
 	try {
-	    if (userBO.isValidRequest(new Date(), retrieveCode))
+	    if (userBO.isValidRequest(new Date(), retrieveCode)) {
+		// FIXME return retrieve Code and user!
+		login = userBO.loadUserByRetrieveCode(retrieveCode);
+
+		// FIXME Too ugly!
+		retrievePasswordLog = new RetrievePasswordLog();
+		retrievePasswordLog.setRetrieveCode(retrieveCode);
+
+		login.setPassword(""); // Don't expose the old password!
+		LOG.debug("User --------------> " + login.getLogin());
+		LOG.debug("Pass --------------> " + login.getPassword());
 		return "ok";
+	    }
 	} catch (RetrieveCodeException e) {
 	    LOG.error("[RETRIEVE CODE] retrieve code #:" + retrieveCode, e);
 	    return "error";
@@ -129,5 +143,10 @@ public class LoginLogic {
     @Out(scope = ScopeType.SESSION)
     public User getLogin() {
 	return login;
+    }
+
+    @Out(scope = ScopeType.SESSION)
+    public RetrievePasswordLog getRetrievePasswordLog() {
+	return retrievePasswordLog;
     }
 }

@@ -48,4 +48,14 @@ public class UserDao extends Dao<User> {
 
 	return (User) query.uniqueResult();
     }
+
+    // FIXME must implement all tests!
+    public User loadUserByRetrieveCode(String retrieveCode) {
+	String hql = "SELECT u FROM User AS u, RetrievePasswordLog AS rc WHERE "
+		+ "u.ID = rc.userId AND rc.retrieveCode = :retrieveCode";
+	Query query = getSession().createQuery(hql);
+	query.setParameter("retrieveCode", retrieveCode);
+
+	return (User) query.uniqueResult();
+    }
 }

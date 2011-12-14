@@ -127,7 +127,7 @@ public class UserBOImplTest {
 	User email_user = new User();
 
 	inexistent_user.setLogin("fake");
-	login_someone.setLogin("someone");
+	login_someone.setLogin("02598649435");
 	email_user.setEmail(simple.getEmail());
 
 	assertFalse(instance.sendLinkToRetrievePassword(inexistent_user,
@@ -221,6 +221,7 @@ public class UserBOImplTest {
 	// user.getPassword());
     }
 
+    // @Test(expected = RetrieveCodeException.class)
     @Test
     public void testUpdatePasswordInvalidRequest() {
 	// try {

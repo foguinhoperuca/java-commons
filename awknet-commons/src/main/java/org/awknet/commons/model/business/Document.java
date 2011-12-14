@@ -19,13 +19,8 @@
 package org.awknet.commons.model.business;
 
 /**
- * STEPS:<br/>
- * 0 - validate document body<br/>
- * 1- validate digits<br/>
- * 2 - validate all document<br/>
- * 3 - mask<br/>
- * 4 - unmask<br/>
- * 5 - return digits using document body<br/>
+ * This class implement the default contract of a document.
+ * 
  */
 public interface Document {
 
