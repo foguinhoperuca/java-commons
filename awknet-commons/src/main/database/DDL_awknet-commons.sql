@@ -24,6 +24,7 @@ CREATE TABLE TUser (
     PRIMARY KEY (ID)
 );
 
+-- FIXME retrieve code not updated must be unique per user!
 CREATE TABLE TRetrieve_Password_LOG (
     retrieveCode VARCHAR(32),
     userID INT(10) NOT NULL,

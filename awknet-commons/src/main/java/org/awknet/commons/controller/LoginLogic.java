@@ -32,6 +32,7 @@ import org.awknet.commons.interceptor.DaoInterceptor;
 import org.awknet.commons.model.business.UserBOImpl;
 import org.awknet.commons.model.entity.RetrievePasswordLog;
 import org.awknet.commons.model.entity.User;
+import org.awknet.commons.util.PropertiesAwknetCommons;
 import org.vraptor.annotations.Component;
 import org.vraptor.annotations.In;
 import org.vraptor.annotations.InterceptedBy;
@@ -81,6 +82,7 @@ public class LoginLogic {
     // FIXME must send link to user!
     public String retrievePassword(String login) {
 	User user;
+	String retrieveCode;
 	if (login.equals(""))
 	    return "error";
 
@@ -89,8 +91,13 @@ public class LoginLogic {
 	    if (user == null)
 		throw new UserException(UserExceptionType.LOGIN);
 
-	    userBO.generateCodeToRetrievePassword(user.getID(),
+	    // TODO Test if IP address is correct!
+	    retrieveCode = userBO.generateCodeToRetrievePassword(user.getID(),
 		    request.getRemoteAddr());
+	    // userBO.sendLinkToRetrievePassword(user, "subject", "mailText",
+	    // UserBOImpl.DEFAULT_PROPERTIES_FILE);
+	    userBO.sendLinkToRetrievePassword(user, retrieveCode,
+		    PropertiesAwknetCommons.resolvePropertiesFile());
 	} catch (UserException e) {
 	    LOG.error("[RETRIEVE PASSWORD FORM] User exception!", e);
 	    return "error";

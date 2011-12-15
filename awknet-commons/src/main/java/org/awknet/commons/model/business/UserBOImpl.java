@@ -39,12 +39,12 @@ import org.awknet.commons.mail.RecipientType;
 import org.awknet.commons.model.entity.RetrievePasswordLog;
 import org.awknet.commons.model.entity.User;
 import org.awknet.commons.security.Encryption;
+import org.awknet.commons.util.PropertiesAwknetCommons;
 import org.hibernate.exception.ConstraintViolationException;
 
 // TODO implement a "validator" for user
 // FIXME WHO is responsible by open/close DaoFactory? [BOImpl | controller] ?
 public class UserBOImpl {
-    private static final String DEFAULT_PROPERTIES_FILE = "/awknet-commons.properties";
     private User user;
     private DaoFactory daoFactory;
     private static final Log LOG = LogFactory.getLog(UserBOImpl.class);
@@ -215,20 +215,27 @@ public class UserBOImpl {
      */
     // TODO must implement http://sourcemaking.com/design_patterns/null_object
     // TODO merge it with sendLinkToRetrievePassword
-    public boolean sendLinkToRetrievePassword(User entity, String fileName)
-	    throws UserException {
+    // FIXME email body not sending retrieve code and link
+    public boolean sendLinkToRetrievePassword(User entity, String retrieveCode,
+	    String fileName) throws UserException, RetrieveCodeException {
 	String subject, mailText;
 	Properties mailProperties = new Properties();
 
+	if (retrieveCode == null || retrieveCode.equals(""))
+	    throw new RetrieveCodeException(
+		    RetrieveCodeExceptionType.RETRIEVE_CODE);
+
 	if (fileName.equals("") || fileName == null)
-	    fileName = DEFAULT_PROPERTIES_FILE;
+	    fileName = PropertiesAwknetCommons.DEFAULT_PROPERTIES_FILE;
 
 	try {
 	    mailProperties.load(getClass().getResourceAsStream(fileName));
 	    subject = mailProperties
 		    .getProperty("mail.retrievePassword.subject");
 	    mailText = mailProperties
-		    .getProperty("mail.retrievePassword.mailText");
+		    .getProperty("mail.retrievePassword.mailText")
+		    + " code: "
+		    + retrieveCode;
 	    return sendLinkToRetrievePassword(entity, subject, mailText,
 		    fileName);
 	} catch (IOException e) {
@@ -255,12 +262,18 @@ public class UserBOImpl {
 	    String mailText, String fileName) throws UserException {
 	boolean success = false;
 	Mail mail;
-	if (entity.getPassword() != null)
-	    throw new UserException(UserExceptionType.PASSWORD);
-	else if (entity.getID() != null)
+
+	// FIXME clean up the password is alright?
+	// if (entity.getPassword() != null)
+	// throw new UserException(UserExceptionType.PASSWORD);
+	// else if (entity.getID() != null)
+	// throw new UserException(UserExceptionType.ID);
+	// user = daoFactory.getUserDao().loadByExample(entity);
+
+	if (entity.getID() == null)
 	    throw new UserException(UserExceptionType.ID);
 
-	user = daoFactory.getUserDao().loadByExample(entity);
+	user = daoFactory.getUserDao().load(entity.getID());
 	if (user != null) {
 	    try {
 		// TODO email validation.
@@ -483,11 +496,15 @@ public class UserBOImpl {
 	return daoFactory.getUserDao().loadUserByLogin(login);
     }
 
-    /******************************************************************************/
-
     public User loadUserByRetrieveCode(String retrieveCode) {
 	return daoFactory.getUserDao().loadUserByRetrieveCode(retrieveCode);
     }
+
+    private String createEmailMessage() {
+	return null;
+    }
+
+    /**************************************************************************/
 
     // public void createUserProspectRequest(User user, String requestIp) {
     // user.setCreationDate(new Date());
