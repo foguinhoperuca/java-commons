@@ -252,5 +252,11 @@ public class UserBOImplTest {
 	assertEquals(PasswordDefault.pass_A12345678a_encrypted,
 		user.getPassword());
     }
-    /**************************************************************************/
+
+    @Test
+    public void testCreateEmailMessageToRetrievePassword() {
+	String message = "<div><p>Dear User,<br />You have asked to update your password. Copy the code below and paste the following link:</p><b>Link</b>: <a href='http://localhost:8080/micasa/login.retrievePassword.logic?login=XXX[LOGIN]XXX'>http://localhost:8080/micasa/login.retrievePassword.logic?login=XXX[LOGIN]XXX</a><br /><b>Code</b>: XXX[RETRIEVECODE]XXX <br/><p>If you are not prompted to update your password, please ignore this email.</p><p><b>Awknet.org Inc.<br />Somewhere in someplace, 6669<br />Near to a small yellow sun - Milky Way<br />Phone: (42) 4242-4242<br />E-mail: dontbother@awknet.org</b></p><div>";
+	assertEquals(message, instance.createEmailMessageToRetrievePassword(
+		"XXX[RETRIEVECODE]XXX", "XXX[LOGIN]XXX"));
+    }
 }

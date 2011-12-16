@@ -40,6 +40,7 @@ import org.awknet.commons.model.entity.RetrievePasswordLog;
 import org.awknet.commons.model.entity.User;
 import org.awknet.commons.security.Encryption;
 import org.awknet.commons.util.PropertiesAwknetCommons;
+import org.awknet.commons.util.StringUtils;
 import org.hibernate.exception.ConstraintViolationException;
 
 // TODO implement a "validator" for user
@@ -221,21 +222,22 @@ public class UserBOImpl {
 	String subject, mailText;
 	Properties mailProperties = new Properties();
 
-	if (retrieveCode == null || retrieveCode.equals(""))
+	if (entity == null || StringUtils.stringUnsed(entity.getLogin()))
+	    throw new RetrieveCodeException(RetrieveCodeExceptionType.LOGIN);
+
+	if (StringUtils.stringUnsed(retrieveCode))
 	    throw new RetrieveCodeException(
 		    RetrieveCodeExceptionType.RETRIEVE_CODE);
 
-	if (fileName.equals("") || fileName == null)
+	if (StringUtils.stringUnsed(fileName))
 	    fileName = PropertiesAwknetCommons.DEFAULT_PROPERTIES_FILE;
 
 	try {
 	    mailProperties.load(getClass().getResourceAsStream(fileName));
 	    subject = mailProperties
 		    .getProperty("mail.retrievePassword.subject");
-	    mailText = mailProperties
-		    .getProperty("mail.retrievePassword.mailText")
-		    + " code: "
-		    + retrieveCode;
+	    mailText = createEmailMessageToRetrievePassword(retrieveCode,
+		    entity.getLogin());
 	    return sendLinkToRetrievePassword(entity, subject, mailText,
 		    fileName);
 	} catch (IOException e) {
@@ -500,10 +502,18 @@ public class UserBOImpl {
 	return daoFactory.getUserDao().loadUserByRetrieveCode(retrieveCode);
     }
 
-    private String createEmailMessage() {
-	return null;
-    }
+    public String createEmailMessageToRetrievePassword(String retrieveCode,
+	    String login) {
+	String configFile = PropertiesAwknetCommons.resolvePropertiesFile();
+	String template = PropertiesAwknetCommons.getProperty(
+		"mail.retrievePassword.mailText", configFile);
 
+	template = template.replaceAll("<RETRIEVE_CODE>", retrieveCode);
+	template = template.replaceAll("<LOGIN_USER>", login);
+	return template.concat(PropertiesAwknetCommons.getProperty(
+		"mail.footer.enterprise", configFile));
+
+    }
     /**************************************************************************/
 
     // public void createUserProspectRequest(User user, String requestIp) {

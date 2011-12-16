@@ -33,8 +33,9 @@ public class PropertiesAwknetCommons {
     public static String resolvePropertiesFile() {
 	Properties javaMailProperties = new Properties();
 	try {
-	    javaMailProperties.load(PropertiesAwknetCommons.class
-		    .getResourceAsStream(PropertiesAwknetCommons.DEFAULT_PROPERTIES_FILE));
+	    javaMailProperties
+		    .load(PropertiesAwknetCommons.class
+			    .getResourceAsStream(PropertiesAwknetCommons.DEFAULT_PROPERTIES_FILE));
 	} catch (IOException e) {
 	    LOG.error("[resolvePropertiesFile] Error opening the file "
 		    + PropertiesAwknetCommons.DEFAULT_PROPERTIES_FILE);
@@ -46,5 +47,27 @@ public class PropertiesAwknetCommons {
 	return javaMailProperties.getProperty("config.filename");
     }
 
+    public static String getProperty(String property, String fileName) {
+	Properties javaMailProperties;
+
+	if (property == null || property.equals(""))
+	    return null;
+
+	javaMailProperties = new Properties();
+	try {
+	    if (fileName == null | fileName.equals(""))
+		javaMailProperties.load(PropertiesAwknetCommons.class
+			.getResourceAsStream(DEFAULT_PROPERTIES_FILE));
+	    else
+		javaMailProperties.load(PropertiesAwknetCommons.class
+			.getResourceAsStream(fileName));
+	} catch (IOException e) {
+	    LOG.error("[resolvePropertiesFile] Error opening the file "
+		    + DEFAULT_PROPERTIES_FILE);
+	    return null;
+	}
+
+	return javaMailProperties.getProperty(property);
+    }
 
 }

@@ -6,7 +6,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * 
  * Awknet-commons is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -16,11 +16,13 @@
  * along with awknet-commons. If not, see <http://www.gnu.org/licenses/>.
  */
 
-SET CHARACTER SET UTF8;
+package org.awknet.commons.util;
 
-INSERT INTO TUser (ID, login, password, email) VALUES
-    (1, '95310731393', '229c3f7e7b9c1be5bfa2f46d90c4ab00', 'jecampos@sorocaba.sp.gov.br'),
-    (2, '66997284825', '229c3f7e7b9c1be5bfa2f46d90c4ab00', 'somebody@awknet.org'),
-    (3, '84358568360', '229c3f7e7b9c1be5bfa2f46d90c4ab00', 'simple@awknet.org'),
-    (4, '02598649435', '229c3f7e7b9c1be5bfa2f46d90c4ab00', 'someone@awknet.org')
-    ;
+// TODO implement tests!
+public class StringUtils {
+
+    public static boolean stringUnsed(String value) {
+	boolean test = (value == null || value.equals("")) ? true : false;
+	return test;
+    }
+}
