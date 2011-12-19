@@ -19,80 +19,82 @@
 package org.awknet.commons.model.business;
 
 import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.awknet.commons.data.DaoFactory;
+import org.awknet.commons.data.GenericDaoFactory;
 import org.awknet.commons.model.entity.BaseEntity;
 
 // TODO use singleton here...
+// TODO implement all tests
 public class RegisterBOImpl<T extends BaseEntity> implements Register<T> {
 
-	private DaoFactory daoFactory;
-	private Class clazz;
-	private static final Log LOG = LogFactory.getLog(RegisterBOImpl.class);
+    private GenericDaoFactory daoFactory;
+    private Class clazz;
+    private static final Log LOG = LogFactory.getLog(RegisterBOImpl.class);
 
-	// FIXME [GENERIC] One for money...
-	public RegisterBOImpl(DaoFactory _daoFactory, Class _clazz) {
-		this.clazz = _clazz;
-		daoFactory = _daoFactory;
-		LOG.debug("[clazz]: Class name is: " + clazz.getName());
-	}
+    // FIXME [GENERIC] One for money...
+    public RegisterBOImpl(GenericDaoFactory _daoFactory, Class _clazz) {
+	this.clazz = _clazz;
+	daoFactory = _daoFactory;
+	LOG.debug("[clazz]: Class name is: " + clazz.getName());
+    }
 
-	// FIXME [GENERIC] Two for the show... must use reflection to get class name
-	public RegisterBOImpl(DaoFactory _daoFactory) {
-		daoFactory = _daoFactory;
-		// FIXME [GENERIC] NOT working....
-		// Type type = getClass().getGenericSuperclass();
-		// clazz = (Class) getClass().getGenericSuperclass();
-		// LOG.info("-- Class name is: " + clazz.getName());
-		// ParameterizedType parameterizedType = (ParameterizedType) type;
-		// clazz = (Class) parameterizedType.getActualTypeArguments()[0];
+    // FIXME [GENERIC] Two for the show... must use reflection to get class name
+    public RegisterBOImpl(GenericDaoFactory _daoFactory) {
+	daoFactory = _daoFactory;
+	// FIXME [GENERIC] NOT working....
+	// Type type = getClass().getGenericSuperclass();
+	// clazz = (Class) getClass().getGenericSuperclass();
+	// LOG.info("-- Class name is: " + clazz.getName());
+	// ParameterizedType parameterizedType = (ParameterizedType) type;
+	// clazz = (Class) parameterizedType.getActualTypeArguments()[0];
 
-	}
+    }
 
-	@Override
-	public T save(T _entity) {
-		daoFactory.beginTransaction();
-		daoFactory.getRegisterDao(this.clazz).save(_entity);
-		daoFactory.commit();
-		return _entity;
-	}
+    @Override
+    public T save(T _entity) {
+	daoFactory.beginTransaction();
+	daoFactory.getRegisterDao(this.clazz).save(_entity);
+	daoFactory.commit();
+	return _entity;
+    }
 
-	@Override
-	public T update(T _entity) {
-		daoFactory.beginTransaction();
-		daoFactory.getRegisterDao(clazz).update(_entity);
-		daoFactory.commit();
-		return _entity;
-	}
+    @Override
+    public T update(T _entity) {
+	daoFactory.beginTransaction();
+	daoFactory.getRegisterDao(clazz).update(_entity);
+	daoFactory.commit();
+	return _entity;
+    }
 
-	@Override
-	public void delete(T _entity) {
-		daoFactory.beginTransaction();
-		daoFactory.getRegisterDao(clazz).delete(_entity);
-		daoFactory.commit();
-	}
+    @Override
+    public void delete(T _entity) {
+	daoFactory.beginTransaction();
+	daoFactory.getRegisterDao(clazz).delete(_entity);
+	daoFactory.commit();
+    }
 
-	// FIXME type cast List<BaseEntity> to List<T>
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<T> listAll() {
-		return (List<T>) daoFactory.getRegisterDao(clazz).list();
-	}
+    // FIXME type cast List<BaseEntity> to List<T>
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<T> listAll() {
+	return (List<T>) daoFactory.getRegisterDao(clazz).list();
+    }
 
-	// TODO implement security check for ID: http://code.google.com/p/cofoja/
-	// FIXME type cast BaseEntity to T
-	@SuppressWarnings("unchecked")
-	@Override
-	public T load(long id) {
-		return ((T) daoFactory.getRegisterDao(clazz).load(id));
-	}
+    // TODO implement security check for ID: http://code.google.com/p/cofoja/
+    // FIXME type cast BaseEntity to T
+    @SuppressWarnings("unchecked")
+    @Override
+    public T load(long id) {
+	return ((T) daoFactory.getRegisterDao(clazz).load(id));
+    }
 
-	// FIXME type cast BaseEntity to T
-	@SuppressWarnings("unchecked")
-	@Override
-	public T loadByExemple(T _entity) {
-		return (T) daoFactory.getRegisterDao(clazz).loadByExample(_entity);
-	}
+    // FIXME type cast BaseEntity to T
+    @SuppressWarnings("unchecked")
+    @Override
+    public T loadByExemple(T _entity) {
+	return (T) daoFactory.getRegisterDao(clazz).loadByExample(_entity);
+    }
 
 }

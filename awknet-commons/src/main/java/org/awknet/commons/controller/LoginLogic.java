@@ -47,15 +47,12 @@ public class LoginLogic {
 
     @In
     private HttpServletRequest request;
-    // private DaoFactory daoFactory;
     private UserBOImpl userBO;
     private User login;
     private RetrievePasswordLog retrievePasswordLog;
     private static final Log LOG = LogFactory.getLog(LoginLogic.class);
 
-    // FIXME must use new userBO in constructor or method? See Memory usage....
     public LoginLogic(DaoFactory daoFactory) {
-	// this.daoFactory = daoFactory;
 	userBO = new UserBOImpl(daoFactory);
     }
 
@@ -79,7 +76,6 @@ public class LoginLogic {
     }
 
     @Logic(parameters = "login")
-    // FIXME must send link to user!
     public String retrievePassword(String login) {
 	User user;
 	String retrieveCode;
@@ -91,11 +87,8 @@ public class LoginLogic {
 	    if (user == null)
 		throw new UserException(UserExceptionType.LOGIN);
 
-	    // TODO Test if IP address is correct!
 	    retrieveCode = userBO.generateCodeToRetrievePassword(user.getID(),
 		    request.getRemoteAddr());
-	    // userBO.sendLinkToRetrievePassword(user, "subject", "mailText",
-	    // UserBOImpl.DEFAULT_PROPERTIES_FILE);
 	    userBO.sendLinkToRetrievePassword(user, retrieveCode,
 		    PropertiesAwknetCommons.resolvePropertiesFile());
 	} catch (UserException e) {

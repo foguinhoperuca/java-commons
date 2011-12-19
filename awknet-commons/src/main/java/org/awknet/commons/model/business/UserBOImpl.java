@@ -215,8 +215,6 @@ public class UserBOImpl {
      * @throws UserException
      */
     // TODO must implement http://sourcemaking.com/design_patterns/null_object
-    // TODO merge it with sendLinkToRetrievePassword
-    // FIXME email body not sending retrieve code and link
     public boolean sendLinkToRetrievePassword(User entity, String retrieveCode,
 	    String fileName) throws UserException, RetrieveCodeException {
 	String subject, mailText;
@@ -259,7 +257,6 @@ public class UserBOImpl {
      * @throws UserException
      */
     // FIXME [sendLinkToRetrievePassword] email is mandatory!
-    // FIXME [sendLinkToRetrievePassword] include link to send to user
     public boolean sendLinkToRetrievePassword(User entity, String subject,
 	    String mailText, String fileName) throws UserException {
 	boolean success = false;
@@ -311,7 +308,6 @@ public class UserBOImpl {
      * @return a retrieve code to password
      * @throws UserException
      */
-    // FIXME must have just one active retrieveCode in DB!
     public String generateCodeToRetrievePassword(Long userID, String ip)
 	    throws UserException, RetrieveCodeException {
 
@@ -345,7 +341,10 @@ public class UserBOImpl {
 
 	try {
 	    daoFactory.beginTransaction();
-	    daoFactory.getRegisterDao(RetrievePasswordLog.class).save(rpLog);
+	    LOG.info("[GENERATE CODE] "
+		    + daoFactory.getRetrievePasswordLogDao()
+			    .updateRetrieveCodeUnused(userID)
+		    + " retrieveCode was reseted for user: " + userID);
 	    daoFactory.getRetrievePasswordLogDao().save(rpLog);
 	    daoFactory.commit();
 	} catch (ConstraintViolationException e) {
@@ -484,7 +483,6 @@ public class UserBOImpl {
 
     public User loadUserByCPF(String cpfNumber) {
 	try {
-	    // FIXME use service or use entity?
 	    if (CPFServiceProvider.validate(cpfNumber))
 		return loadUserByLogin(cpfNumber);
 	} catch (Exception e) {

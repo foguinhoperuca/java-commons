@@ -50,6 +50,10 @@ public class User extends BaseEntityIDImpl<Long> implements java.io.Serializable
 	this.password = password;
     }
 
+    public User(String login) {
+	this.login = login;
+    }
+
     @Column(name = "login", length = 30)
     public String getLogin() {
 	return this.login;

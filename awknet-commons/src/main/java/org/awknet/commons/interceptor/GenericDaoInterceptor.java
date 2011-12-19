@@ -16,20 +16,34 @@
  * along with awknet-commons. If not, see <http://www.gnu.org/licenses/>.
  */
 
-CREATE TABLE TUser (
-    ID INT(10) NOT NULL,
-    login VARCHAR(30),
-    password VARCHAR(40),
-    email VARCHAR(100),
-    PRIMARY KEY (ID)
-);
+package org.awknet.commons.interceptor;
 
-CREATE TABLE TRetrieve_Password_LOG (
-    retrieveCode VARCHAR(32),
-    userID INT(10) NOT NULL,
-    IP VARCHAR(15),
-    request DATETIME NOT NULL,
-    updated BOOLEAN,
-    PRIMARY KEY (retrieveCode),
-    FOREIGN KEY (userID) REFERENCES TUser(ID)
-);
+import org.awknet.commons.data.GenericDaoFactory;
+import org.vraptor.Interceptor;
+import org.vraptor.LogicException;
+import org.vraptor.LogicFlow;
+import org.vraptor.annotations.Out;
+import org.vraptor.view.ViewException;
+
+/**
+ * 
+ * This "interceptor" is aimed to VRaptor 2.6.
+ * 
+ */
+public class GenericDaoInterceptor implements Interceptor {
+
+    private final GenericDaoFactory factory = new GenericDaoFactory();
+
+    public void intercept(LogicFlow flow) throws LogicException, ViewException {
+	flow.execute();
+	if (factory.hasTransaction()) {
+	    factory.rollback();
+	}
+	factory.close();
+    }
+
+    @Out(key = "org.awknet.commons.data.GenericDaoFactory")
+    public GenericDaoFactory getFactory() {
+	return factory;
+    }
+}

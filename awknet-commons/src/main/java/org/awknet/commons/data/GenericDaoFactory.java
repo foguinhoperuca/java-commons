@@ -18,6 +18,7 @@
 
 package org.awknet.commons.data;
 
+import org.awknet.commons.model.entity.BaseEntity;
 import org.awknet.commons.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -59,5 +60,10 @@ public class GenericDaoFactory {
 
     public Session getSession() {
 	return this.session;
+    }
+
+    @SuppressWarnings("rawtypes")
+    public <T extends BaseEntity> Dao<T> getRegisterDao(Class _clazz) {
+	return new Dao<T>(session, _clazz);
     }
 }

@@ -85,24 +85,20 @@ public final class CPFServiceProvider {
      * 
      * @return true if CPF is valid.
      */
+    // TODO verify alphanumeric char
     public static boolean validateDocumentBody(String documentBody) {
 	int i;
 	String initialDigit = documentBody.substring(0, 1);
-	// boolean valid = false;
 
 	try {
 	    if (documentBody == null || documentBody.length() != 9)
 		throw new CPFException(CPFExceptionType.CPFBodyEmpty);
 
 	    for (i = 1; i < 9; i++) {
-		// FIXME must break if CPF is valid?
 		if (!initialDigit.equals(documentBody.substring(i, i + 1))) {
-		    // valid = true;
-		    // break;
 		    return true;
 		}
 	    }
-	    // return valid;
 	    return false;
 	} catch (CPFException e) {
 	    LOG.error("[CPF VALIDATION BODY] CPF BODY is invalid!", e);
@@ -115,15 +111,15 @@ public final class CPFServiceProvider {
      * 
      * @return the number of first digit.
      */
-    // FIXME validate it before calculate?
-    public static int calculateFirstDigit(String cpf) throws CPFException {
-	if (cpf == null || cpf.equals(""))
+    public static int calculateFirstDigit(String documentBody)
+	    throws CPFException {
+	if (documentBody == null || documentBody.equals(""))
 	    throw new CPFException(CPFExceptionType.CPFBodyEmpty);
 
 	int i, rest, dig, sum = 0;
 
 	for (i = 0; i < 9; i++)
-	    sum += ((Integer.parseInt(cpf.substring(i, i + 1))) * (i + 1));
+	    sum += ((Integer.parseInt(documentBody.substring(i, i + 1))) * (i + 1));
 
 	rest = sum % 11;
 	if (rest == 10)
@@ -139,16 +135,16 @@ public final class CPFServiceProvider {
      * 
      * @return the number of second digit.
      */
-    public static int calculateSecondDigit(String cpf) throws CPFException {
-	if (cpf == null || cpf.equals(""))
+    public static int calculateSecondDigit(String documentBody) throws CPFException {
+	if (documentBody == null || documentBody.equals(""))
 	    throw new CPFException(CPFExceptionType.CPFBodyEmpty);
 
 	int i, rest, dig, sum = 0;
 
 	for (i = 0; i < 9; i++)
-	    sum += ((Integer.parseInt(cpf.substring(i, i + 1))) * (12 - (i + 1)));
+	    sum += ((Integer.parseInt(documentBody.substring(i, i + 1))) * (12 - (i + 1)));
 
-	sum += calculateFirstDigit(cpf) * 2;
+	sum += calculateFirstDigit(documentBody) * 2;
 	sum *= 10;
 	rest = sum % 11;
 	if (rest == 10)
@@ -225,7 +221,7 @@ public final class CPFServiceProvider {
 	return cpfComplete;
     }
 
-    // FIXME [CPFServiceProvider.mask] must implement it!
+    // TODO [CPFServiceProvider.mask] must implement it!
     public static String mask(String documentComplete) {
 	if (documentComplete == null || documentComplete.equals(""))
 	    return null;
@@ -233,7 +229,7 @@ public final class CPFServiceProvider {
 	return "";
     }
 
-    // FIXME [CPFServiceProvider.unmask] must implement it!
+    // TODO [CPFServiceProvider.unmask] must implement it!
     public static String unmask(String documentComplete) {
 	if (documentComplete == null || documentComplete.equals(""))
 	    return null;

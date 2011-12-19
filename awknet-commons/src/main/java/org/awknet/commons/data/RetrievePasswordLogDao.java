@@ -57,8 +57,6 @@ public class RetrievePasswordLogDao extends Dao<RetrievePasswordLog> {
 	return (User) query.uniqueResult();
     }
 
-    // SELECT u.login, email FROM TUser AS u, TRetrieve_Password_LOG as r WHERE
-    // u.ID = r.userID AND r.updated = FALSE GROUP BY u.login;
     @SuppressWarnings("unchecked")
     public List<User> getUsersThaCanUseRetrieveCode() {
 	String hql = "SELECT u FROM User AS u, RetrievePasswordLog AS r "
@@ -66,5 +64,16 @@ public class RetrievePasswordLogDao extends Dao<RetrievePasswordLog> {
 	Query query = getSession().createQuery(hql);
 
 	return (List<User>) query.list();
+    }
+
+    // FIXME implement all tests!
+    public int updateRetrieveCodeUnused(Long userID) {
+	String hql = "UPDATE RetrievePasswordLog AS r SET updated = TRUE "
+		+ "WHERE userID = :userID AND updated = FALSE";
+
+	Query query = getSession().createQuery(hql);
+	query.setParameter("userID", userID);
+	return query.executeUpdate();
+
     }
 }
