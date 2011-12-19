@@ -21,7 +21,7 @@ package org.awknet.commons.exception;
 public enum CPFExceptionType {
 
     CPFBodyEmpty(0), CPFFirstDigit(1), CPFSecondDigit(2), CPFBodyValidation(3), CPFCompleteValidation(
-	    4), CPFGeneration(5);
+	    4), CPFGeneration(5), CPFCompleteEmpty(6);
 
     private int type;
 

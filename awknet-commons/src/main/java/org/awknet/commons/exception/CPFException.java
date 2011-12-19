@@ -30,7 +30,8 @@ public class CPFException extends Exception {
     public static String MSG_SECOND_DIGIT_VALIDATION_ERROR = "[CPF EXCEPTION] SECOND digit is not valid!";
     public static String MSG_BODY_VALIDATION_ERROR = "[CPF EXCEPTION] CPF BODY is invalid";
     public static String MSG_COMPLETE_VALIDATION_ERROR = "[CPF EXCEPTION] CPF COMPLETE is invalid";
-    public static String MSG_CPF_GENERATION_ERROR = "[CPF EXCEPTION] CPF COMPLETE is invalid";
+    public static String MSG_CPF_GENERATION_ERROR = "[CPF EXCEPTION] CPF COMPLETE is INVALID";
+    public static String MSG_COMPLETE_EMPTY_ERROR = "[CPF EXCEPTION] CPF COMPLETE is EMPTY";
     public static String MSG_GENERIC_ERROR = "[CPF EXCEPTION] IT WAS THROWN A GENERIC ERROR!";
     public static int BODY_EMPTY_ERROR = 0;
     public static int FIRST_DIGIT_VALIDATION_ERROR = 1;
@@ -38,6 +39,7 @@ public class CPFException extends Exception {
     public static int BODY_VALIDATION_ERROR = 3;
     public static int COMPLETE_VALIDATION_ERROR = 4;
     public static int CPF_GENERATION_ERROR = 5;
+    public static int CPF_COMPLETE_EMPTY_ERROR = 6;
 
     private int code;
 
@@ -70,6 +72,9 @@ public class CPFException extends Exception {
 	case 5:
 	    LOG.error(MSG_CPF_GENERATION_ERROR);
 	    return MSG_CPF_GENERATION_ERROR;
+	case 6:
+	    LOG.error(MSG_COMPLETE_EMPTY_ERROR);
+	    return MSG_COMPLETE_EMPTY_ERROR;
 	default:
 	    LOG.error(MSG_GENERIC_ERROR);
 	    return MSG_GENERIC_ERROR;
