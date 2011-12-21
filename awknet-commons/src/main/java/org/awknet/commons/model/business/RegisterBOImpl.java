@@ -96,5 +96,5 @@ public class RegisterBOImpl<T extends BaseEntity> implements Register<T> {
     public T loadByExemple(T _entity) {
 	return (T) daoFactory.getRegisterDao(clazz).loadByExample(_entity);
     }
-
 }
+

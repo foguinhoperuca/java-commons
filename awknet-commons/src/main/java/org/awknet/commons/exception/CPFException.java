@@ -28,10 +28,10 @@ public class CPFException extends Exception {
     public static String MSG_BODY_EMPTY_ERROR = "[CPF EXCEPTION] CPF was null. Please, fill it!";
     public static String MSG_FIRST_DIGIT_VALIDATION_ERROR = "[CPF EXCEPTION] FIRST digit is not valid!";
     public static String MSG_SECOND_DIGIT_VALIDATION_ERROR = "[CPF EXCEPTION] SECOND digit is not valid!";
-    public static String MSG_BODY_VALIDATION_ERROR = "[CPF EXCEPTION] CPF BODY is invalid";
-    public static String MSG_COMPLETE_VALIDATION_ERROR = "[CPF EXCEPTION] CPF COMPLETE is invalid";
-    public static String MSG_CPF_GENERATION_ERROR = "[CPF EXCEPTION] CPF COMPLETE is INVALID";
-    public static String MSG_COMPLETE_EMPTY_ERROR = "[CPF EXCEPTION] CPF COMPLETE is EMPTY";
+    public static String MSG_BODY_VALIDATION_ERROR = "[CPF EXCEPTION] CPF BODY is invalid!";
+    public static String MSG_COMPLETE_VALIDATION_ERROR = "[CPF EXCEPTION] CPF COMPLETE is invalid!";
+    public static String MSG_CPF_GENERATION_ERROR = "[CPF EXCEPTION] CPF COMPLETE is INVALID!";
+    public static String MSG_COMPLETE_EMPTY_ERROR = "[CPF EXCEPTION] CPF COMPLETE is EMPTY!";
     public static String MSG_GENERIC_ERROR = "[CPF EXCEPTION] IT WAS THROWN A GENERIC ERROR!";
     public static int BODY_EMPTY_ERROR = 0;
     public static int FIRST_DIGIT_VALIDATION_ERROR = 1;

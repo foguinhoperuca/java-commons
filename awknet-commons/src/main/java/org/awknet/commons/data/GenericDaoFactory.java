@@ -27,6 +27,7 @@ import org.hibernate.Transaction;
  * This class provide basic features to access DB.
  * 
  */
+// FIXME use a interface here?
 public class GenericDaoFactory {
 
     private final Session session;
