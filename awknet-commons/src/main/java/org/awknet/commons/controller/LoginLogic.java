@@ -47,10 +47,11 @@ public class LoginLogic {
 
     @In
     private HttpServletRequest request;
+    private static final Log LOG = LogFactory.getLog(LoginLogic.class);
     private UserBOImpl userBO;
     private User login;
     private RetrievePasswordLog retrievePasswordLog;
-    private static final Log LOG = LogFactory.getLog(LoginLogic.class);
+    private String error;
 
     public LoginLogic(DaoFactory daoFactory) {
 	userBO = new UserBOImpl(daoFactory);
@@ -60,10 +61,13 @@ public class LoginLogic {
     }
 
     public String doLogin(User _entity) {
+	LOG.debug("doLogin START!!!");
 	if (userBO.verifyUser(_entity)) {
 	    login = userBO.getUser();
 	    return "ok";
 	} else {
+	    error = "[DO LOGIN] Login invalid!";
+	    LOG.debug(error);
 	    return "invalid";
 	}
     }
@@ -93,9 +97,11 @@ public class LoginLogic {
 		    PropertiesAwknetCommons.resolvePropertiesFile());
 	} catch (UserException e) {
 	    LOG.error("[RETRIEVE PASSWORD FORM] User exception!", e);
+	    error = e.getMessage();
 	    return "error";
 	} catch (RetrieveCodeException e) {
 	    LOG.error("[RETRIEVE PASSWORD FORM] Retrieve Code exception!", e);
+	    error = e.getMessage();
 	    return "error";
 	}
 
@@ -125,10 +131,13 @@ public class LoginLogic {
 	    }
 	} catch (RetrieveCodeException e) {
 	    LOG.error("[RETRIEVE CODE] retrieve code #:" + retrieveCode, e);
+	    error = e.getMessage();
 	    return "error";
 	}
 
 	LOG.info("[RETRIEVE CODE] Retrieve code is invalid!!");
+	error = "[RETRIEVE CODE] Retrieve code is invalid!!";
+
 	return "error";
     }
 
@@ -146,7 +155,13 @@ public class LoginLogic {
     }
 
     @Out(scope = ScopeType.SESSION)
+    // FIXME scope: [REQUEST | SESSION] - maybe request...
     public RetrievePasswordLog getRetrievePasswordLog() {
 	return retrievePasswordLog;
+    }
+
+    @Out(scope = ScopeType.REQUEST)
+    public String getError() {
+	return error;
     }
 }
