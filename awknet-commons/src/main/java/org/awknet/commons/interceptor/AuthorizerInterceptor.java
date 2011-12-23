@@ -30,7 +30,7 @@ import org.vraptor.view.ViewException;
 
 public class AuthorizerInterceptor implements Interceptor {
 
-    @In(scope = ScopeType.SESSION, required = false)
+    @In(scope = ScopeType.SESSION, required = false, key = "login")
     private User user;
 
     public void intercept(LogicFlow flow) throws LogicException, ViewException {
