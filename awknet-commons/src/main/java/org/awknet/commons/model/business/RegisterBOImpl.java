@@ -43,6 +43,8 @@ public class RegisterBOImpl<T extends BaseEntity> implements Register<T> {
     // FIXME [GENERIC] Two for the show... must use reflection to get class name
     public RegisterBOImpl(GenericDaoFactory _daoFactory) {
 	daoFactory = _daoFactory;
+	// FIXME too ugly! The master workarround! Only Chuck Norris can do!
+	this.clazz = ((T) new Object()).getClass();
 	// FIXME [GENERIC] NOT working....
 	// Type type = getClass().getGenericSuperclass();
 	// clazz = (Class) getClass().getGenericSuperclass();
