@@ -20,7 +20,7 @@ package org.awknet.commons.exception;
 
 public enum UserExceptionType {
 
-    ID(0), PASSWORD(1), EMAIL_NULL(2), LOGIN(3);
+    ID(0), PASSWORD(1), EMAIL_NULL(2), LOGIN(3), VALIDATION(4);
 
     private int type;
 

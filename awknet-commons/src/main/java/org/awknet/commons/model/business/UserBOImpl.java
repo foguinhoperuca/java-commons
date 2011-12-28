@@ -45,6 +45,7 @@ import org.hibernate.exception.ConstraintViolationException;
 
 // TODO implement a "validator" for user
 // FIXME WHO is responsible by open/close DaoFactory? [BOImpl | controller] ?
+// FIXME Create a interface
 public class UserBOImpl {
     private User user;
     private DaoFactory daoFactory;
@@ -512,6 +513,12 @@ public class UserBOImpl {
 		"mail.footer.enterprise", configFile));
 
     }
+
+    // TODO must implement it!
+    public boolean validate(User user2) {
+	return false;
+    }
+
     /**************************************************************************/
 
     // public void createUserProspectRequest(User user, String requestIp) {

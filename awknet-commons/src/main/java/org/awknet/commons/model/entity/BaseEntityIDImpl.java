@@ -49,7 +49,7 @@ public class BaseEntityIDImpl<T> implements BaseEntity<T> {
 	ID = id;
     }
 
-    // FIXME type safety unchecked!
+    @SuppressWarnings("unchecked")
     public boolean equals(Object obj) {
 
 	if (obj == null)
@@ -74,14 +74,13 @@ public class BaseEntityIDImpl<T> implements BaseEntity<T> {
 	return (ID != null ? ID.hashCode() : super.hashCode());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    // FIXME type safety unchecked!
     public T retrieveBasicID() {
 	return (T) this.getID();
     }
 
     @Override
-    // FIXME type safety unchecked!
     public void defineBasicID(T id) {
 	setID((Long) id);
     }

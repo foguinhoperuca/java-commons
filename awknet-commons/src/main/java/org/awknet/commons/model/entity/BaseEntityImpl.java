@@ -32,6 +32,7 @@ public abstract class BaseEntityImpl<T> implements Serializable, BaseEntity<T> {
 
     public abstract T retrieveBasicID();
 
+    // FIXME nonsense this when using composite-id
     public abstract void defineBasicID(T id);
 
 }

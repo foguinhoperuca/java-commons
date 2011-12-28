@@ -25,11 +25,12 @@ public class UserException extends Exception {
 
     private static final long serialVersionUID = 6196598941109275246L;
     private static final Log LOG = LogFactory.getLog(UserException.class);
-    public static String MSG_GENERIC = "NOSENSE!!! - GENERIC ERROR WITH USER!";
-    public static String MSG_ID = "NOSENSE a user with ID!";
-    public static String MSG_PASSWORD = "NOSENSE a user with PASSWORD!";
-    public static String MSG_EMAIL_NULL = "user without PASSWORD in DB!";
-    public static String MSG_LOGIN = "User with LOGIN INVALID!";
+    public static String MSG_GENERIC = "[USER] NOSENSE!!! - GENERIC ERROR WITH USER!";
+    public static String MSG_ID = "[USER] NOSENSE a user with ID!";
+    public static String MSG_PASSWORD = "[USER] NOSENSE a user with PASSWORD!";
+    public static String MSG_EMAIL_NULL = "[USER] user without PASSWORD in DB!";
+    public static String MSG_LOGIN = "[USER] User with LOGIN INVALID!";
+    public static String MSG_VALIDATION = "[USER] User is INVALID!";
     public static int ID = 0;
     public static int PASSWORD = 1;
     public static int MAIL_NULL = 2;
@@ -56,10 +57,15 @@ public class UserException extends Exception {
 	case 2:
 	    LOG.error(UserException.MSG_EMAIL_NULL);
 	    return UserException.MSG_EMAIL_NULL;
+	case 3:
+	    LOG.error(UserException.MSG_LOGIN);
+	    return UserException.MSG_LOGIN;
+	case 4:
+	    LOG.error(UserException.MSG_VALIDATION);
+	    return UserException.MSG_VALIDATION;
 	default:
 	    LOG.error(MSG_GENERIC);
 	    return MSG_GENERIC;
 	}
     }
-
 }
