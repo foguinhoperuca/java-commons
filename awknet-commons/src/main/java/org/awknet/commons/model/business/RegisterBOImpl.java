@@ -31,6 +31,7 @@ public class RegisterBOImpl<T extends BaseEntity> implements Register<T> {
 
     private GenericDaoFactory daoFactory;
     private Class clazz;
+
     private static final Log LOG = LogFactory.getLog(RegisterBOImpl.class);
 
     // FIXME [GENERIC] One for money...
@@ -96,5 +97,12 @@ public class RegisterBOImpl<T extends BaseEntity> implements Register<T> {
     public T loadByExemple(T _entity) {
 	return (T) daoFactory.getRegisterDao(clazz).loadByExample(_entity);
     }
-}
 
+    public GenericDaoFactory getDaoFactory() {
+	return this.daoFactory;
+    }
+
+    public void setClazz(Class clazz) {
+	this.clazz = clazz;
+    }
+}

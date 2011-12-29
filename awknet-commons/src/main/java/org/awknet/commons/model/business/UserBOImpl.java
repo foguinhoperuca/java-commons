@@ -197,9 +197,7 @@ public class UserBOImpl {
 	return entity;
     }
 
-    public User getUser() {
-	return user;
-    }
+
 
     /**
      * Send a link to retrieve a password. Don't implement it self, but call
@@ -516,7 +514,11 @@ public class UserBOImpl {
 
     // TODO must implement it!
     public boolean validate(User user2) {
-	return false;
+	return true;
+    }
+
+    public User getUser() {
+	return user;
     }
 
     /**************************************************************************/
