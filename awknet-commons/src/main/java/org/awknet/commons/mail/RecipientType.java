@@ -40,4 +40,7 @@ public enum RecipientType {
 	return type;
     }
 
+    public String getName() {
+	return name();
+    }
 }

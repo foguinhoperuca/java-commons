@@ -32,4 +32,7 @@ public enum UserExceptionType {
 	return type;
     }
 
+    public String getName() {
+	return name();
+    }
 }

@@ -33,4 +33,7 @@ public enum CPFExceptionType {
 	return type;
     }
 
+    public String getName() {
+	return name();
+    }
 }

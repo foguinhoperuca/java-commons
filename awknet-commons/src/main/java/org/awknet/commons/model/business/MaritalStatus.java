@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Jefferson Campos <foguinho.peruca@gmail.com>
+ * Copyright (C) 2012 Jefferson Campos <foguinho.peruca@gmail.com>
  * This file is part of awknet-commons - http://awknet-commons.awknet.org
  *
  * Awknet-commons is free software: you can redistribute it and/or modify
@@ -16,15 +16,16 @@
  * along with awknet-commons. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.awknet.commons.exception;
+package org.awknet.commons.model.business;
 
-public enum RetrieveCodeExceptionType {
-    RETRIEVE_CODE(0), LOGIN(1), EMAIL(2), IP(3), DATE(4);
+public enum MaritalStatus {
+
+    FEMALE(0), MALE(1);
 
     private int type;
 
-    RetrieveCodeExceptionType(int _type) {
-	this.type = _type;
+    MaritalStatus(int type) {
+	this.type = type;
     }
 
     public int getType() {
