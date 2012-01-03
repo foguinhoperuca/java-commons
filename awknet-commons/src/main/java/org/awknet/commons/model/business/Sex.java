@@ -20,7 +20,7 @@ package org.awknet.commons.model.business;
 
 public enum Sex {
 
-    COHABITATING(0), DIVORCED(1), MARRIED(2), SIGLE(3), WIDOWER(4);
+    FEMALE(0), MALE(1);
 
     private int type;
 

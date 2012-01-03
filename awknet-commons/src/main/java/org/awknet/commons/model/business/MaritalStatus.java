@@ -20,7 +20,7 @@ package org.awknet.commons.model.business;
 
 public enum MaritalStatus {
 
-    FEMALE(0), MALE(1);
+    COHABITATING(0), DIVORCED(1), MARRIED(2), SINGLE(3), WIDOWER(4);
 
     private int type;
 
