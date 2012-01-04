@@ -16,7 +16,7 @@
  * along with awknet-commons. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.awknet.commons.model.business;
+package org.awknet.commons.model.entity;
 
 public enum Sex {
 
