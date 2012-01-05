@@ -24,8 +24,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.mail.MessagingException;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.ValidationException;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -196,8 +202,6 @@ public class UserBOImpl {
 	}
 	return entity;
     }
-
-
 
     /**
      * Send a link to retrieve a password. Don't implement it self, but call
@@ -512,9 +516,30 @@ public class UserBOImpl {
 
     }
 
-    // TODO must implement it!
-    public boolean validate(User user2) {
-	return true;
+    // TODO create a generic validate
+    public boolean validate(User user) {
+	ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+	Validator validator = factory.getValidator();
+
+	try {
+	    Set<ConstraintViolation<User>> constraintViolations = validator
+		    .validate(user);
+	    if (constraintViolations.size() != 0) {
+		LOG.debug("[VALIDATE USER] Errors "
+			+ constraintViolations.size());
+		for (ConstraintViolation<User> cvUser : constraintViolations) {
+		    LOG.debug("[CONSTRAINT VIOLATION] " + cvUser.getMessage()
+			    + " [ERROR AT] " + cvUser.getPropertyPath()
+			    + " [VALUE INVALID] " + cvUser.getInvalidValue());
+		}
+		return false;
+	    }
+	    return true;
+	} catch (ValidationException e) {
+	    LOG.error("[USER VALIDATE] An Error was raised - user is invalid!",
+		    e);
+	    return false;
+	}
     }
 
     public User getUser() {

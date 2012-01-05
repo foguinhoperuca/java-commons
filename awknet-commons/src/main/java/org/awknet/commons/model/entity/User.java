@@ -23,12 +23,16 @@ import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
-// TODO create a diferent user only with login and password
+import org.hibernate.validator.constraints.Email;
+
+// TODO create a different user only with login and password
 @Entity
 @Table(name = "TUser")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class User extends BaseEntityIDImpl<Long> implements java.io.Serializable {
+public class User extends BaseEntityIDImpl<Long> implements
+	java.io.Serializable, Cloneable {
 
     private static final long serialVersionUID = 6450793412169953366L;
     private String login;
@@ -54,6 +58,7 @@ public class User extends BaseEntityIDImpl<Long> implements java.io.Serializable
 	this.login = login;
     }
 
+    @Size(min = 1, max = 30)
     @Column(name = "login", length = 30)
     public String getLogin() {
 	return this.login;
@@ -63,6 +68,7 @@ public class User extends BaseEntityIDImpl<Long> implements java.io.Serializable
 	this.login = _login;
     }
 
+    @Size(min = 1, max = 40)
     @Column(name = "password", length = 40)
     public String getPassword() {
 	return this.password;
@@ -72,6 +78,7 @@ public class User extends BaseEntityIDImpl<Long> implements java.io.Serializable
 	this.password = _password;
     }
 
+    @Email
     @Column(name = "email", length = 40)
     public String getEmail() {
 	return email;
@@ -89,5 +96,13 @@ public class User extends BaseEntityIDImpl<Long> implements java.io.Serializable
     @Override
     public void defineBasicID(Long id) {
 	super.setID(id);
+    }
+
+    public User clone() {
+	try {
+	    return (User) super.clone();
+	} catch (CloneNotSupportedException e) {
+	    return null;
+	}
     }
 }

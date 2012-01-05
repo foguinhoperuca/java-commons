@@ -48,6 +48,8 @@ public class UserBOImplTest {
     private User simple;
     private User someone;
     private User jcampos6669;
+    private User validUser, invalidLoginMin, invalidLoginMax,
+	    invalidPasswordMin, invalidPasswordMax, invalidEmail;
     private String subject, mailText;
 
     @Before
@@ -62,6 +64,8 @@ public class UserBOImplTest {
 	someone = daoFactory.getUserDao().load(new Long(4));
 	jcampos6669 = new User(new Long(6669), "jcampos6669",
 		"229c3f7e7b9c1be5bfa2f46d90c4ab00", "jcampos6669@awknet.org");
+	validUser = new User(new Long(159357), "valid",
+		"229c3f7e7b9c1be5bfa2f46d90c4ab00", "valid@awknet.org");
     }
 
     @Test
@@ -258,5 +262,31 @@ public class UserBOImplTest {
 	String message = "<div><p>Dear User,<br />You have asked to update your password. Copy the code below and paste the following link:</p><b>Link</b>: <a href='http://localhost:8080/micasa/login.retrievePassword.logic?login=XXX[LOGIN]XXX'>http://localhost:8080/micasa/login.retrievePassword.logic?login=XXX[LOGIN]XXX</a><br /><b>Code</b>: XXX[RETRIEVECODE]XXX <br/><p>If you are not prompted to update your password, please ignore this email.</p><p><b>Awknet.org Inc.<br />Somewhere in someplace, 6669<br />Near to a small yellow sun - Milky Way<br />Phone: (42) 4242-4242<br />E-mail: dontbother@awknet.org</b></p><div>";
 	assertEquals(message, instance.createEmailMessageToRetrievePassword(
 		"XXX[RETRIEVECODE]XXX", "XXX[LOGIN]XXX"));
+    }
+
+    @Test
+    public void testValidate() {
+	System.out.println("============ VALIDATE USER TEST ============");
+	invalidLoginMin = validUser.clone();
+	invalidLoginMin.setLogin("");
+	assertFalse(instance.validate(invalidLoginMin));
+	invalidLoginMax = validUser.clone();
+	invalidLoginMax
+		.setLogin("01234567890123456789012345678901234567890123456789");
+	assertFalse(instance.validate(invalidLoginMax));
+
+	invalidPasswordMin = validUser.clone();
+	invalidPasswordMin.setPassword("");
+	assertFalse(instance.validate(invalidPasswordMin));
+	invalidPasswordMax = validUser.clone();
+	invalidPasswordMax
+		.setPassword("0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789");
+	assertFalse(instance.validate(invalidPasswordMax));
+
+	invalidEmail = validUser.clone();
+	invalidEmail.setEmail("==++%an_invalid?_e.mail!(#)some:test");
+	assertFalse(instance.validate(invalidEmail));
+
+	assertTrue(instance.validate(validUser));
     }
 }
