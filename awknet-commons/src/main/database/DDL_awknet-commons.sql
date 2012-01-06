@@ -16,8 +16,9 @@
  * along with awknet-commons. If not, see <http://www.gnu.org/licenses/>.
  */
 
+-- FIXME Adjust AUTO_INCREMENT number start
 CREATE TABLE TUser (
-    ID INT NOT NULL,
+    ID INT NOT NULL AUTO_INCREMENT,
     login VARCHAR(30), -- MUST BE UNIQUE
     password VARCHAR(40),
     email VARCHAR(100),

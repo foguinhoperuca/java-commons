@@ -47,27 +47,35 @@ import org.awknet.commons.model.entity.User;
 import org.awknet.commons.security.Encryption;
 import org.awknet.commons.util.PropertiesAwknetCommons;
 import org.awknet.commons.util.StringUtils;
+import org.hibernate.HibernateException;
 import org.hibernate.exception.ConstraintViolationException;
 
 // TODO implement a "validator" for user
+// FIXME Got great problems when Try user Other Dao than Dao from this jar
 // FIXME WHO is responsible by open/close DaoFactory? [BOImpl | controller] ?
 // FIXME Create a interface
 public class UserBOImpl {
+
     private User user;
     private DaoFactory daoFactory;
+    private Register<User> register;
     private static final Log LOG = LogFactory.getLog(UserBOImpl.class);
+    private static String DEFAULT_PASSWORD = "A12345678a";
 
     public UserBOImpl() {
 	daoFactory = new DaoFactory();
+	register = new RegisterBOImpl<User>(daoFactory, User.class);
     }
 
     public UserBOImpl(DaoFactory daoFactory) {
 	this.daoFactory = daoFactory;
+	register = new RegisterBOImpl<User>(daoFactory, User.class);
     }
 
     public UserBOImpl(DaoFactory _daoFactory, User user) {
 	this.daoFactory = _daoFactory;
 	this.user = user;
+	register = new RegisterBOImpl<User>(daoFactory, User.class);
     }
 
     /**
@@ -163,7 +171,7 @@ public class UserBOImpl {
 	    // u.getIntIdUsuario());
 	    entity.setLogin(rewriteLogin(firstLetter.concat(lastName)));
 	    if (entity.getPassword() == null) {
-		entity.setPassword("A12345678a");
+		entity.setPassword(DEFAULT_PASSWORD);
 	    }
 	    entity.setPassword(encryptPassword(entity.getPassword()));
 	} catch (Exception ex) {
@@ -193,7 +201,7 @@ public class UserBOImpl {
     // TODO send email warning about the reset of password
     public User resetPassword(User entity) {
 	try {
-	    entity.setPassword(encryptPassword("A12345678a"));
+	    entity.setPassword(encryptPassword(DEFAULT_PASSWORD));
 	    daoFactory.beginTransaction();
 	    daoFactory.getUserDao().update(entity);
 	    daoFactory.commit();
@@ -539,6 +547,26 @@ public class UserBOImpl {
 	    LOG.error("[USER VALIDATE] An Error was raised - user is invalid!",
 		    e);
 	    return false;
+	}
+    }
+
+    public void saveOrUpdate(User _user) throws UserException {
+	String originalPassword;
+	try {
+	    if (StringUtils.stringUnsed(_user.getPassword()))
+		_user.setPassword(DEFAULT_PASSWORD);
+
+	    originalPassword = _user.getPassword();
+	    _user.setPassword(encryptPassword(originalPassword));
+	    register.saveOrUpdate(_user);
+	    user = _user;
+	} catch (HibernateException e) {
+	    LOG.error("[USER SAVE UPDATE] COULD NOT SAVE/UPDATE USER!", e);
+	    throw new UserException(UserExceptionType.PERSIST);
+	} catch (NoSuchAlgorithmException ex) {
+	    LOG.error(
+		    "[USER SAVE UPDATE] Error during the encryptation of password!",
+		    ex);
 	}
     }
 

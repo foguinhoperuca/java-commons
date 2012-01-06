@@ -31,6 +31,7 @@ public class UserException extends Exception {
     public static String MSG_EMAIL_NULL = "[USER] user without PASSWORD in DB!";
     public static String MSG_LOGIN = "[USER] User with LOGIN INVALID!";
     public static String MSG_VALIDATION = "[USER] User is INVALID!";
+    public static String MSG_PERSIST = "[USER] User COULD NOT BE SAVED/UPDATED!";
     public static int ID = 0;
     public static int PASSWORD = 1;
     public static int MAIL_NULL = 2;
@@ -63,6 +64,9 @@ public class UserException extends Exception {
 	case 4:
 	    LOG.error(UserException.MSG_VALIDATION);
 	    return UserException.MSG_VALIDATION;
+	case 5:
+	    LOG.error(UserException.MSG_PERSIST);
+	    return UserException.MSG_PERSIST;
 	default:
 	    LOG.error(MSG_GENERIC);
 	    return MSG_GENERIC;

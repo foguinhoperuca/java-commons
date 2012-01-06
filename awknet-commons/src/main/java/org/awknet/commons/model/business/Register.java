@@ -19,14 +19,25 @@
 package org.awknet.commons.model.business;
 
 import java.util.List;
+
 import org.awknet.commons.model.entity.BaseEntity;
 
 public interface Register<T extends BaseEntity> {
     public T save(T _entity);
 
+    public T saveUnit(T _entity);
+
     public T update(T _entity);
 
+    public T updateUnit(T _entity);
+
+    public T saveOrUpdate(T _entity);
+
+    public T saveOrUpdateUnit(T _entity);
+
     public void delete(T _entity);
+
+    public void deleteUnit(T _entity);
 
     public List<T> listAll();
 

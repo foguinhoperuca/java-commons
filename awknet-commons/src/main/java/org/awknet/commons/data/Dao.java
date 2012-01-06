@@ -19,6 +19,7 @@
 package org.awknet.commons.data;
 
 import java.util.List;
+
 import org.awknet.commons.model.entity.BaseEntity;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -46,6 +47,10 @@ public class Dao<T extends BaseEntity> {
 
     public void update(T entity) {
         this.session.merge(entity);
+    }
+
+    public void saveOrUpdate(T entity) {
+	this.session.saveOrUpdate(entity);
     }
 
     @SuppressWarnings("unchecked")

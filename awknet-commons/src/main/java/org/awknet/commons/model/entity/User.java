@@ -20,8 +20,6 @@ package org.awknet.commons.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -30,7 +28,7 @@ import org.hibernate.validator.constraints.Email;
 // TODO create a different user only with login and password
 @Entity
 @Table(name = "TUser")
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+// @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class User extends BaseEntityIDImpl<Long> implements
 	java.io.Serializable, Cloneable {
 

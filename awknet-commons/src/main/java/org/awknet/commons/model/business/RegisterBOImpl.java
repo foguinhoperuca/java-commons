@@ -27,6 +27,7 @@ import org.awknet.commons.model.entity.BaseEntity;
 
 // TODO use singleton here...
 // TODO implement all tests
+// FIXME no need use beginTransaction and commit here? Who manage it?
 public class RegisterBOImpl<T extends BaseEntity> implements Register<T> {
 
     private GenericDaoFactory daoFactory;
@@ -55,6 +56,12 @@ public class RegisterBOImpl<T extends BaseEntity> implements Register<T> {
 
     @Override
     public T save(T _entity) {
+	daoFactory.getRegisterDao(this.clazz).save(_entity);
+	return _entity;
+    }
+
+    @Override
+    public T saveUnit(T _entity) {
 	daoFactory.beginTransaction();
 	daoFactory.getRegisterDao(this.clazz).save(_entity);
 	daoFactory.commit();
@@ -63,6 +70,12 @@ public class RegisterBOImpl<T extends BaseEntity> implements Register<T> {
 
     @Override
     public T update(T _entity) {
+	daoFactory.getRegisterDao(clazz).update(_entity);
+	return _entity;
+    }
+
+    @Override
+    public T updateUnit(T _entity) {
 	daoFactory.beginTransaction();
 	daoFactory.getRegisterDao(clazz).update(_entity);
 	daoFactory.commit();
@@ -70,7 +83,26 @@ public class RegisterBOImpl<T extends BaseEntity> implements Register<T> {
     }
 
     @Override
+    public T saveOrUpdateUnit(T _entity) {
+	daoFactory.beginTransaction();
+	daoFactory.getRegisterDao(clazz).saveOrUpdate(_entity);
+	daoFactory.commit();
+	return _entity;
+    }
+
+    @Override
+    public T saveOrUpdate(T _entity) {
+	daoFactory.getRegisterDao(clazz).saveOrUpdate(_entity);
+	return _entity;
+    }
+
+    @Override
     public void delete(T _entity) {
+	daoFactory.getRegisterDao(clazz).delete(_entity);
+    }
+
+    @Override
+    public void deleteUnit(T _entity) {
 	daoFactory.beginTransaction();
 	daoFactory.getRegisterDao(clazz).delete(_entity);
 	daoFactory.commit();

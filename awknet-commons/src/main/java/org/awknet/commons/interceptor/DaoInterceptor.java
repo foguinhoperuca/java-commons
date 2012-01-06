@@ -22,28 +22,28 @@ import org.awknet.commons.data.DaoFactory;
 import org.vraptor.Interceptor;
 import org.vraptor.LogicException;
 import org.vraptor.LogicFlow;
-import org.vraptor.view.ViewException;
 import org.vraptor.annotations.Out;
+import org.vraptor.view.ViewException;
 
 /**
  * 
  * This "interceptor" is aimed to VRaptor 2.6.
- *
+ * 
  */
 public class DaoInterceptor implements Interceptor {
 
-	private final DaoFactory factory = new DaoFactory();
+    private final DaoFactory factory = new DaoFactory();
 
-	public void intercept(LogicFlow flow) throws LogicException, ViewException {
-		flow.execute();
-		if (factory.hasTransaction()) {
-			factory.rollback();
-		}
-		factory.close();
+    public void intercept(LogicFlow flow) throws LogicException, ViewException {
+	flow.execute();
+	if (factory.hasTransaction()) {
+	    factory.rollback();
 	}
+	factory.close();
+    }
 
-	@Out(key = "org.awknet.commons.data.DaoFactory")
-	public DaoFactory getFactory() {
-		return factory;
-	}
+    @Out(key = "org.awknet.commons.data.DaoFactory")
+    public DaoFactory getFactory() {
+	return factory;
+    }
 }
