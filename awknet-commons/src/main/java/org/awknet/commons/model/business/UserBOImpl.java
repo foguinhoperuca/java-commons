@@ -529,6 +529,9 @@ public class UserBOImpl {
 	ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 	Validator validator = factory.getValidator();
 
+	if (user == null)
+	    return false;
+
 	try {
 	    Set<ConstraintViolation<User>> constraintViolations = validator
 		    .validate(user);
