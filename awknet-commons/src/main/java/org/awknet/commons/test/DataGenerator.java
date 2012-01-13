@@ -42,5 +42,9 @@ public class DataGenerator {
 
 	public static SimpleDateFormat SDF = new SimpleDateFormat("yyyy/MM/dd");
 	public static Date DATE_FUTURE;
-	public static String CPF_OK = "20443711380";
+	public static String CPF_OK_PERSON = "20443711380";
+	public static String CPF_OK_SPOUSE = "98806677004";
+	public static String CPF_OK_PERSON_2 = "11169911285";
+	public static String CPF_OK_SPOUSE_2 = "97688628237";
+	
 }

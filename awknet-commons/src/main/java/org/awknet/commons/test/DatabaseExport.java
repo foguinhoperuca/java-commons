@@ -62,31 +62,35 @@ public class DatabaseExport {
 		IDataSet fullDataSet = new FilteredDataSet(filter,
 				connection.createDataSet());
 
-		FlatXmlDataSet.write(fullDataSet, new FileOutputStream(DataGenerator.FULL_INITIAL_DATASET));
+		FlatXmlDataSet
+				.write(fullDataSet, new FileOutputStream(
+						"/home/jecampos/Desktop/"
+								+ DataGenerator.FULL_INITIAL_DATASET));
 	}
 
 	// TODO implement using parameter
 	public void partialExport(Map<String, String> table)
 			throws DataSetException, FileNotFoundException, IOException {
-		
+
 		QueryDataSet partialDataSet = new QueryDataSet(connection);
 		partialDataSet.addTable("FOO", "SELECT * FROM TABLE WHERE COL='VALUE'");
 		partialDataSet.addTable("BAR");
-		FlatXmlDataSet.write(partialDataSet,
-				new FileOutputStream(DataGenerator.PARTIAL_INITIAL_DATASET));
+		FlatXmlDataSet.write(partialDataSet, new FileOutputStream(
+				DataGenerator.PARTIAL_INITIAL_DATASET));
 
 	}
 
 	// TODO implement using parameter
-	public void dependentTablesExport(Map<String, String> table) throws SearchException,
-			DataSetException, SQLException, FileNotFoundException, IOException {
+	public void dependentTablesExport(Map<String, String> table)
+			throws SearchException, DataSetException, SQLException,
+			FileNotFoundException, IOException {
 		// dependent tables export: export table X and all tables that
 		// have a PK which is a FK on X, in the right order for insertion
 		String[] depTableNames = TablesDependencyHelper.getAllDependentTables(
 				connection, "X");
 		IDataSet depDataset = connection.createDataSet(depTableNames);
-		FlatXmlDataSet
-				.write(depDataset, new FileOutputStream(DataGenerator.DEPENDENT_INITIAL_DATASET));
+		FlatXmlDataSet.write(depDataset, new FileOutputStream(
+				DataGenerator.DEPENDENT_INITIAL_DATASET));
 	}
 
 	public void createDTD() throws DataSetException, FileNotFoundException,
