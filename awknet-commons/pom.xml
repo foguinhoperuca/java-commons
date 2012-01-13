@@ -12,6 +12,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <vraptor-version>2.6.2</vraptor-version>
     <junit-version>4.5</junit-version>
+    <dbunit-version>2.4.8</dbunit-version>
     <hibernate-core-version>3.6.8.Final</hibernate-core-version>
     <!-- <hibernate-annotations-version>3.5.6-Final</hibernate-annotations-version> -->
     <!-- <hibernate-commons-annotations-version>3.2.0.Final</hibernate-commons-annotations-version> -->
@@ -33,7 +34,13 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>${junit-version}</version>
-      <scope>test</scope>
+	<!-- <scope>test</scope> -->
+    </dependency>
+    <dependency>
+      <groupId>org.dbunit</groupId>
+      <artifactId>dbunit</artifactId>
+      <version>${dbunit-version}</version>
+	<!-- <scope>test</scope> -->
     </dependency>
     <dependency>
       <groupId>org.vraptor</groupId>
