@@ -26,48 +26,48 @@ import org.apache.commons.logging.LogFactory;
 
 public class PropertiesAwknetCommons {
 
-    public static final String DEFAULT_PROPERTIES_FILE = "/awknet-commons.properties";
-    private static final Log LOG = LogFactory
-	    .getLog(PropertiesAwknetCommons.class);
+	public static final String DEFAULT_PROPERTIES_FILE = "/awknet-commons.properties";
+	private static final Log LOG = LogFactory
+			.getLog(PropertiesAwknetCommons.class);
 
-    public static String resolvePropertiesFile() {
-	Properties javaMailProperties = new Properties();
-	try {
-	    javaMailProperties
-		    .load(PropertiesAwknetCommons.class
-			    .getResourceAsStream(PropertiesAwknetCommons.DEFAULT_PROPERTIES_FILE));
-	} catch (IOException e) {
-	    LOG.error("[resolvePropertiesFile] Error opening the file "
-		    + PropertiesAwknetCommons.DEFAULT_PROPERTIES_FILE);
-	    return null;
+	public static String resolvePropertiesFile() {
+		Properties javaMailProperties = new Properties();
+		try {
+			javaMailProperties
+					.load(PropertiesAwknetCommons.class
+							.getResourceAsStream(PropertiesAwknetCommons.DEFAULT_PROPERTIES_FILE));
+		} catch (IOException e) {
+			LOG.error("[resolvePropertiesFile] Error opening the file "
+					+ PropertiesAwknetCommons.DEFAULT_PROPERTIES_FILE);
+			return null;
+		}
+
+		LOG.debug("FILENAME IS: "
+				+ javaMailProperties.getProperty("config.filename"));
+		return javaMailProperties.getProperty("config.filename");
 	}
 
-	LOG.debug("FILENAME IS: "
-		+ javaMailProperties.getProperty("config.filename"));
-	return javaMailProperties.getProperty("config.filename");
-    }
+	public static String getProperty(String property, String fileName) {
+		Properties javaMailProperties;
 
-    public static String getProperty(String property, String fileName) {
-	Properties javaMailProperties;
+		if (property == null || property.equals(""))
+			return null;
 
-	if (property == null || property.equals(""))
-	    return null;
+		javaMailProperties = new Properties();
+		try {
+			if (fileName == null || fileName.equals(""))
+				javaMailProperties.load(PropertiesAwknetCommons.class
+						.getResourceAsStream(DEFAULT_PROPERTIES_FILE));
+			else
+				javaMailProperties.load(PropertiesAwknetCommons.class
+						.getResourceAsStream(fileName));
+		} catch (IOException e) {
+			LOG.error("[resolvePropertiesFile] Error opening the file "
+					+ DEFAULT_PROPERTIES_FILE);
+			return null;
+		}
 
-	javaMailProperties = new Properties();
-	try {
-	    if (fileName == null | fileName.equals(""))
-		javaMailProperties.load(PropertiesAwknetCommons.class
-			.getResourceAsStream(DEFAULT_PROPERTIES_FILE));
-	    else
-		javaMailProperties.load(PropertiesAwknetCommons.class
-			.getResourceAsStream(fileName));
-	} catch (IOException e) {
-	    LOG.error("[resolvePropertiesFile] Error opening the file "
-		    + DEFAULT_PROPERTIES_FILE);
-	    return null;
+		return javaMailProperties.getProperty(property);
 	}
-
-	return javaMailProperties.getProperty(property);
-    }
 
 }
