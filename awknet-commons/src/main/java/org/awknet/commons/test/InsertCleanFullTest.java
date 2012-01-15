@@ -19,15 +19,20 @@
 
 package org.awknet.commons.test;
 
-import org.dbunit.DBTestCase;
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+import org.dbunit.DatabaseTestCase;
 import org.dbunit.PropertiesBasedJdbcDatabaseTester;
+import org.dbunit.database.DatabaseConnection;
+import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.operation.DatabaseOperation;
 
 // TODO how reuse this class efficiently?
 // FIXME DB URL CONNECTION OVERRIDE!
-public class InsertCleanFullTest extends DBTestCase {
+public class InsertCleanFullTest extends DatabaseTestCase {
 
 	private String driver;
 	private String url;
@@ -70,12 +75,22 @@ public class InsertCleanFullTest extends DBTestCase {
 	}
 
 	@Override
+	protected IDatabaseConnection getConnection() throws Exception {
+		Class.forName(DataGenerator.DRIVER);
+		Connection jdbcConnection = DriverManager.getConnection(
+				DataGenerator.URL_FOREIGN_KEY_DOWN, DataGenerator.USER,
+				DataGenerator.PASSWORD);
+		return new DatabaseConnection(jdbcConnection);
+
+	}
+
+	@Override
 	protected DatabaseOperation getSetUpOperation() throws Exception {
 		return DatabaseOperation.CLEAN_INSERT;
 	}
 
-	// @Override
-	// protected DatabaseOperation getTearDownOperation() throws Exception {
-	// return DatabaseOperation.DELETE_ALL;
-	// }
+	@Override
+	protected DatabaseOperation getTearDownOperation() throws Exception {
+		return DatabaseOperation.NONE;
+	}
 }
