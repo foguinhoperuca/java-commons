@@ -30,41 +30,41 @@ import org.hibernate.Transaction;
 // FIXME use a interface here?
 public class GenericDaoFactory {
 
-    private final Session session;
-    private Transaction transaction;
+	private final Session session;
+	private Transaction transaction;
 
-    public GenericDaoFactory() {
-	session = HibernateUtil.getSession();
-    }
+	public GenericDaoFactory() {
+		session = HibernateUtil.getSession();
+	}
 
-    public void beginTransaction() {
-	this.transaction = this.session.beginTransaction();
-    }
+	public void beginTransaction() {
+		this.transaction = this.session.beginTransaction();
+	}
 
-    public void commit() {
-	this.transaction.commit();
-	this.transaction = null;
-    }
+	public void commit() {
+		this.transaction.commit();
+		this.transaction = null;
+	}
 
-    public boolean hasTransaction() {
-	return this.transaction != null;
-    }
+	public boolean hasTransaction() {
+		return this.transaction != null;
+	}
 
-    public void rollback() {
-	this.transaction.rollback();
-	this.transaction = null;
-    }
+	public void rollback() {
+		this.transaction.rollback();
+		this.transaction = null;
+	}
 
-    public void close() {
-	this.session.close();
-    }
+	public void close() {
+		this.session.close();
+	}
 
-    public Session getSession() {
-	return this.session;
-    }
+	public Session getSession() {
+		return this.session;
+	}
 
-    @SuppressWarnings("rawtypes")
-    public <T extends BaseEntity> Dao<T> getRegisterDao(Class _clazz) {
-	return new Dao<T>(session, _clazz);
-    }
+	@SuppressWarnings("rawtypes")
+	public <T extends BaseEntity> Dao<T> getRegisterDao(Class _clazz) {
+		return new Dao<T>(session, _clazz);
+	}
 }
