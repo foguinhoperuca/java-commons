@@ -39,254 +39,254 @@ import org.junit.Test;
 // FIXME must run clean up DB script before execute this test! DBUnit!!
 public class UserBOImplTest {
 
-    private static final String DEFAULT_PROPERTIES_FILE = "/awknet-commons.properties";
-    private static final String IP = "172.16.1.110";
-    private DaoFactory daoFactory;
-    private UserBOImpl instance;
-    private User root;
-    private User somebody;
-    private User simple;
-    private User someone;
-    private User jcampos6669;
-    private User validUser, invalidLoginMin, invalidLoginMax,
-	    invalidPasswordMin, invalidPasswordMax, invalidEmail;
-    private String subject, mailText;
+	private static final String DEFAULT_PROPERTIES_FILE = "/awknet-commons.properties";
+	private static final String IP = "172.16.1.110";
+	private DaoFactory daoFactory;
+	private UserBOImpl instance;
+	private User root;
+	private User somebody;
+	private User simple;
+	private User someone;
+	private User jcampos6669;
+	private User validUser, invalidLoginMin, invalidLoginMax,
+			invalidPasswordMin, invalidPasswordMax, invalidEmail;
+	private String subject, mailText;
 
-    @Before
-    public void setUp() throws Exception {
-	daoFactory = new DaoFactory();
-	instance = new UserBOImpl(daoFactory);
-	subject = "[TEST] UserBOImpl email subject.";
-	mailText = "[TEST] UserBOImpl email mailText.";
-	root = daoFactory.getUserDao().load(new Long(1));
-	somebody = daoFactory.getUserDao().load(new Long(2));
-	simple = daoFactory.getUserDao().load(new Long(3));
-	someone = daoFactory.getUserDao().load(new Long(4));
-	jcampos6669 = new User(new Long(6669), "jcampos6669",
-		"229c3f7e7b9c1be5bfa2f46d90c4ab00", "jcampos6669@awknet.org");
-	validUser = new User(new Long(159357), "valid",
-		"229c3f7e7b9c1be5bfa2f46d90c4ab00", "valid@awknet.org");
-    }
-
-    @Test
-    public void testRewriteLogin() {
-	assertEquals("c", instance.rewriteLogin("ç"));
-	assertEquals("n", instance.rewriteLogin("ñ"));
-	assertEquals("a", instance.rewriteLogin("á"));
-	assertEquals("a", instance.rewriteLogin("à"));
-	assertEquals("a", instance.rewriteLogin("ã"));
-	assertEquals("a", instance.rewriteLogin("â"));
-	assertEquals("a", instance.rewriteLogin("ä"));
-	assertEquals("e", instance.rewriteLogin("é"));
-	assertEquals("e", instance.rewriteLogin("è"));
-	assertEquals("e", instance.rewriteLogin("ẽ"));
-	assertEquals("e", instance.rewriteLogin("ê"));
-	assertEquals("e", instance.rewriteLogin("ë"));
-	assertEquals("i", instance.rewriteLogin("í"));
-	assertEquals("i", instance.rewriteLogin("ì"));
-	assertEquals("i", instance.rewriteLogin("ĩ"));
-	assertEquals("i", instance.rewriteLogin("î"));
-	assertEquals("i", instance.rewriteLogin("ï"));
-	assertEquals("o", instance.rewriteLogin("ó"));
-	assertEquals("o", instance.rewriteLogin("ò"));
-	assertEquals("o", instance.rewriteLogin("õ"));
-	assertEquals("o", instance.rewriteLogin("ô"));
-	assertEquals("o", instance.rewriteLogin("ö"));
-	assertEquals("u", instance.rewriteLogin("ú"));
-	assertEquals("u", instance.rewriteLogin("ù"));
-	assertEquals("u", instance.rewriteLogin("ũ"));
-	assertEquals("u", instance.rewriteLogin("û"));
-	assertEquals("u", instance.rewriteLogin("ü"));
-    }
-
-    /**
-     * A simple test of encryption. The encryption itself is tested by
-     * EncryptionTest.testGenericgenericEncrypt()
-     */
-    @Test
-    public void testEncryptPassword() throws NoSuchAlgorithmException {
-	String pass_A12345678a = "229c3f7e7b9c1be5bfa2f46d90c4ab00";
-	assertEquals(pass_A12345678a, instance.encryptPassword("A12345678a"));
-    }
-
-    // @Test
-    // public void testCreateUser() {
-    // assertEquals("jcampos6669", instance.createUser("Jefferson Campos"));
-    // }
-
-    // @Test
-    // public void testVerifyUser() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public void testResetPassword() {
-    // fail("Not yet implemented");
-    // }
-
-    // @Test
-    // public void testSendLinkToRetrievePassword() throws Exception {
-    // User inexistent_user = new User();
-    // User login_someone = new User();
-    // User email_user = new User();
-    //
-    // inexistent_user.setLogin("fake");
-    // login_someone.setLogin("02598649435");
-    // email_user.setEmail(simple.getEmail());
-    //
-    // assertFalse(instance.sendLinkToRetrievePassword(inexistent_user,
-    // subject, mailText, DEFAULT_PROPERTIES_FILE));
-    // assertTrue(instance.sendLinkToRetrievePassword(login_someone, subject,
-    // mailText, DEFAULT_PROPERTIES_FILE));
-    // assertTrue(instance.sendLinkToRetrievePassword(email_user, subject,
-    // mailText, DEFAULT_PROPERTIES_FILE));
-    // }
-
-    // @Test(expected = UserException.class)
-    // // FIXME return hibernate not uniquye exception!!
-    // public void testSendLinkRetrivePasswordUsingPassword() throws
-    // UserException {
-    // User password_user = new User();
-    // password_user.setPassword(simple.getPassword());
-    //
-    // instance.sendLinkToRetrievePassword(password_user, subject, mailText,
-    // DEFAULT_PROPERTIES_FILE);
-    // }
-
-    // @Test(expected = UserException.class)
-    // public void testSendLinkRetrivePasswordUsingID() throws UserException {
-    // User id_user = new User();
-    // id_user.setID(new Long(1));
-    //
-    // instance.sendLinkToRetrievePassword(id_user, subject, mailText,
-    // DEFAULT_PROPERTIES_FILE);
-    // }
-
-    @Test
-    public void testGenerateCodeToRetrievePassword() throws UserException,
-	    RetrieveCodeException {
-	List<String> retrieveCodeGenerated = new ArrayList<String>();
-
-	System.out.println("Retrieve code generated:");
-
-	retrieveCodeGenerated.add(instance.generateCodeToRetrievePassword(
-		root.getID(), IP));
-	retrieveCodeGenerated.add(instance.generateCodeToRetrievePassword(
-		somebody.getID(), IP));
-	retrieveCodeGenerated.add(instance.generateCodeToRetrievePassword(
-		simple.getID(), IP));
-	retrieveCodeGenerated.add(instance.generateCodeToRetrievePassword(
-		someone.getID(), IP));
-
-	for (String rc : retrieveCodeGenerated) {
-	    assertFalse(rc.equals(""));
-	    assertFalse(daoFactory.getRetrievePasswordLogDao()
-		    .findRetrieveCode(rc).getUpdated());
-	    System.out.println("For code: "
-		    + rc
-		    + " updated field is: "
-		    + daoFactory.getRetrievePasswordLogDao()
-			    .findRetrieveCode(rc).getUpdated());
+	@Before
+	public void setUp() throws Exception {
+		daoFactory = new DaoFactory();
+		instance = new UserBOImpl(daoFactory);
+		subject = "[TEST] UserBOImpl email subject.";
+		mailText = "[TEST] UserBOImpl email mailText.";
+		root = daoFactory.getUserDao().load(new Long(1));
+		somebody = daoFactory.getUserDao().load(new Long(2));
+		simple = daoFactory.getUserDao().load(new Long(3));
+		someone = daoFactory.getUserDao().load(new Long(4));
+		jcampos6669 = new User(new Long(6669), "jcampos6669",
+				"229c3f7e7b9c1be5bfa2f46d90c4ab00", "jcampos6669@awknet.org");
+		validUser = new User(new Long(159357), "valid",
+				"229c3f7e7b9c1be5bfa2f46d90c4ab00", "valid@awknet.org");
 	}
-    }
 
-    @Test
-    public void testIsValidRequest() throws RetrieveCodeException {
-	List<RetrievePasswordLog> codes = daoFactory
-		.getRetrievePasswordLogDao().list();
+	@Test
+	public void testRewriteLogin() {
+		assertEquals("c", instance.rewriteLogin("ç"));
+		assertEquals("n", instance.rewriteLogin("ñ"));
+		assertEquals("a", instance.rewriteLogin("á"));
+		assertEquals("a", instance.rewriteLogin("à"));
+		assertEquals("a", instance.rewriteLogin("ã"));
+		assertEquals("a", instance.rewriteLogin("â"));
+		assertEquals("a", instance.rewriteLogin("ä"));
+		assertEquals("e", instance.rewriteLogin("é"));
+		assertEquals("e", instance.rewriteLogin("è"));
+		assertEquals("e", instance.rewriteLogin("ẽ"));
+		assertEquals("e", instance.rewriteLogin("ê"));
+		assertEquals("e", instance.rewriteLogin("ë"));
+		assertEquals("i", instance.rewriteLogin("í"));
+		assertEquals("i", instance.rewriteLogin("ì"));
+		assertEquals("i", instance.rewriteLogin("ĩ"));
+		assertEquals("i", instance.rewriteLogin("î"));
+		assertEquals("i", instance.rewriteLogin("ï"));
+		assertEquals("o", instance.rewriteLogin("ó"));
+		assertEquals("o", instance.rewriteLogin("ò"));
+		assertEquals("o", instance.rewriteLogin("õ"));
+		assertEquals("o", instance.rewriteLogin("ô"));
+		assertEquals("o", instance.rewriteLogin("ö"));
+		assertEquals("u", instance.rewriteLogin("ú"));
+		assertEquals("u", instance.rewriteLogin("ù"));
+		assertEquals("u", instance.rewriteLogin("ũ"));
+		assertEquals("u", instance.rewriteLogin("û"));
+		assertEquals("u", instance.rewriteLogin("ü"));
+	}
 
-	for (RetrievePasswordLog rpLog : codes)
-	    assertTrue(instance.isValidRequest(new Date(),
-		    rpLog.getRetrieveCode()));
-    }
+	/**
+	 * A simple test of encryption. The encryption itself is tested by
+	 * EncryptionTest.testGenericgenericEncrypt()
+	 */
+	@Test
+	public void testEncryptPassword() throws NoSuchAlgorithmException {
+		String pass_A12345678a = "229c3f7e7b9c1be5bfa2f46d90c4ab00";
+		assertEquals(pass_A12345678a, instance.encryptPassword("A12345678a"));
+	}
 
-    /**************************************************************************/
-    // @Test
-    // FIXME need clean DB before use! need use DBunit here!!
-    public void testUpdatePassword() {
-	// // List<String> retrieveCodes = new ArrayList<String>();
-	//
-	// List<RetrievePasswordLog> rpLogInDB = daoFactory
-	// .getRetrievePasswordLogDao().list();
-	// List<User> users = daoFactory.getRetrievePasswordLogDao()
-	// .getUsersThaCanUseRetrieveCode();
-	//
-	// for (RetrievePasswordLog rpLog : rpLogInDB) {
-	// // retrieveCodes.add(rpLog.getRetrieveCode());
-	// assertTrue(instance.updatePassword(PasswordDefault.pass_somePass,
-	// rpLog.getRetrieveCode()));
+	// @Test
+	// public void testCreateUser() {
+	// assertEquals("jcampos6669", instance.createUser("Jefferson Campos"));
+	// }
+
+	// @Test
+	// public void testVerifyUser() {
+	// fail("Not yet implemented");
 	// }
 	//
-	// // for (String rc : retrieveCodes) {
-	// // assertTrue(instance.updatePassword(PasswordDefault.pass_somePass,
-	// // rc));
-	// // }
+	// @Test
+	// public void testResetPassword() {
+	// fail("Not yet implemented");
+	// }
+
+	// @Test
+	// public void testSendLinkToRetrievePassword() throws Exception {
+	// User inexistent_user = new User();
+	// User login_someone = new User();
+	// User email_user = new User();
 	//
-	// for (User user : users)
-	// assertEquals(PasswordDefault.pass_somePass_encrypted,
-	// user.getPassword());
-    }
+	// inexistent_user.setLogin("fake");
+	// login_someone.setLogin("02598649435");
+	// email_user.setEmail(simple.getEmail());
+	//
+	// assertFalse(instance.sendLinkToRetrievePassword(inexistent_user,
+	// subject, mailText, DEFAULT_PROPERTIES_FILE));
+	// assertTrue(instance.sendLinkToRetrievePassword(login_someone, subject,
+	// mailText, DEFAULT_PROPERTIES_FILE));
+	// assertTrue(instance.sendLinkToRetrievePassword(email_user, subject,
+	// mailText, DEFAULT_PROPERTIES_FILE));
+	// }
 
-    // @Test(expected = RetrieveCodeException.class)
-    @Test
-    public void testUpdatePasswordInvalidRequest() {
-	// try {
-	// if (!isValidRequest(new Date(), retrieveCode))
-	// return false;
+	// @Test(expected = UserException.class)
+	// // FIXME return hibernate not uniquye exception!!
+	// public void testSendLinkRetrivePasswordUsingPassword() throws
+	// UserException {
+	// User password_user = new User();
+	// password_user.setPassword(simple.getPassword());
+	//
+	// instance.sendLinkToRetrievePassword(password_user, subject, mailText,
+	// DEFAULT_PROPERTIES_FILE);
+	// }
 
-	assertFalse(instance.updatePassword(PasswordDefault.pass_somePass,
-		"invalid_retrieveCode"));
-    }
+	// @Test(expected = UserException.class)
+	// public void testSendLinkRetrivePasswordUsingID() throws UserException {
+	// User id_user = new User();
+	// id_user.setID(new Long(1));
+	//
+	// instance.sendLinkToRetrievePassword(id_user, subject, mailText,
+	// DEFAULT_PROPERTIES_FILE);
+	// }
 
-    @Test
-    public void testUpdatePasswordVoidPassword() throws UserException,
-	    RetrieveCodeException {
-	// if (entity.getPassword().equals(""))
-	// return false;
+	@Test
+	public void testGenerateCodeToRetrievePassword() throws UserException,
+			RetrieveCodeException {
+		List<String> retrieveCodeGenerated = new ArrayList<String>();
 
-	String validRetrieveCode = instance.generateCodeToRetrievePassword(
-		new Long(1), "172.16.1.112");
+		System.out.println("Retrieve code generated:");
 
-	// RetrievePasswordLog rpLog = daoFactory.getRetrievePasswordLogDao()
-	// .findRetrieveCode(validRetrieveCode);
-	User user = daoFactory.getRetrievePasswordLogDao()
-		.getUserByRetrieveCode(validRetrieveCode);
+		retrieveCodeGenerated.add(instance.generateCodeToRetrievePassword(
+				root.getID(), IP));
+		retrieveCodeGenerated.add(instance.generateCodeToRetrievePassword(
+				somebody.getID(), IP));
+		retrieveCodeGenerated.add(instance.generateCodeToRetrievePassword(
+				simple.getID(), IP));
+		retrieveCodeGenerated.add(instance.generateCodeToRetrievePassword(
+				someone.getID(), IP));
 
-	instance.updatePasswordToDefault(validRetrieveCode);
-	assertEquals(PasswordDefault.pass_A12345678a_encrypted,
-		user.getPassword());
-    }
+		for (String rc : retrieveCodeGenerated) {
+			assertFalse(rc.equals(""));
+			assertFalse(daoFactory.getRetrievePasswordLogDao()
+					.findRetrieveCode(rc).getUpdated());
+			System.out.println("For code: "
+					+ rc
+					+ " updated field is: "
+					+ daoFactory.getRetrievePasswordLogDao()
+							.findRetrieveCode(rc).getUpdated());
+		}
+	}
 
-    @Test
-    public void testCreateEmailMessageToRetrievePassword() {
-	String message = "<div><p>Dear User,<br />You have asked to update your password. Copy the code below and paste the following link:</p><b>Link</b>: <a href='http://localhost:8080/micasa/login.retrievePassword.logic?login=XXX[LOGIN]XXX'>http://localhost:8080/micasa/login.retrievePassword.logic?login=XXX[LOGIN]XXX</a><br /><b>Code</b>: XXX[RETRIEVECODE]XXX <br/><p>If you are not prompted to update your password, please ignore this email.</p><p><b>Awknet.org Inc.<br />Somewhere in someplace, 6669<br />Near to a small yellow sun - Milky Way<br />Phone: (42) 4242-4242<br />E-mail: dontbother@awknet.org</b></p><div>";
-	assertEquals(message, instance.createEmailMessageToRetrievePassword(
-		"XXX[RETRIEVECODE]XXX", "XXX[LOGIN]XXX"));
-    }
+	@Test
+	public void testIsValidRequest() throws RetrieveCodeException {
+		List<RetrievePasswordLog> codes = daoFactory
+				.getRetrievePasswordLogDao().list();
 
-    @Test
-    public void testValidate() {
-	System.out.println("============ VALIDATE USER TEST ============");
-	invalidLoginMin = validUser.clone();
-	invalidLoginMin.setLogin("");
-	assertFalse(instance.validate(invalidLoginMin));
-	invalidLoginMax = validUser.clone();
-	invalidLoginMax
-		.setLogin("01234567890123456789012345678901234567890123456789");
-	assertFalse(instance.validate(invalidLoginMax));
+		for (RetrievePasswordLog rpLog : codes)
+			assertTrue(instance.isValidRequest(new Date(),
+					rpLog.getRetrieveCode()));
+	}
 
-	invalidPasswordMin = validUser.clone();
-	invalidPasswordMin.setPassword("");
-	assertFalse(instance.validate(invalidPasswordMin));
-	invalidPasswordMax = validUser.clone();
-	invalidPasswordMax
-		.setPassword("0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789");
-	assertFalse(instance.validate(invalidPasswordMax));
+	/**************************************************************************/
+	// @Test
+	// FIXME need clean DB before use! need use DBunit here!!
+	public void testUpdatePassword() {
+		// // List<String> retrieveCodes = new ArrayList<String>();
+		//
+		// List<RetrievePasswordLog> rpLogInDB = daoFactory
+		// .getRetrievePasswordLogDao().list();
+		// List<User> users = daoFactory.getRetrievePasswordLogDao()
+		// .getUsersThaCanUseRetrieveCode();
+		//
+		// for (RetrievePasswordLog rpLog : rpLogInDB) {
+		// // retrieveCodes.add(rpLog.getRetrieveCode());
+		// assertTrue(instance.updatePassword(PasswordDefault.pass_somePass,
+		// rpLog.getRetrieveCode()));
+		// }
+		//
+		// // for (String rc : retrieveCodes) {
+		// // assertTrue(instance.updatePassword(PasswordDefault.pass_somePass,
+		// // rc));
+		// // }
+		//
+		// for (User user : users)
+		// assertEquals(PasswordDefault.pass_somePass_encrypted,
+		// user.getPassword());
+	}
 
-	invalidEmail = validUser.clone();
-	invalidEmail.setEmail("==++%an_invalid?_e.mail!(#)some:test");
-	assertFalse(instance.validate(invalidEmail));
+	// @Test(expected = RetrieveCodeException.class)
+	@Test
+	public void testUpdatePasswordInvalidRequest() {
+		// try {
+		// if (!isValidRequest(new Date(), retrieveCode))
+		// return false;
 
-	assertTrue(instance.validate(validUser));
-    }
+		assertFalse(instance.updatePassword(PasswordDefault.pass_somePass,
+				"invalid_retrieveCode"));
+	}
+
+	@Test
+	public void testUpdatePasswordVoidPassword() throws UserException,
+			RetrieveCodeException {
+		// if (entity.getPassword().equals(""))
+		// return false;
+
+		String validRetrieveCode = instance.generateCodeToRetrievePassword(
+				new Long(1), "172.16.1.112");
+
+		// RetrievePasswordLog rpLog = daoFactory.getRetrievePasswordLogDao()
+		// .findRetrieveCode(validRetrieveCode);
+		User user = daoFactory.getRetrievePasswordLogDao()
+				.getUserByRetrieveCode(validRetrieveCode);
+
+		instance.updatePasswordToDefault(validRetrieveCode);
+		assertEquals(PasswordDefault.pass_A12345678a_encrypted,
+				user.getPassword());
+	}
+
+	@Test
+	public void testCreateEmailMessageToRetrievePassword() {
+		String message = "<div><p>Dear User,<br />You have asked to update your password. Copy the code below and paste the following link:</p><b>Link</b>: <a href='http://localhost:8080/micasa/login.retrievePassword.logic?login=XXX[LOGIN]XXX'>http://localhost:8080/micasa/login.retrievePassword.logic?login=XXX[LOGIN]XXX</a><br /><b>Code</b>: XXX[RETRIEVECODE]XXX <br/><p>If you are not prompted to update your password, please ignore this email.</p><p><b>Awknet.org Inc.<br />Somewhere in someplace, 6669<br />Near to a small yellow sun - Milky Way<br />Phone: (42) 4242-4242<br />E-mail: dontbother@awknet.org</b></p><div>";
+		assertEquals(message, instance.createEmailMessageToRetrievePassword(
+				"XXX[RETRIEVECODE]XXX", "XXX[LOGIN]XXX"));
+	}
+
+	@Test
+	public void testValidate() {
+		System.out.println("============ VALIDATE USER TEST ============");
+		invalidLoginMin = validUser.clone();
+		invalidLoginMin.setLogin("");
+		assertFalse(instance.validate(invalidLoginMin));
+		invalidLoginMax = validUser.clone();
+		invalidLoginMax
+				.setLogin("01234567890123456789012345678901234567890123456789");
+		assertFalse(instance.validate(invalidLoginMax));
+
+		invalidPasswordMin = validUser.clone();
+		invalidPasswordMin.setPassword("");
+		assertFalse(instance.validate(invalidPasswordMin));
+		invalidPasswordMax = validUser.clone();
+		invalidPasswordMax
+				.setPassword("0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789");
+		assertFalse(instance.validate(invalidPasswordMax));
+
+		invalidEmail = validUser.clone();
+		invalidEmail.setEmail("==++%an_invalid?_e.mail!(#)some:test");
+		assertFalse(instance.validate(invalidEmail));
+
+		assertTrue(instance.validate(validUser));
+	}
 }

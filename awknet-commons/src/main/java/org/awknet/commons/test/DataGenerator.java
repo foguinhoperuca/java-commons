@@ -40,11 +40,14 @@ public class DataGenerator {
 	public static final String DEPENDENT_INITIAL_DATASET = "/dependents.xml";
 	public static final String AWKNET_COMMONS_DTD = "awknet-commons.dtd";
 
-	public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy/MM/dd");
+	public static final SimpleDateFormat SDF = new SimpleDateFormat(
+			"yyyy/MM/dd");
 	public static Date DATE_FUTURE;
+
 	public static final String CPF_OK_PERSON = "20443711380";
 	public static final String CPF_OK_SPOUSE = "98806677004";
 	public static final String CPF_OK_PERSON_2 = "11169911285";
 	public static final String CPF_OK_SPOUSE_2 = "97688628237";
-	
+	public static final String CPF_INVALID = "84163572449";
+
 }

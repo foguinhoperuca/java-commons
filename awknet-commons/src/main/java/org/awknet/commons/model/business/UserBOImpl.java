@@ -374,7 +374,7 @@ public class UserBOImpl {
 	 * days.
 	 * 
 	 * @param requestDate
-	 * @return
+	 * @return true for if is valid.
 	 */
 	public boolean isValidRequest(Date requestDate, final String retrieveCode)
 			throws RetrieveCodeException {

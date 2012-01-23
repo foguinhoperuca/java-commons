@@ -25,14 +25,14 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class BaseEntityImpl<T> implements Serializable, BaseEntity<T> {
 
-    private static final long serialVersionUID = -7242252481157329335L;
+	private static final long serialVersionUID = -7242252481157329335L;
 
-    public BaseEntityImpl() {
-    }
+	public BaseEntityImpl() {
+	}
 
-    public abstract T retrieveBasicID();
+	public abstract T retrieveBasicID();
 
-    // FIXME nonsense this when using composite-id
-    public abstract void defineBasicID(T id);
+	// FIXME nonsense this when using composite-id
+	public abstract void defineBasicID(T id);
 
 }

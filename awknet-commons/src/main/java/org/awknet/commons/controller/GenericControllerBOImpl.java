@@ -23,57 +23,57 @@ import java.util.List;
 import org.awknet.commons.data.DaoFactory;
 import org.awknet.commons.model.business.RegisterBOImpl;
 import org.awknet.commons.model.entity.BaseEntityIDImpl;
+import org.awknet.commons.model.entity.BaseEntityImpl;
 
-// TODO implement default form method
 // FIXME change BaseEntityIDImpl to BaseEntityImpl - use a second generic type? 
-public class GenericControllerBOImpl<T extends BaseEntityIDImpl<Long>> implements
-	GenericController<T> {
+//public class GenericControllerBOImpl<T extends BaseEntityIDImpl<Long>>
+public class GenericControllerBOImpl<T extends BaseEntityIDImpl<Long>>
+		implements GenericController<T> {
 
-    protected final RegisterBOImpl<T> register;
-    // FIXME this getter must be enough! No need of specific getter!
-    private T entity;
-    private List<T> entities;
+	protected final RegisterBOImpl<T> register;
+	private T entity;
+	private List<T> entities;
 
-    public GenericControllerBOImpl(DaoFactory _daoFactory, Class _clazz) {
-	register = new RegisterBOImpl<T>(_daoFactory, _clazz);
-    }
-
-    @Override
-    public void form(T _entity) {
-	entities = register.listAll();
-	if (_entity.retrieveBasicID() != null) {
-	    entity = register.load(_entity.retrieveBasicID());
+	public GenericControllerBOImpl(DaoFactory _daoFactory, Class<T> _clazz) {
+		register = new RegisterBOImpl<T>(_daoFactory, _clazz);
 	}
-    }
 
-    @Override
-    public void save(T _entity) {
-	register.update(_entity);
-	this.entity = _entity;
-    }
+	@Override
+	public void form(T _entity) {
+		entities = register.listAll();
+		if (_entity.retrieveBasicID() != null) {
+			entity = register.load(_entity.retrieveBasicID());
+		}
+	}
 
-    @Override
-    public void delete(T _entity) {
-	register.delete(_entity);
-    }
+	@Override
+	public void save(T _entity) {
+		register.update(_entity);
+		this.entity = _entity;
+	}
 
-    @Override
-    public List<T> list() {
-	return register.listAll();
-    }
+	@Override
+	public void delete(T _entity) {
+		register.delete(_entity);
+	}
 
-    @Override
-    public T load(T _entity) {
-	return register.load(_entity.retrieveBasicID());
-    }
+	@Override
+	public List<T> list() {
+		return register.listAll();
+	}
 
-    @Override
-    public T getEntity() {
-	return entity;
-    }
+	@Override
+	public T load(T _entity) {
+		return register.load(_entity.retrieveBasicID());
+	}
 
-    @Override
-    public List<T> getEntities() {
-	return entities;
-    }
+	@Override
+	public T getEntity() {
+		return entity;
+	}
+
+	@Override
+	public List<T> getEntities() {
+		return entities;
+	}
 }

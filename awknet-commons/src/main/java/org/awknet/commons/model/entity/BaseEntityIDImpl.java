@@ -29,60 +29,59 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 @MappedSuperclass
 public class BaseEntityIDImpl<T> implements BaseEntity<T> {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Long ID;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ID")
+	private Long ID;
 
-    public BaseEntityIDImpl() {
-    }
+	public BaseEntityIDImpl() {
+	}
 
-    public BaseEntityIDImpl(Long id) {
-	this.ID = id;
-    }
+	public BaseEntityIDImpl(Long id) {
+		this.ID = id;
+	}
 
-    public Long getID() {
-	return ID;
-    }
+	public Long getID() {
+		return ID;
+	}
 
-    public void setID(Long id) {
-	ID = id;
-    }
+	public void setID(Long id) {
+		ID = id;
+	}
 
-    @SuppressWarnings("unchecked")
-    public boolean equals(Object obj) {
+	@SuppressWarnings("unchecked")
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
 
-	if (obj == null)
-	    return false;
+		if (!(obj instanceof BaseEntityIDImpl))
+			return false;
 
-	if (!(obj instanceof BaseEntityIDImpl))
-	    return false;
+		BaseEntityIDImpl<T> element = (BaseEntityIDImpl<T>) obj;
 
-	BaseEntityIDImpl<T> element = (BaseEntityIDImpl<T>) obj;
+		if (this == element)
+			return true;
 
-	if (this == element)
-	    return true;
+		if (this.ID == null || element.getID() == null)
+			return false;
 
-	if (this.ID == null || element.getID() == null)
-	    return false;
+		return new EqualsBuilder().append(this.getID(), element.getID())
+				.isEquals();
+	}
 
-	return new EqualsBuilder().append(this.getID(), element.getID())
-		.isEquals();
-    }
+	public int hashCode() {
+		return (ID != null ? ID.hashCode() : super.hashCode());
+	}
 
-    public int hashCode() {
-	return (ID != null ? ID.hashCode() : super.hashCode());
-    }
+	@SuppressWarnings("unchecked")
+	@Override
+	public T retrieveBasicID() {
+		return (T) this.getID();
+	}
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public T retrieveBasicID() {
-	return (T) this.getID();
-    }
-
-    @Override
-    public void defineBasicID(T id) {
-	setID((Long) id);
-    }
+	@Override
+	public void defineBasicID(T id) {
+		setID((Long) id);
+	}
 
 }
