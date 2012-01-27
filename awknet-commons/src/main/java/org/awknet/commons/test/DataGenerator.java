@@ -1,20 +1,19 @@
 /*
- * Copyright (C) 2012 Jefferson Campos <jecampos@sorocaba.sp.gov.br>
- * This file is part of MINHA-CASA-VIDA
- * see at http://172.16.1.110/redmine/projects/minha-casa-vida
+ * Copyright (C) 2012 Jefferson Campos <foguinho.peruca@gmail.com>
+ * This file is part of awknet-commons - http://awknet-commons.awknet.org
  *
- * MINHA-CASA-VIDA is free software: you can redistribute it and/or modify
+ * Awknet-commons is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
- * MINHA-CASA-VIDA is distributed in the hope that it will be useful,
+ *
+ * Awknet-commons is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with MINHA-CASA-VIDA. If not, see <http://www.gnu.org/licenses/>.
+ * along with awknet-commons. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.awknet.commons.test;
@@ -49,5 +48,6 @@ public class DataGenerator {
 	public static final String CPF_OK_PERSON_2 = "11169911285";
 	public static final String CPF_OK_SPOUSE_2 = "97688628237";
 	public static final String CPF_INVALID = "84163572449";
+	public static final String CPF_UNUSED = "57535447899";
 
 }
