@@ -35,23 +35,14 @@ public class RegisterBOImpl<T extends BaseEntity> implements Register<T> {
 
 	private static final Log LOG = LogFactory.getLog(RegisterBOImpl.class);
 
-	// FIXME [GENERIC] One for money...
 	public RegisterBOImpl(GenericDaoFactory _daoFactory, Class _clazz) {
 		this.clazz = _clazz;
 		daoFactory = _daoFactory;
 		LOG.debug("[clazz]: Class name is: " + clazz.getName());
 	}
 
-	// FIXME [GENERIC] Two for the show... must use reflection to get class name
 	public RegisterBOImpl(GenericDaoFactory _daoFactory) {
 		daoFactory = _daoFactory;
-		// FIXME [GENERIC] NOT working....
-		// Type type = getClass().getGenericSuperclass();
-		// clazz = (Class) getClass().getGenericSuperclass();
-		// LOG.info("-- Class name is: " + clazz.getName());
-		// ParameterizedType parameterizedType = (ParameterizedType) type;
-		// clazz = (Class) parameterizedType.getActualTypeArguments()[0];
-
 	}
 
 	@Override

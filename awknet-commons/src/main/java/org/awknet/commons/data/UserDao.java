@@ -24,38 +24,38 @@ import org.hibernate.Session;
 
 public class UserDao extends Dao<User> {
 
-    public UserDao(Session session) {
-	super(session, User.class);
-    }
+	public UserDao(Session session) {
+		super(session, User.class);
+	}
 
-    /**
-     * Search for a unique user with login/password;
-     */
-    public User onlyOne(User user) {
-	String hql = "SELECT u FROM User AS u WHERE u.login = :login AND "
-		+ "u.password = :password";
-	Query query = getSession().createQuery(hql);
-	query.setParameter("login", user.getLogin());
-	query.setParameter("password", user.getPassword());
+	/**
+	 * Search for a unique user with login/password;
+	 */
+	public User onlyOne(User user) {
+		String hql = "SELECT u FROM User AS u WHERE u.login = :login AND "
+				+ "u.password = :password";
+		Query query = getSession().createQuery(hql);
+		query.setParameter("login", user.getLogin());
+		query.setParameter("password", user.getPassword());
 
-	return (User) query.uniqueResult();
-    }
+		return (User) query.uniqueResult();
+	}
 
-    public User loadUserByLogin(String login) {
-	String hql = "SELECT u FROM User AS u WHERE u.login = :login";
-	Query query = getSession().createQuery(hql);
-	query.setParameter("login", login);
+	public User loadUserByLogin(String login) {
+		String hql = "SELECT u FROM User AS u WHERE u.login = :login";
+		Query query = getSession().createQuery(hql);
+		query.setParameter("login", login);
 
-	return (User) query.uniqueResult();
-    }
+		return (User) query.uniqueResult();
+	}
 
-    // FIXME must implement all tests!
-    public User loadUserByRetrieveCode(String retrieveCode) {
-	String hql = "SELECT u FROM User AS u, RetrievePasswordLog AS rc WHERE "
-		+ "u.ID = rc.userId AND rc.retrieveCode = :retrieveCode";
-	Query query = getSession().createQuery(hql);
-	query.setParameter("retrieveCode", retrieveCode);
+	// FIXME must implement all tests!
+	public User loadUserByRetrieveCode(String retrieveCode) {
+		String hql = "SELECT u FROM User AS u, RetrievePasswordLog AS rc WHERE "
+				+ "u.ID = rc.userId AND rc.retrieveCode = :retrieveCode";
+		Query query = getSession().createQuery(hql);
+		query.setParameter("retrieveCode", retrieveCode);
 
-	return (User) query.uniqueResult();
-    }
+		return (User) query.uniqueResult();
+	}
 }
