@@ -28,35 +28,36 @@ import org.apache.commons.logging.LogFactory;
 // TODO use http://www.jasypt.org/
 public class Encryption {
 
-    private static final Log LOG = LogFactory.getLog(Encryption.class);
+	private static final Log LOG = LogFactory.getLog(Encryption.class);
 
-    /**
-     * <p>
-     * This function encrypt the password with MD5 method.
-     * </p>
-     * 
-     * @param value
-     *            : a password to be encrypt.
-     * @return A encrypted password.
-     * @since SIGERAR v1.1 - April/2008.
-     * @throws NoSuchAlgorithmException
-     */
-    public String genericEncryptMD5(String value) throws NoSuchAlgorithmException {
-	MessageDigest md = MessageDigest.getInstance("MD5");
-	BigInteger hash = new BigInteger(1, md.digest(value.getBytes()));
-	String encryptedValue = hash.toString(16);
-	if (encryptedValue.length() % 2 != 0) {
-	    encryptedValue = "0" + encryptedValue;
+	/**
+	 * <p>
+	 * This function encrypt the password with MD5 method.
+	 * </p>
+	 * 
+	 * @param value
+	 *            : a password to be encrypt.
+	 * @return A encrypted password.
+	 * @since SIGERAR v1.1 - April/2008.
+	 * @throws NoSuchAlgorithmException
+	 */
+	public String genericEncryptMD5(String value)
+			throws NoSuchAlgorithmException {
+		MessageDigest md = MessageDigest.getInstance("MD5");
+		BigInteger hash = new BigInteger(1, md.digest(value.getBytes()));
+		String encryptedValue = hash.toString(16);
+		if (encryptedValue.length() % 2 != 0) {
+			encryptedValue = "0" + encryptedValue;
+		}
+		return encryptedValue;
 	}
-	return encryptedValue;
-    }
 
-    public static String encrypt(String value) {
-	try {
-	    return new Encryption().genericEncryptMD5(value);
-	} catch (NoSuchAlgorithmException e) {
-	    LOG.error("[CRYPT] Error during the encryptation of password!", e);
+	public static String encrypt(String value) {
+		try {
+			return new Encryption().genericEncryptMD5(value);
+		} catch (NoSuchAlgorithmException e) {
+			LOG.error("[CRYPT] Error during the encryptation of password!", e);
+		}
+		return null;
 	}
-	return null;
-    }
 }
