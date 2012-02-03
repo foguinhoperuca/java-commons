@@ -45,123 +45,123 @@ import org.vraptor.scope.ScopeType;
 @InterceptedBy(DaoInterceptor.class)
 public class LoginLogic {
 
-    @In
-    private HttpServletRequest request;
-    private static final Log LOG = LogFactory.getLog(LoginLogic.class);
-    private UserBOImpl userBO;
-    private User login;
-    private RetrievePasswordLog retrievePasswordLog;
-    private String error;
+	@In
+	private HttpServletRequest request;
+	private static final Log LOG = LogFactory.getLog(LoginLogic.class);
+	private UserBOImpl userBO;
+	private User login;
+	private RetrievePasswordLog retrievePasswordLog;
+	private String error;
 
-    public LoginLogic(DaoFactory daoFactory) {
-	userBO = new UserBOImpl(daoFactory);
-    }
-
-    public void login() {
-    }
-
-    public String doLogin(User _entity) {
-	LOG.debug("doLogin START!!!");
-	if (userBO.verifyUser(_entity)) {
-	    login = userBO.getUser();
-	    return "ok";
-	} else {
-	    error = "[DO LOGIN] Login invalid!";
-	    LOG.debug(error);
-	    return "invalid";
-	}
-    }
-
-    public void logout() {
-	this.login = null;
-    }
-
-    public void retrievePasswordForm() {
-    }
-
-    @Logic(parameters = "login")
-    public String retrievePassword(String login) {
-	User user;
-	String retrieveCode;
-	if (login.equals(""))
-	    return "error";
-
-	try {
-	    user = userBO.loadUserByLogin(login);
-	    if (user == null)
-		throw new UserException(UserExceptionType.LOGIN);
-
-	    retrieveCode = userBO.generateCodeToRetrievePassword(user.getID(),
-		    request.getRemoteAddr());
-	    userBO.sendLinkToRetrievePassword(user, retrieveCode,
-		    PropertiesAwknetCommons.resolvePropertiesFile());
-	} catch (UserException e) {
-	    LOG.error("[RETRIEVE PASSWORD FORM] User exception!", e);
-	    error = e.getMessage();
-	    return "error";
-	} catch (RetrieveCodeException e) {
-	    LOG.error("[RETRIEVE PASSWORD FORM] Retrieve Code exception!", e);
-	    error = e.getMessage();
-	    return "error";
+	public LoginLogic(DaoFactory daoFactory) {
+		userBO = new UserBOImpl(daoFactory);
 	}
 
-	return "ok";
-    }
+	public void login() {
+	}
 
-    @Logic(parameters = "retrieveCode")
-    public String retrieveCodeValidation(String retrieveCode) {
-	if (retrieveCode == null)
-	    return "error";
+	public String doLogin(User _entity) {
+		LOG.debug("doLogin START!!!");
+		if (userBO.verifyUser(_entity)) {
+			login = userBO.getUser();
+			return "ok";
+		} else {
+			error = "[DO LOGIN] Login invalid!";
+			LOG.debug(error);
+			return "invalid";
+		}
+	}
 
-	LOG.debug("RETRIEVE CODE IS: " + retrieveCode);
+	public void logout() {
+		this.login = null;
+	}
 
-	try {
-	    if (userBO.isValidRequest(new Date(), retrieveCode)) {
-		// FIXME return retrieve Code and user!
-		login = userBO.loadUserByRetrieveCode(retrieveCode);
+	public void retrievePasswordForm() {
+	}
 
-		// FIXME Too ugly!
-		retrievePasswordLog = new RetrievePasswordLog();
-		retrievePasswordLog.setRetrieveCode(retrieveCode);
+	@Logic(parameters = "login")
+	public String retrievePassword(String login) {
+		User user;
+		String retrieveCode;
+		if (login.equals(""))
+			return "error";
 
-		login.setPassword(""); // Don't expose the old password!
-		LOG.debug("User --------------> " + login.getLogin());
-		LOG.debug("Pass --------------> " + login.getPassword());
+		try {
+			user = userBO.loadUserByLogin(login);
+			if (user == null)
+				throw new UserException(UserExceptionType.LOGIN);
+
+			retrieveCode = userBO.generateCodeToRetrievePassword(user.getID(),
+					request.getRemoteAddr());
+			userBO.sendLinkToRetrievePassword(user, retrieveCode,
+					PropertiesAwknetCommons.resolvePropertiesFile());
+		} catch (UserException e) {
+			LOG.error("[RETRIEVE PASSWORD FORM] User exception!", e);
+			error = e.getMessage();
+			return "error";
+		} catch (RetrieveCodeException e) {
+			LOG.error("[RETRIEVE PASSWORD FORM] Retrieve Code exception!", e);
+			error = e.getMessage();
+			return "error";
+		}
+
 		return "ok";
-	    }
-	} catch (RetrieveCodeException e) {
-	    LOG.error("[RETRIEVE CODE] retrieve code #:" + retrieveCode, e);
-	    error = e.getMessage();
-	    return "error";
 	}
 
-	LOG.info("[RETRIEVE CODE] Retrieve code is invalid!!");
-	error = "[RETRIEVE CODE] Retrieve code is invalid!!";
+	@Logic(parameters = "retrieveCode")
+	public String retrieveCodeValidation(String retrieveCode) {
+		if (retrieveCode == null)
+			return "error";
 
-	return "error";
-    }
+		LOG.debug("RETRIEVE CODE IS: " + retrieveCode);
 
-    @Logic(parameters = { "newPassword", "retrieveCode" })
-    public String updatePassword(String newPassword, String retrieveCode) {
-	if (!userBO.updatePassword(newPassword, retrieveCode))
-	    return "error";
+		try {
+			if (userBO.isValidRequest(new Date(), retrieveCode)) {
+				// FIXME return retrieve Code and user!
+				login = userBO.loadUserByRetrieveCode(retrieveCode);
 
-	return "ok";
-    }
+				// FIXME Too ugly!
+				retrievePasswordLog = new RetrievePasswordLog();
+				retrievePasswordLog.setRetrieveCode(retrieveCode);
 
-    @Out(scope = ScopeType.SESSION)
-    public User getLogin() {
-	return login;
-    }
+				login.setPassword(""); // Don't expose the old password!
+				LOG.debug("User --------------> " + login.getLogin());
+				LOG.debug("Pass --------------> " + login.getPassword());
+				return "ok";
+			}
+		} catch (RetrieveCodeException e) {
+			LOG.error("[RETRIEVE CODE] retrieve code #:" + retrieveCode, e);
+			error = e.getMessage();
+			return "error";
+		}
 
-    @Out(scope = ScopeType.SESSION)
-    // FIXME scope: [REQUEST | SESSION] - maybe request...
-    public RetrievePasswordLog getRetrievePasswordLog() {
-	return retrievePasswordLog;
-    }
+		LOG.info("[RETRIEVE CODE] Retrieve code is invalid!!");
+		error = "[RETRIEVE CODE] Retrieve code is invalid!!";
 
-    @Out(scope = ScopeType.REQUEST)
-    public String getError() {
-	return error;
-    }
+		return "error";
+	}
+
+	@Logic(parameters = { "newPassword", "retrieveCode" })
+	public String updatePassword(String newPassword, String retrieveCode) {
+		if (!userBO.updatePassword(newPassword, retrieveCode))
+			return "error";
+
+		return "ok";
+	}
+
+	@Out(scope = ScopeType.SESSION)
+	public User getLogin() {
+		return login;
+	}
+
+	@Out(scope = ScopeType.SESSION)
+	// FIXME scope: [REQUEST | SESSION] - maybe request...
+	public RetrievePasswordLog getRetrievePasswordLog() {
+		return retrievePasswordLog;
+	}
+
+	@Out(scope = ScopeType.REQUEST)
+	public String getError() {
+		return error;
+	}
 }
