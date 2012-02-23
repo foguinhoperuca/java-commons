@@ -18,13 +18,15 @@
 
 package org.awknet.commons.model.entity;
 
-public enum MaritalStatus {
+public enum Literacy {
 
-	COHABITATING(0), DIVORCED(1), MARRIED(2), SINGLE(3), WIDOWER(4);
+	INCOMPLETE_BASIC_EDUCATION(0), ELEMENTARY_SCHOOL(1), INCOMPLETE_SECONDARY_EDUCATION(
+			2), HIGH_SCHOOL(3), INCOMPLETE_HIGHER_EDUCATION(4), COLLEGE_DEGREE(
+			5), SPECIALIZATION(6), MASTERS_DEGREE(7), PHD(8);
 
-	private int type;
+	private final int type;
 
-	MaritalStatus(int type) {
+	Literacy(int type) {
 		this.type = type;
 	}
 
@@ -33,6 +35,11 @@ public enum MaritalStatus {
 	}
 
 	public String getName() {
+		return name();
+	}
+
+	@Override
+	public String toString() {
 		return name();
 	}
 }
