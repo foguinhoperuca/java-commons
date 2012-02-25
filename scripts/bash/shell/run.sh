@@ -34,7 +34,8 @@ fi
 show_usage()
 {
     echo ""
-    echo "./run.sh [TEST_MICASA|TEST_COMMONS|COMMIT|RESOLVE_DROPBOX_CONFLICT] [TEST]"
+    echo "./run.sh [TEST_MICASA|TEST_COMMONS|COMMIT] [TEST]"
+    echo "./run.sh [RESOLVE_DROPBOX_CONFLICT] [PROJECT_FOLDER]"
     echo ""
 }
 
@@ -50,8 +51,6 @@ testMICASA()
 {
 	cd $MICASA_PATH
 	mysql -h localhost -u root -pA12345678a MICASA < $MICASA_PATH/micasa/src/main/database/MICASA.sql
-#	mysql -h localhost -u root -pA12345678a MICASA < $AWKNET_PATH/src/main/database/DDL_awknet-commons.sql
-#	mysql -h localhost -u root -pA12345678a MICASA < $MICASA_PATH/micasa/src/main/database/DDL_MICASA.sql
 	echo ""
 	echo "================================================================================"
 	echo "TEST: mvn clean test -Dtest=$1"
@@ -85,7 +84,7 @@ resolve_dropbox_conflict()
 
 	mkdir $BKP_CONFLICT_DROPBOX/$DATE
 	BKP=$BKP_CONFLICT_DROPBOX/$DATE
-	cd $MICASA_PATH
+	cd $1
 	export IFS=";"
 	for i in $(svn st . | grep \(*\) | awk '{for (i = 2 ; i <= NF ; i++){ printf "%s ", $i; if (i == NF) printf ";"}}' | sed -e 's/ /\\ /g' | sed -e 's/(/\\(/g' | sed -e "s/'s/\\\'s/g" | sed -e 's/)/\\)/g' | sed -e 's/\\ ;/;/g')
 	do
@@ -105,7 +104,7 @@ case $ACTION in
 		commit;
 		;;
     "RESOLVE_DROPBOX_CONFLICT")
-		resolve_dropbox_conflict;
+		resolve_dropbox_conflict $2;
 		;;
     *)
 		show_usage;
