@@ -553,6 +553,7 @@ public class UserBOImpl {
 		}
 	}
 
+	// TODO implement tests
 	public void saveOrUpdate(User _user) throws UserException {
 		String originalPassword;
 		try {

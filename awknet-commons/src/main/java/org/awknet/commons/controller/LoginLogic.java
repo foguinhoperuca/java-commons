@@ -60,6 +60,9 @@ public class LoginLogic {
 	public void login() {
 	}
 
+	public void home() {
+	}
+
 	public String doLogin(User _entity) {
 		LOG.debug("doLogin START!!!");
 		if (userBO.verifyUser(_entity)) {
