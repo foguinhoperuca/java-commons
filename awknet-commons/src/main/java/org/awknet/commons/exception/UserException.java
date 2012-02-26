@@ -23,53 +23,60 @@ import org.apache.commons.logging.LogFactory;
 
 public class UserException extends Exception {
 
-    private static final long serialVersionUID = 6196598941109275246L;
-    private static final Log LOG = LogFactory.getLog(UserException.class);
-    public static String MSG_GENERIC = "[USER] NOSENSE!!! - GENERIC ERROR WITH USER!";
-    public static String MSG_ID = "[USER] NOSENSE a user with ID!";
-    public static String MSG_PASSWORD = "[USER] NOSENSE a user with PASSWORD!";
-    public static String MSG_EMAIL_NULL = "[USER] user without PASSWORD in DB!";
-    public static String MSG_LOGIN = "[USER] User with LOGIN INVALID!";
-    public static String MSG_VALIDATION = "[USER] User is INVALID!";
-    public static String MSG_PERSIST = "[USER] User COULD NOT BE SAVED/UPDATED!";
-    public static int ID = 0;
-    public static int PASSWORD = 1;
-    public static int MAIL_NULL = 2;
-    public static int LOGIN = 3;
-    private int code;
+	private static final long serialVersionUID = 6196598941109275246L;
+	private static final Log LOG = LogFactory.getLog(UserException.class);
+	public static final String MSG_GENERIC = "[USER] NOSENSE!!! - GENERIC ERROR WITH USER!";
+	public static final String MSG_ID = "[USER] NOSENSE a user with ID!";
+	public static final String MSG_PASSWORD = "[USER] NOSENSE a user with PASSWORD!";
+	public static final String MSG_EMAIL_NULL = "[USER] user without PASSWORD in DB!";
+	public static final String MSG_LOGIN = "[USER] User with LOGIN INVALID!";
+	public static final String MSG_VALIDATION = "[USER] User is INVALID!";
+	public static final String MSG_PERSIST = "[USER] User COULD NOT BE SAVED/UPDATED!";
+	public static final String MSG_ENCRYPT_PASSWORD = "[USER] Encryption raised an exception!";
+	public static final int ID = 0;
+	public static final int PASSWORD = 1;
+	public static final int MAIL_NULL = 2;
+	public static final int LOGIN = 3;
+	public static final int VALIDATION = 4;
+	public static final int PERSIST = 5;
+	public static final int ENCRYPT_PASSWORD = 6;
+	private int code;
 
-    public UserException(int error) {
-	this.code = error;
-    }
-
-    public UserException(UserExceptionType error) {
-	this.code = error.getType();
-    }
-
-    @Override
-    public String getMessage() {
-	switch (code) {
-	case 0:
-	    LOG.error(UserException.MSG_ID);
-	    return UserException.MSG_ID;
-	case 1:
-	    LOG.error(UserException.MSG_PASSWORD);
-	    return UserException.MSG_PASSWORD;
-	case 2:
-	    LOG.error(UserException.MSG_EMAIL_NULL);
-	    return UserException.MSG_EMAIL_NULL;
-	case 3:
-	    LOG.error(UserException.MSG_LOGIN);
-	    return UserException.MSG_LOGIN;
-	case 4:
-	    LOG.error(UserException.MSG_VALIDATION);
-	    return UserException.MSG_VALIDATION;
-	case 5:
-	    LOG.error(UserException.MSG_PERSIST);
-	    return UserException.MSG_PERSIST;
-	default:
-	    LOG.error(MSG_GENERIC);
-	    return MSG_GENERIC;
+	public UserException(int error) {
+		this.code = error;
 	}
-    }
+
+	public UserException(UserExceptionType error) {
+		this.code = error.getType();
+	}
+
+	@Override
+	public String getMessage() {
+		switch (code) {
+		case ID:
+			LOG.error(UserException.MSG_ID);
+			return UserException.MSG_ID;
+		case PASSWORD:
+			LOG.error(UserException.MSG_PASSWORD);
+			return UserException.MSG_PASSWORD;
+		case MAIL_NULL:
+			LOG.error(UserException.MSG_EMAIL_NULL);
+			return UserException.MSG_EMAIL_NULL;
+		case LOGIN:
+			LOG.error(UserException.MSG_LOGIN);
+			return UserException.MSG_LOGIN;
+		case VALIDATION:
+			LOG.error(UserException.MSG_VALIDATION);
+			return UserException.MSG_VALIDATION;
+		case PERSIST:
+			LOG.error(UserException.MSG_PERSIST);
+			return UserException.MSG_PERSIST;
+		case ENCRYPT_PASSWORD:
+			LOG.error(UserException.MSG_PERSIST);
+			return UserException.MSG_PERSIST;
+		default:
+			LOG.error(MSG_GENERIC);
+			return MSG_GENERIC;
+		}
+	}
 }

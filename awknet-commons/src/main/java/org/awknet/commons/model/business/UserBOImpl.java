@@ -553,15 +553,41 @@ public class UserBOImpl {
 		}
 	}
 
-	// TODO implement tests
+	/**
+	 * Only call main method,<br />
+	 * <span> public void saveOrUpdate(User _user, boolean cryptPassword) throws
+	 * UserException </span>
+	 * 
+	 * @param _user
+	 * @throws UserException
+	 */
 	public void saveOrUpdate(User _user) throws UserException {
+		saveOrUpdate(_user, true);
+	}
+
+	/**
+	 * Save or update a user in DB.
+	 * 
+	 * @param _user
+	 *            a user to be saved.
+	 * @param cryptPassword
+	 *            choose if password must be encrypted or not.
+	 * @throws UserException
+	 *             if an error occurs (both for: [HibernateException |
+	 *             NoSuchAlgorithmException])
+	 */
+	// TODO implement tests
+	public void saveOrUpdate(User _user, boolean cryptPassword)
+			throws UserException {
 		String originalPassword;
 		try {
 			if (StringUtils.stringUnsed(_user.getPassword()))
 				_user.setPassword(DEFAULT_PASSWORD);
 
-			originalPassword = _user.getPassword();
-			_user.setPassword(encryptPassword(originalPassword));
+			if (cryptPassword) {
+				originalPassword = _user.getPassword();
+				_user.setPassword(encryptPassword(originalPassword));
+			}
 			register.saveOrUpdate(_user);
 			user = _user;
 		} catch (HibernateException e) {
@@ -571,7 +597,16 @@ public class UserBOImpl {
 			LOG.error(
 					"[USER SAVE UPDATE] Error during the encryptation of password!",
 					ex);
+			throw new UserException(UserExceptionType.ENCRYPT_PASSWORD);
 		}
+	}
+
+	// TODO implement tests!
+	public User loadUserByID(Long id) {
+		if (id != null)
+			return register.load(id);
+
+		return null;
 	}
 
 	public User getUser() {

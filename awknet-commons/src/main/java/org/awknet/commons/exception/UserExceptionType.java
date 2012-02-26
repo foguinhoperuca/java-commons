@@ -20,19 +20,20 @@ package org.awknet.commons.exception;
 
 public enum UserExceptionType {
 
-    ID(0), PASSWORD(1), EMAIL_NULL(2), LOGIN(3), VALIDATION(4), PERSIST(5);
+	ID(0), PASSWORD(1), EMAIL_NULL(2), LOGIN(3), VALIDATION(4), PERSIST(5), ENCRYPT_PASSWORD(
+			6);
 
-    private int type;
+	private int type;
 
-    UserExceptionType(int _type) {
-	this.type = _type;
-    }
+	UserExceptionType(int _type) {
+		this.type = _type;
+	}
 
-    public int getType() {
-	return type;
-    }
+	public int getType() {
+		return type;
+	}
 
-    public String getName() {
-	return name();
-    }
+	public String getName() {
+		return name();
+	}
 }
