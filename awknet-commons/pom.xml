@@ -4,7 +4,7 @@
   <groupId>org.awknet</groupId>
   <artifactId>awknet-commons</artifactId>
   <packaging>jar</packaging>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <name>awknet-commons</name>
   <url>http://awknet-commons.awknet.org</url>
   <description>Like "Apache commons", this projects is focused on all aspects of reusable Java components.</description>
