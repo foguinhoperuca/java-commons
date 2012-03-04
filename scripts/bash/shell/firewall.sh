@@ -1,4 +1,3 @@
-# Firewall with iptables.
 # Copyright (C) 2008,2009,2012 Jefferson Campos - foguinho [dot] peruca [at] gmail [dot] com
 
 # This program is free software: you can redistribute it and/or modify
@@ -14,12 +13,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# Firewall with iptables.
+
 #!/bin/bash
 
 show_usage()
 {
     echo ""
-    echo "firewall Copyright (C) 2008,2009,2012 Jefferson Campos"
+    echo "firewall Copyright (C) 2008,2009,2012 Jefferson Campos - foguinho [dot] peruca [at] gmail [dot] com"
     echo "This program comes with ABSOLUTELY NO WARRANTY;"
     echo "This is free software, and you are welcome to redistribute it under certain conditions;"
     echo "usage: ./firewall.sh [START|STOP|RESTART]"
@@ -29,18 +30,17 @@ show_usage()
 start(){
 ################################ ESSENTIAL ##################################
 
+# only for sure!
+echo 1 > /proc/sys/net/ipv4/conf/default/rp_filter
+
 # load module for iptable    
     modprobe iptable_nat
 
 # no limits for local 
 #    iptables -A INPUT -i eth0 -j ACCEPT
 
-# interface loopback - essential for server!!
-    iptables -A INPUT -i lo -j ACCEPT
-
 # packages, from connection that is already initialized, will be accepted
     iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
 
 ########################## ATTACK'S DEFENSE ###############################
 
@@ -56,22 +56,27 @@ start(){
 # Avoid SYN Flood attack
     echo > 1 /proc/sys/net/ipv4/tcp_syncookies
 
+# Avoid IP spoofing
 # Answer will be in same interface that is already initialized.
     echo > 1 /proc/sys/net/ipv4/conf/default/rp_filter
 
 # Drop bad packages
     iptables -A INPUT -m state --state INVALID -j DROP
 
-# Avoid IP spoofing
-    echo 1 > /proc/sys/net/ipv4/conf/default/rp_filter
+################################ SERVICES ##################################
 
+    iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+    iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 
 ################################ CLOSE ALL REST ##################################
 
-	# Fecha todas as outras portas !!! - TCP
+# interface loopback - essential for server!!
+    iptables -A INPUT -i lo -j ACCEPT
+
+# Close all doors - TCP
     iptables -A INPUT -p tcp --syn -j DROP
 
-	# Bloqueia as portas UDP de 0 a 1023 (com excecao as abertas acima):
+# Close UDP ports - de 0 a 1023
     iptables -A INPUT -p udp --dport 0:1023 -j DROP
 
     echo "Firewall LOADED successfully!!!"
