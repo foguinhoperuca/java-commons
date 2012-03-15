@@ -27,50 +27,50 @@ import org.hibernate.criterion.Example;
 
 public class Dao<T extends BaseEntity> {
 
-    private final Session session;
-    @SuppressWarnings("rawtypes")
-    private final Class clazz;
+	private final Session session;
+	@SuppressWarnings("rawtypes")
+	private final Class clazz;
 
-    @SuppressWarnings("rawtypes")
-    public Dao(Session session, Class clazz) {
-        this.session = session;
-        this.clazz = clazz;
-    }
+	@SuppressWarnings("rawtypes")
+	public Dao(Session session, Class clazz) {
+		this.session = session;
+		this.clazz = clazz;
+	}
 
-    public void save(T entity) {
-        this.session.save(entity);
-    }
+	public void save(T entity) {
+		this.session.save(entity);
+	}
 
-    public void delete(T entity) {
-        this.session.delete(entity);
-    }
+	public void delete(T entity) {
+		this.session.delete(entity);
+	}
 
-    public void update(T entity) {
-        this.session.merge(entity);
-    }
+	public void update(T entity) {
+		this.session.merge(entity);
+	}
 
-    public void saveOrUpdate(T entity) {
-	this.session.saveOrUpdate(entity);
-    }
+	public void saveOrUpdate(T entity) {
+		this.session.saveOrUpdate(entity);
+	}
 
-    @SuppressWarnings("unchecked")
-    public List<T> list() {
-        return this.session.createCriteria(this.clazz).list();
-    }
+	@SuppressWarnings("unchecked")
+	public List<T> list() {
+		return this.session.createCriteria(this.clazz).list();
+	}
 
-    @SuppressWarnings("unchecked")
-    public T load(Long id) {
-        return (T) session.load(this.clazz, id);
-    }
+	@SuppressWarnings("unchecked")
+	public T load(Long id) {
+		return (T) session.load(this.clazz, id);
+	}
 
-    @SuppressWarnings("unchecked")
-    public T loadByExample(T entity) {
-        Criteria criteria = session.createCriteria(this.clazz)
-            .add(Example.create(entity));
-        return (T) criteria.uniqueResult();
-    }
+	@SuppressWarnings("unchecked")
+	public T loadByExample(T entity) {
+		Criteria criteria = session.createCriteria(this.clazz).add(
+				Example.create(entity));
+		return (T) criteria.uniqueResult();
+	}
 
-    protected Session getSession() {
-        return session;
-    }
+	protected Session getSession() {
+		return session;
+	}
 }

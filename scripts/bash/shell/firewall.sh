@@ -23,7 +23,7 @@ show_usage()
     echo "firewall Copyright (C) 2008,2009,2012 Jefferson Campos - foguinho [dot] peruca [at] gmail [dot] com"
     echo "This program comes with ABSOLUTELY NO WARRANTY;"
     echo "This is free software, and you are welcome to redistribute it under certain conditions;"
-    echo "usage: ./firewall.sh [START|STOP|RESTART]"
+    echo "usage: ./firewall.sh [start|stop|restart]"
     echo ""
 }
 

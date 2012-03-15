@@ -31,7 +31,7 @@ public class DataGenerator {
 	public static final String FOREIGN_KEY_DOWN = "?sessionVariables=FOREIGN_KEY_CHECKS=0";
 	public static final String URL_FOREIGN_KEY_DOWN = URL_CONNECTION
 			+ FOREIGN_KEY_DOWN;
-	public static final String USER = "root";
+	public static final String USER = "awknet";
 	public static final String PASSWORD = "A12345678a";
 
 	public static final String FULL_INITIAL_DATASET = "/full.xml";
