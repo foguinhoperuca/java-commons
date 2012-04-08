@@ -21,8 +21,9 @@ package org.awknet.commons.util;
 // TODO implement tests!
 public class StringUtils {
 
-    public static boolean stringUnsed(String value) {
-	boolean test = (value == null || value.equals("")) ? true : false;
-	return test;
-    }
+	// TODO migrate to apache commons - there is a implementation for this!
+	public static boolean stringUnsed(String value) {
+		boolean test = (value == null || value.equals("")) ? true : false;
+		return test;
+	}
 }
