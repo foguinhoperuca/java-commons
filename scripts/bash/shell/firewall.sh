@@ -92,10 +92,15 @@ stop()
     echo "Firewall UNLOADED successfully!!!"
 }
 
+tomcat()
+{
+	iptables -A INPUT -p tcp --dport 8080 -j ACCEPT
+}
 
 case $1 in 
     "start") start;;
     "stop") stop;;
     "restart") stop; start;;
+    "tomcat") stop; tomcat; start;;
     *) echo show_usage;;
 esac
