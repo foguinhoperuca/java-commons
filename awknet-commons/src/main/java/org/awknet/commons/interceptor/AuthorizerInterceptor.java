@@ -20,6 +20,8 @@ package org.awknet.commons.interceptor;
 
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.awknet.commons.model.entity.User;
 import org.vraptor.Interceptor;
 import org.vraptor.LogicException;
@@ -32,9 +34,11 @@ public class AuthorizerInterceptor implements Interceptor {
 
 	@In(scope = ScopeType.SESSION, required = false, key = "login")
 	private User login;
+	private static final Log LOG = LogFactory.getLog(AuthorizerInterceptor.class);
 
 	public void intercept(LogicFlow flow) throws LogicException, ViewException {
 		if (this.login == null) {
+			LOG.info("[AUTHORIZERINTERCEPTOR] Login was NULL!!");
 			try {
 				flow.getLogicRequest().getResponse()
 						.sendRedirect("login.login.logic");

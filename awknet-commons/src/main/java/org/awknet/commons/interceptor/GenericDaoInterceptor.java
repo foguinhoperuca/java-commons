@@ -32,18 +32,18 @@ import org.vraptor.view.ViewException;
  */
 public class GenericDaoInterceptor implements Interceptor {
 
-    private final GenericDaoFactory factory = new GenericDaoFactory();
+	private final GenericDaoFactory factory = new GenericDaoFactory();
 
-    public void intercept(LogicFlow flow) throws LogicException, ViewException {
-	flow.execute();
-	if (factory.hasTransaction()) {
-	    factory.rollback();
+	public void intercept(LogicFlow flow) throws LogicException, ViewException {
+		flow.execute();
+		if (factory.hasTransaction()) {
+			factory.rollback();
+		}
+		factory.close();
 	}
-	factory.close();
-    }
 
-    @Out(key = "org.awknet.commons.data.GenericDaoFactory")
-    public GenericDaoFactory getFactory() {
-	return factory;
-    }
+	@Out(key = "org.awknet.commons.data.GenericDaoFactory")
+	public GenericDaoFactory getFactory() {
+		return factory;
+	}
 }
