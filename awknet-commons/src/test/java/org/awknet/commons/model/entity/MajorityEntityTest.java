@@ -61,8 +61,8 @@ public class MajorityEntityTest {
 		assertFalse(MajorityEntityValidator.validate(entityMinor));
 
 		// 0.2 - monthBirth == month && dayBirth > day
-		dateMajor = formatter.parse("1994-04-01");
-		dateMinor = formatter.parse("1994-04-30");
+		dateMajor = formatter.parse("1994-05-01");
+		dateMinor = formatter.parse("1994-05-30");
 		
 		entityMajor.setBirthday(dateMajor);
 		assertTrue(MajorityEntityValidator.validate(entityMajor));		
