@@ -1,0 +1,12 @@
+org.awknet.commons.constraint
+org.awknet.commons.controller
+org.awknet.commons.converter
+org.awknet.commons.data
+org.awknet.commons.exception
+org.awknet.commons.interceptor
+org.awknet.commons.mail
+org.awknet.commons.model.business
+org.awknet.commons.model.entity
+org.awknet.commons.security
+org.awknet.commons.test
+org.awknet.commons.util
