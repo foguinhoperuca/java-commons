@@ -385,6 +385,10 @@ public class UserBOImpl {
 			throw new RetrieveCodeException(
 					RetrieveCodeExceptionType.RETRIEVE_CODE);
 
+		if (rpLog.getUpdated())
+			throw new RetrieveCodeException(
+					RetrieveCodeExceptionType.RETRIEVE_CODE);
+
 		LOG.debug("[VALID REQUEST] found something!");
 		// int
 		// days=SystemMessageAcessor.getPropertyAsInteger("request.activation.form.valid.until.days");
