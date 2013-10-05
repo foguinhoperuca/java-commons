@@ -1,0 +1,7 @@
+* TODO move to 1 master project and 4 sub-project:
+** main project: awknet with commons dependencies and meta info
+** sub-projects:
+*** awknet-commons: common code (utils, documents, CPF, CEP, etc);
+*** awknet-backend: implement DAO (hibernate) and CRUD (vraptor 3)
+*** awknet-security: implement authentication and authorization;
+*** awknet-client (YAWECAPP): web client with backbone, jquery, markup, etc;
